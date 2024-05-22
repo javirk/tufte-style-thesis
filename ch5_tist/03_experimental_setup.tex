@@ -1,0 +1,23 @@
+\section{Experimental setup}
+\label{sec:tist_experimental_settings}
+
+\subsection{Datasets}
+We validate our approach on three cross-device/site datasets for three different modalities: 
+
+\begin{itemize}
+    \item \textbf{Cataract:} instrument segmentation in cataract surgery videos. We set the ``Cat101''~\sidecite{cat101} as the source dataset and the ``CaDIS'' as the target domain dataset~\sidecite{CaDIS}. 
+    \item \textbf{OCT: }IRF Fluid segmentation in retinal OCTs~\sidecite{retouch}. We use the high-quality ``Spectralis'' dataset as the source and the lower-quality ``Topcon'' dataset as the target domain.
+    \item \textbf{MRI:} multi-site prostate segmentation~\sidecite{liu2020ms}. We sample volumes from ``BMC'' and ``BIDMC'' as the source and target domain, respectively\sidenote{``BIDMC'' imposes a more challenging scenario than ``BMC'' due to the low contrast of the images.}.
+\end{itemize} 
+
+We follow a four-fold validation strategy for all three cases and report the average results over all folds. The average number of labeled training images (from the source domain), unlabeled training images (from the target domain), and test images per fold are equal to ($207, 3'189,58$) for Cataract, ($391,569,115$) for OCT, and ($273,195,65$) for MRI dataset.
+
+\subsection{Baseline methods}
+We compare the performance of our proposed transformation-invariant self-training (SI-ST) method against seven state-of-the-art alternative methods that represent different domain adaptation methods and paradigms: $\Uppi$ models~\sidecite{TESSL}, temporal ensembling~\sidecite{TESSL}, mean teacher~\sidecite{UDAMIS}, cross pseudo supervision (CSP)~\sidecite{CPS}, reciprocal learning (RL)~\sidecite{Reciprocal} and self-training (ST)~\sidecite{st++}.
+
+\subsection{Networks and training settings}
+We evaluate our TI-ST framework using two different architectures:  (1) DeepLabV3+~\sidecite{DeepLabV3} with ResNet50 backbone~\sidecite{ResNet} and (2) scSE~\sidecite{SCSE} with VGG16 backbone. Both backbones are initialized with the ImageNet~\sidecite{deng2009imagenet} pre-trained parameters. We use a batch size of four for the Cataract and MRI datasets and a batch size of two for the OCT dataset. For all training strategies, we set the number of epochs to 100. The initial learning rate is set to 0.001 and decayed by a factor of $0.8$ every two epochs. The input size of the networks is $512\times 512$ for cataract and OCT and $384\times 384$ for the MRI dataset. 
+As spatial transformations $g(\cdot)$, we apply cropping and random rotation (up to 30 degrees). 
+
+The non-spatial transformations, $f(\cdot)$, include color jittering (brightness = 0.7, contrast = 0.7, saturation = 0.7), Gaussian blurring, and random sharpening. The confidence threshold $\uptau$ for the self-training framework and the proposed TI-ST framework is set to $0.85$ except in the ablation studies\sidenote{See \cref{sec:experimental_results_tist}}. In Eq.~\eqref{eq: loss}, the weighting function $\lambda$ ramps up from the first epoch along a Gaussian curve equal to $\exp[-5(1-\text{current-epoch}/{\text{total-epochs}})]$. The unsupervised loss is set to the \autoindex{cross-entropy loss}, and the supervised loss is set to the \textit{cross entropy log dice} loss, which is a weighted sum of cross-entropy and the logarithm of soft dice coefficient. For the TI-ST framework, we only use non-spatial transformations for the self-training branch for simplicity.
+

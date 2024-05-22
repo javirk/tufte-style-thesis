@@ -1,0 +1,59 @@
+%Overcoming Data Constraints
+%   Importance of Data Augmentation and Synthesis: the first part is ok, the second maybe I remove
+%   Transfer Learning and its Role in Leveraging Pretrained Models
+%   Domain Adaptation: talk about what it is, types, history and examples
+\section{Overcoming Data Constraints}
+Various strategies have emerged to address the data constraints and enhance the robustness and reliability of neural network systems. In this section, we briefly explore key approaches aimed at overcoming data limitations and maximizing the potential of neural networks.
+\subsection{Importance of Data Augmentation} % and Synthetic Data
+\autoindex{Data augmentation} stands as the epitome of data efficiency and is used worldwide to mitigate overfitting\sidedef{overfitting}{Behavior that a model can exhibit by which it captures the noise or random fluctuations in the data instead of its underlying patterns.} in machine learning models. This technique consists of modifying the data slightly so that the amount of samples virtually grows, and therefore the model is exposed to a wider variety. The introduction of slight modifications, furthermore, affects the quality of the data in the hope that it reproduces real-world scenarios more reliably. More often than not, datasets are curated, and for this reason, they contain pristine samples for each class. In traditional image datasets, objects will appear centered and undistorted, as seen in \Cref{fig:hrsod_examples} or in \Cref{fig:fullweak_datasets}. Opposingly, real-world images may display distortions that range from lens aberrations to noise, lower quality, or even differences in contextual information. All of which are important for understanding the content and meaning of the images.
+
+%\sidenote{Of course, distorted datasets such as ImageNet-Hard~\cite{taesiri2024imagenet} also exist.}
+
+\marginfig{Figures/hrsod_imgs.pdf}{Examples from HRSOD dataset where the relevant objects appear centered and in the foreground.}{fig:hrsod_examples}
+
+While data augmentation cannot solve all the above-stated issues, it can mitigate some of them. Focusing our study on the field of Computer Vision, data augmentation techniques may be separated into geometric, color space, and noise injection transformations.
+
+Geometric transformations are mathematical bijective functions $\real^n \rightarrow \real^n$ that operate on points in n-dimensional space while preserving certain geometric properties, such as distances, angles, or parallelism. These transformations are typically described by functions or matrices and include operations such as translation\sidenote{
+Translation of a point by $t_x$ and $t_y$ units along the x and y-axis respectively:
+\begin{equation*}
+    \renewcommand*{\arraystretch}{0.8}
+    \begin{pmatrix} 1 & 0 & t_x \\ 0 & 1 & t_y \\ 0 & 0 & 1 \end{pmatrix}.
+\end{equation*}
+}, rotation\sidenote{
+Rotation of an angle $\theta$ about the origin:
+\begin{equation*}
+    \renewcommand*{\arraystretch}{0.8}
+    \begin{pmatrix} \cos(\theta) & -\sin(\theta) & 0 \\ \sin(\theta) & \cos(\theta) & 0 \\  0 & 0 & 1 \end{pmatrix}.
+\end{equation*}
+}, scaling\sidenote{
+Scaling of $W$ and $H$ units about the origin:
+\begin{equation*}
+    \renewcommand*{\arraystretch}{0.8}
+    \begin{pmatrix} W & 0 & 0 \\ 0 & H & 0 \\ 0 & 0 & 1 \end{pmatrix}.
+\end{equation*}
+}, or reflection\sidenote{Reflection may be treated as a special case of scaling, with $H=-1$ or $W=-1$ depending on the reflection axis.}.
+
+Color space transformations operate on the pixel space and modify the color properties of images. Their formulation depends on the color space (RGB, HSV, Lab...), and they include transformations such as color jittering; brightness, saturation, or contrast adjustment; or converting the image to grayscale. Noise injection transformations, meanwhile, operate on the color space as well, but try to mimic real-world imperfections by injecting noise into images. Usually, this noise is Gaussian and can be applied multiplicatively or additively.
+
+Hereafter, we will refer to geometric transformations as \textit{``spatial transformations''}\index{spatial transformation} and to color space and noise injection as \textit{``non-spatial transformations''}\index{non-spatial transformation}. This is because the transformations in the first group modify the spatial properties of the images, while the ones in the second do not\sidenote{This issue will be particularly relevant in \Cref{chapter:tist}.}.
+
+\subsection{Transfer Learning and its Role in Leveraging Pretrained Models}\index{Transfer Learning}
+As has been shown above, most modern models that achieve state-of-the-art (SOTA) performance do not fit into consumer GPUs \index{Graphical Processing Unit}, and therefore end-to-end training of these architectures from scratch is only feasible for organizations with ample resources. To get around this problem, researchers and end users worldwide rely on pretrained models from these organizations. These models have been trained on large datasets and thus already contain general features and patterns that are transferable to new, related tasks\sidedef{Task}{Combination of a task type (e.g. classification, semantic segmentation) and a dataset. \cite{Mensink}}. The logic behind this is that a model trained on a large dataset will be able to adapt more quickly to a new setup, provided that the new task is semantically close. \yeartextcite{bozinovski1976influence} were the first to propose this idea and dubbed it Transfer Learning. Since then, the use of pretrained models in lieu of random initialization has become the de facto standard when training Deep-Learning models.
+
+One common approach to transfer learning involves fine-tuning pretrained models. In this process, a pretrained model is first initialized with weights learned from the original task. Then, it is further trained on the new task with a smaller dataset, adjusting its parameters to fit the new task's requirements better. Fine-tuning allows the model to quickly adapt to the nuances of the new task while retaining the general knowledge acquired during pretraining. An alternative approach is feature extraction, whereby the pretrained model is employed as a feature extractor. Rather than modifying the parameters of the pretrained model, its internal representations are extracted and fed into a new, smaller model\sidenote{Be it a classifier, a segmentation head, etc.} tailored to the target task. Because the former approach implies training the whole model, the latter is particularly beneficial when the new task has a limited amount of data or when computational resources are constrained.
+
+Transfer Learning has proved useful in a variety of scenarios, especially in settings where the amount of data is notably low, such as medical imaging. 
+
+\subsection{Domain Adaptation, or How to Expand to Unseen Data}\index{Domain adaptation}
+%It is important to acknowledge that a task entails a task type and a dataset. While the modification of the task type 
+Transfer learning relies on two fundamental assumptions. First, the pretraining and the new data must originate from similar distributions, \ie~be semantically close. Second, the pretraining corpus must be vastly larger than that of the target task. While the second assumption is usually fulfilled\sidenote{See previous section.}, the violation of the first is common for very task-specific datasets. This situation is described as \autoindex{domain shift}\sidedef{domain shift}{Scenario in which the distribution of two datasets is different, see \Cref{fig:domain_shift}.} and usually causes a decline in model performance due to a lack of generalization. Domain shift can occur for a variety of reasons, including changes in data over time, geographical shift\sidenote{Especially relevant for automated driving tasks, where visual cues vary depending on the region of the planet.}, or variations due to different contexts. In the context of vision tasks, the term ``domain shift'' encompasses a wide range of scenarios. These include images obtained with different devices or acquisition modes, as well as indoor versus outdoor images, and rainy versus non-rainy setups. Domain adaptation is a subcategory of transfer learning that aims to mitigate domain shift.
+
+While mitigating domain shift, domain adaptation also has the potential to avoid the necessity of acquiring new annotations for related datasets. This challenge is particularly difficult to overcome in highly specific fields that require expert knowledge. In this line, several semi-supervised learning paradigms have emerged to reduce the need for extensive annotations in the \autoindex{target domain}. These approaches aim to leverage both labeled and unlabeled data, allowing models to benefit from the unlabeled examples to enhance their performance without the high costs and labor associated with full annotation. 
+
+\marginfig{Figures/domain_shift.pdf}{Domain shift example for two 2D distributions in 3D space. While both have the same mean and standard deviation, their covariance matrices are different. A model trained on the red distribution will most probably not adapt to the blue one.}{fig:domain_shift}
+
+\Cref{chapter:background} will dive into the nuances of domain adaptation, exploring the different types in relation to the number of labeled samples in the target domain.
+
+\sectionline
+
+As we have seen, addressing data limitations will be of paramount importance in order to scale machine learning models in the future. While initial measures have been implemented to alleviate the current constraints on this front, there is a further aspect of human civilization that will also prove crucial for the successful scaling of models: budget constraints.

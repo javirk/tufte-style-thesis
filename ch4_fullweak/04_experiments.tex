@@ -1,0 +1,71 @@
+\section{Experimental setup}
+\label{sec:experiments_fullweak}
+
+To validate our approach, we evaluated it on four different datasets, while comparing its performance to a set of typical fixed budget allocation strategies. In addition, we explore the impact of different hyper parameters on the overall performance of the method. 
+
+\subsection{Datasets} 
+We chose a collection of datasets with different image modalities, including a medical dataset as they often suffer from data and annotation scarcity. In this context, they represent a typical new application domain where our method could be particularly helpful. In each case, we enumerate the number of images for which classification or segmentation images can be sampled by a method\sidenote{See \Cref{tab:full_weak_datasets} for a \jgt{comprehensive} list of training images in each dataset.}:
+\begin{description}
+    \item[Augmented PASCAL VOC 2012]\sidecite{pascal-voc-2012}: 5'717~classification and 10'582~segmentation natural images with 21~classes for training. The validation sets contain 1'449 segmented images.
+    \item[SUIM]\sidecite{islam2020semantic}: training set consists of 1'525 underwater images with annotations for 8 classes. For evaluation, we used a separate split of 110 additional images. The classification labels were estimated from the segmentation ground-truth as a multi-label problem by setting the class label to~1 if the segmentation map contained at least one pixel assigned to that class.
+    \item[Cityscapes]\sidecite{cordts2016cityscapes}: 2'975 annotated images for both classification and segmentation are available for training. We test on the official Cityscapes validation set, which contains 500 images. 
+    \item[OCT:] 22'723 Optical Coherence Tomography~(OCT) images with classification annotations and 1,002~images with pixel-wise annotations corresponding to 4 different types of retinal fluid for segmentation. We split the data into 902~training images and 100~test images.
+\end{description}
+
+\subsection{Baseline strategies} We compared our method to ten different \textit{fixed} budget allocation strategies. Each of these randomly sample images for classification and segmentation annotations according to a specified and fixed proportion. We denote these policies by the percentage dedicated to segmentation annotations: $B_0$: $50\%, 55\%, \ldots, 95\%$ with increases in 5\%. For a fair comparison, the strategies are computed from the budget $B_0$.
+
+In addition, we consider an \textit{estimated-best-fixed} budget allocation strategy, whereby the method estimates what fixed budget should be used for a given dataset. This is done by using the initial budget $B_0$ to compute the best-performing fixed strategy (mentioned above) and then using this fixed strategy for the annotation campaign until budget $B$ is reached. This strategy represents an individual who chooses to explore all fixed strategies for an initial small budget and then exploit it. 
+
+\subsection{Implementation details} 
+\subsubsection{Weakly supervised segmentation model} To train a segmentation model that uses both segmentation and classifications, we first train the models with the weakly-annotated data~$\T_c$ until convergence and then with the segmentation data~$\T_s$. We use the U-Net segmentation model~\sidecite{ronneberger2015u} for  OCT, and the DeepLabv3 model~\sidecite{chen2017rethinking} with a ResNet50 backbone on the SUIM, PASCAL, and Cityscapes. For the U-Net, a classification head is appended at the end of the encoding module for the classification task. For the DeepLab-like models, we train the entire backbone\sidenote{ResNet-50 is used as the backbone.} on the classification task and then add the ASPP head for segmentation. In all cases, we use the cross-entropy loss for classification, and the average of the Dice loss and the cross-Entropy loss for segmentation. While we choose this training strategy for its simplicity, other cross-task or weakly supervised alternatives could have been used as well~\sidecite{ahn2018learning,Papandreou15}. \Cref{tab:configurations_model} contains the details of batch sizes and optimizers for each dataset.
+
+\begin{table}
+\centering
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Dataset} & \textbf{Model} &  \textbf{Optimizer} & \textbf{Batch size} \\ \midrule
+OCT & U-Net &  Adam & 8  \\
+VOC & DeepLabV3 &  SGD & 16 \\
+SUIM & DeepLabV3 &  SGD & 8  \\ 
+Cityscapes & DeepLabV3 & SGD & 16   \\ \bottomrule
+\end{tabular}
+\sidecaption{Hyperparameters and conditions for all experiments.\label{tab:configurations_model}}
+\end{table}
+
+Note that all models are randomly initialized to maximize the impact of classification labels, as Imagenet-pretraining shares a high resemblance to images in PASCAL and Cityscapes. Failing to do so would lead to classification training not adding significant information and may even hurt performance due to catastrophic forgetting~\sidecite{mccloskey1989catastrophic}.
+
+\subsubsection{Hyperparameters}
+We measured costs in terms of class-label equivalents setting~$\alpha_c=1$ and leaving only $\alpha_s$ as a hyperparameter of our method. We set~$\alpha_s=12$ for all datasets following previous studies on crowdsourced annotations~\sidecite{Bearman16}. We predict the first GP surface with $8\%$ of the available class~$C_0$ and segmentation annotations~$S_0$ for SUIM and Cityscapes. We reduced $C_0$~in OCT and $S_0$~in VOC to account for the higher number of labels available in those datasets, as detailed in~\Cref{tab:configurations_gp}. In all cases, we fixed the number of iterative steps to 8 and set the learning rate of the GP to 0.1.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Dataset} & $C_0 (\%)$ & $S_0 (\%)$ & $B_0$ \\ \midrule
+OCT & 4 & 8 & 1'774 \\
+VOC & 8 & 6 & 8'076 \\
+SUIM & 8 & 8 & 1'586 \\ 
+Cityscapes & 8 & 8 & 1'774  \\ \bottomrule
+\end{tabular}
+\sidecaption{Initial conditions for our method. $B_0$ calculated with $\alpha_s = 12$ and $\alpha_c = 1$.\label{tab:configurations_gp}}
+\end{table}
+
+\subsubsection{Ground-truth approximation}
+To address the high computational demands of our experiments, we followed the procedure of~\yeartextcite{mahmood2022optimizing} for ground-truth approximation. 
+In particular, we built subsets of the training dataset by randomly sampling different proportions of the available annotated samples~\sidecite{mahmood2022}. The proportions~$\rho_s$ and~$\rho_c$ for segmentation and classification samples, respectively, were chosen from the set~$\{2\%, 4\%, 6\%, 8\%, 10\%, 20\%, 30\%, 40\%, 60\%, 80\%, 100\%\}$, for a total of $11\times{}11=121$~possible training subsets. For each subset, we trained the weakly-supervised segmentation model and measured its Dice score on a fixed segmentation test set. We finally interpolated these scores with third-order splines\sidenote{We determined experimentally that third-order was the best approximation for all four datasets.} to obtain a surface of ground-truth Dice scores. This procedure allowed efficient estimations of the Dice Score values without retraining a new model for each strategy.
+
+The proportions~$\rho_s$ and~$\rho_c$ are relative to the total amounts of available annotated samples in each dataset, which are shown in \Cref{tab:full_weak_datasets}.
+
+\begin{table}[h]
+\centering
+\sidecaption{Number of training images for each dataset and modality.\label{tab:full_weak_datasets}}
+\begin{tabular}{lcc}
+\hline
+\textbf{Dataset} & \textbf{Segmentation} & \textbf{Classification} \\ \hline
+OCT & 902 & 22'723 \\
+VOC & 10'582 & 5'717 \\
+SUIM & 1'525 & 1'525 \\
+Cityscapes & 2'975 & 2'975 \\ \hline
+\end{tabular}
+
+\end{table}

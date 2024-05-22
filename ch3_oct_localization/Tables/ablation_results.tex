@@ -1,0 +1,16 @@
+\begin{table*}[t]
+\centering
+\caption{Ablation study. We quantify the performance of our method when using only the terms \{$\ell_1$\}, \{$\ell_1$, $\ell_2$\} or \{$\ell_1$, $\ell_2$, $\ell_3$\} in our loss functions.\label{tab:ablation_loc}}
+\begin{tabular}{@{}TrSSSSSS|SS@{}}
+\cmidrule(l){3-10}
+\multicolumn{1}{l}{} &  & \multicolumn{2}{c}{\textbf{1mm}} & \multicolumn{2}{c}{\textbf{3mm}} & \multicolumn{2}{c}{\textbf{6mm}} & \multicolumn{2}{c}{\textbf{Present}} \\ \cmidrule(l){3-10} 
+\multicolumn{1}{l}{} &  & \multicolumn{1}{c}{\textbf{IRF}} & \multicolumn{1}{c}{\textbf{SRF}} & \multicolumn{1}{c}{\textbf{IRF}} & \multicolumn{1}{c}{\textbf{SRF}} & \multicolumn{1}{c}{\textbf{IRF}} & \multicolumn{1}{c|}{\textbf{SRF}} & \multicolumn{1}{c}{\textbf{IRF}} & \multicolumn{1}{c}{\textbf{SRF}} \\ \midrule
+\multirow{3}{*}{\textbf{AUC}} & \multicolumn{1}{l|}{$\ell_1$} & 88.0 & 90.7 & 90.2 & 81.9 & 92.6 & \multicolumn{1}{l|}{73.7} & 96.5 & 96.2 \\
+ & \multicolumn{1}{l|}{$\ell_1, \ell_2$} & 87.8 & 96.9 & 90.1 & 92.3 & 92.2 & \multicolumn{1}{l|}{91.7} & 96.5 & 95.9 \\
+ & \multicolumn{1}{l|}{$\ell_1, \ell_2, \ell_3$} & \textbf{90.6} & \textbf{97.5} & \textbf{92.7} & \textbf{93.8} & \textbf{94.1} & \multicolumn{1}{l|}{\textbf{95.1}} & \textbf{97.2} & \textbf{97.7} \\ \midrule
+\multirow{3}{*}{\textbf{AP}} & \multicolumn{1}{l|}{$\ell_1$} & 91.5 & 71.4 & 91.7 & 29.4 & 85.8 & \multicolumn{1}{l|}{13.8} & 96.1 & 72.3 \\
+ & \multicolumn{1}{l|}{$\ell_1, \ell_2$} & 90.9 & 84.8 & 91.7 & 41.5 & 86.5 & \multicolumn{1}{l|}{\textbf{24.4}} & 96.3 & 77.1 \\
+ & \multicolumn{1}{l|}{$\ell_1, \ell_2, \ell_3$} & \textbf{92.1} & \textbf{86.6} & \textbf{93.7} & \textbf{52.7} & \textbf{88.3} & \multicolumn{1}{l|}{19.1} & \textbf{96.8} & \textbf{77.9} \\ \bottomrule
+\end{tabular}
+
+\end{table*}

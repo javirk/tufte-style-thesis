@@ -1,0 +1,113 @@
+
+%%%%%%%%% Packages used in sample chapters (not otherwise required) %%%%%%%
+
+%% Package for code listing in Appendix A.
+\usepackage{listings}%   documentation is here https://ctan.org/pkg/listings
+
+%% Latin filler used in Chapter 1, with a test for package version date. https://ctan.org/pkg/lipsum
+\usepackage{lipsum}
+\IfPackageAtLeastTF{lipsum}{2021/09/20}{\setlipsum{auto-lang=false}}{}
+
+
+%%%%%%%%%  Graphics path (to figure files)  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Can set graphicspath to point to specific directories containing figures (the current directory is searched automatically)
+%% For instance, to search a subdirectory of the current directory called "figures" and a parallel directory called "art", set:
+
+% \graphicspath{ {figures/} {../art/} }% For details see: https://latexref.xyz/dev/latex2e.html#g_t_005cgraphicspath
+
+
+%%%%%%%%%  Representative set-up for biblatex  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\usepackage[style=ieee,maxbibnames=10,sorting=none]{biblatex}% style=ext-numeric-comp,articlein=false,giveninits=true
+	%\DefineBibliographyStrings{english}{url= \textsc{url} ,  }% replaces default "[Online]. Available" by "URL"
+
+
+%\addbibresource{bibliography.bib}
+
+%% to avoid split urls and stretched white space, you can set the bibliography ragged-right:
+%\appto{\bibsetup}{\raggedright}
+
+% biblatex is very powerful, and you can customize most aspects the reference list and citations to suit your needs.
+% documentation is here: https://ctan.org/pkg/biblatex
+
+
+%%%%%%%%%%  Option to use natbib   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\RequirePackage[numbers,sort&compress]{natbib}
+ 
+%%% add bibliography to table of contents
+%\apptocmd{\bibliography}{\addcontentsline{toc}{chapter}{\protect\textbf{\bibname}}}{}{}
+
+%%% You can use this to rename the bibliography section
+%\renewcommand{\bibname}{References}
+
+%%% Can adjust space between bibliography items (change 4pt to something else; don't drop last two lengths, they are stretchable "glue")
+%\setlength\bibsep{4pt plus 1pt minus 1pt}
+
+
+%%%%%%%%%%  Table related packages  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{booktabs}% better quality tables, https://ctan.org/pkg/booktabs
+\usepackage{array}%    additional options for table columns, https://ctan.org/pkg/array
+
+%\usepackage{tabularx}%   https://ctan.org/pkg/tabularx
+
+%\usepackage{dcolumn}%    alignment on decimal place, https://ctan.org/pkg/dcolumn
+%\newcolumntype{d}[1]{D{.}{.}{#1}}
+
+
+%%%%%%%%%%  Option for "double spacing" %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Back in the typewriter era, double spaced lines were convenient for editing with a pencil. 
+%% In typography, the separation between lines is called "leading", and it is usually set in 
+%% proportion to the font size (i.e., when the font is loaded).  If you really feel the need 
+%% to change the line separation, the most attractive results will be obtained by changing the
+%% leading in proportion to the the current font size, rather than just doubling the space.
+
+%% The setspace package provides a tool for changing line separation. Use these two commands here:
+%
+% \usepackage{setspace}%  documentation at https://ctan.org/pkg/setspace
+% \setstretch{1.1}% you can choose some other value for the stretch of space between lines
+%
+%% Use one or more of the these commands AFTER the frontmatter
+%
+% \onehalfspacing
+% \doublespacing
+% \singlespacing  % will turn these effects off (you can use these anywhere in the document)
+
+%% The best result may be to stay with leading selected by the typographer who set up the font.
+
+\usepackage{import}
+\usepackage{tabularx}
+\usepackage{mathtools}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{siunitx}
+\usepackage{tikz}
+% Include other packages here, before hyperref.
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\usepackage{comment}
+\usepackage{color}
+\usepackage{svg}
+\usepackage{subcaption}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{upgreek}
+\usepackage{stackengine}
+\usepackage{imakeidx}	% for index
+\makeindex[columns=3]
+
+\usepackage[noabbrev,capitalize]{cleveref}
+%\crefname{section}{Sec.}{Secs.}
+%\crefname{section}{\textsection}{Secs.}
+\crefformat{section}{(\textsection#2#1#3)}
+\Crefname{section}{Section}{Sections}
+\Crefname{table}{Table}{Tables}
+\crefname{table}{Tab.}{Tabs.}
+
+\usepackage{titlecaps}
+\Addlcwords{are or for of as into a on}

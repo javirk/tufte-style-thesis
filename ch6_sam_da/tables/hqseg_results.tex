@@ -1,0 +1,17 @@
+\begin{table*}[]
+\centering
+\caption{IoU of all the methods on the different subsets that compose HQSeg-44K. Variance has been obtained over four trained models on the validation set}
+\label{tab:hqseg_results}
+\begin{tabular}{@{}lP{2.2cm}P{2.2cm}P{2.2cm}P{2.2cm}@{}}
+\toprule
+ & COIFT & HRSOD & ThinObject5k & DIS5K \\ \midrule
+Fine-Tuning & $82.07{\scriptscriptstyle \pm 0.58}$ & $79.44{\scriptscriptstyle \pm 0.14}$ & $79.32{\scriptscriptstyle \pm 0.33}$ & $63.33{\scriptscriptstyle \pm 0.34}$ \\
+Decoder FT & $84.91{\scriptscriptstyle \pm 0.58}$ & $82.46{\scriptscriptstyle \pm 0.14}$ & $84.54{\scriptscriptstyle \pm 0.33}$ & $71.61{\scriptscriptstyle \pm 0.34}$ \\
+LoRA & $86.01{\scriptscriptstyle \pm 0.19}$ & $84.50{\scriptscriptstyle \pm 0.18}$ & $87.86{\scriptscriptstyle \pm 0.26}$ & $74.22{\scriptscriptstyle \pm 0.52}$ \\
+Med-SA & $85.74{\scriptscriptstyle \pm 0.15}$ & $83.94{\scriptscriptstyle \pm 0.73}$ & $89.83{\scriptscriptstyle \pm 0.31}$ & $75.69{\scriptscriptstyle \pm 0.28}$ \\
+HQ-SAM & $84.17{\scriptscriptstyle \pm 0.20}$ & $81.41{\scriptscriptstyle \pm 0.26}$ & $81.41{\scriptscriptstyle \pm 0.12}$ & $69.88{\scriptscriptstyle \pm 0.12}$ \\ \midrule
+% Encoder Adapter & $84.82{\scriptscriptstyle \pm 0.26}$ & $82.41{\scriptscriptstyle \pm 0.30}$ & $84.61{\scriptscriptstyle \pm 0.15}$ & $71.41{\scriptscriptstyle \pm 0.42}$ \\
+SAM-DA & $84.61{\scriptscriptstyle \pm 0.28}$ & $81.81{\scriptscriptstyle \pm 0.50}$ & $82.73{\scriptscriptstyle \pm 0.10}$ & $69.24{\scriptscriptstyle \pm 0.56}$ \\ \bottomrule
+\end{tabular}
+
+\end{table*}

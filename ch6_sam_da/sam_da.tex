@@ -1,0 +1,20 @@
+\graphicspath{{ch6_sam_da/}{Figures/}}
+% \graphicspath{{Figures/}}
+
+\chapter{SAM-DA: Decoder Adapter \\for Efficient Domain Adaptation}
+\chaptermark{SAM-DA: Decoder Adapter}
+\label{chapter:samda}
+
+\sidechaptersummary{Adapter for large segmentation models, supervised segmentation performance improvement, applications to domain generalization}
+
+\subsubsection{Synopsis}This chapter addresses the domain adaptation challenge for semantic segmentation in medical imaging. Despite the impressive performance of recent foundational segmentation models like SAM on natural images, they struggle with medical domain images. Beyond this, recent approaches that perform end-to-end fine-tuning of models are simply not computationally tractable. To address this, we propose a novel SAM adapter approach that minimizes the number of trainable parameters while achieving comparable performances to full fine-tuning. The proposed SAM adapter is strategically placed in the mask decoder, offering excellent and broad generalization capabilities and improved segmentation across both fully supervised and test-time domain adaptation tasks. Extensive validation on four datasets showcases the adapter's efficacy, outperforming existing methods while training less than 1\% of SAM's total parameters.
+
+\subsubsection{Publication}This chapter is based on a publication\JGT{CITE}, and its contents have been modified slightly to be more consistent with the rest of the thesis. More specifically, \Cref{fig:neural_diagram} and \Cref{tab:dataset_details_samda} have been added to the main text from the supplementary material, \Cref{tab:encoder_ablation_trained,tab:encoder_ablation_generalization} were a single table in the original publication and have been separated into two.
+
+\subsubsection{Author contributions}The work in this chapter was done in collaboration with the University Hospital Bern. The contributing authors were Moritz Schmid, Pablo Márquez Neila, Sebastian Wolf, Martin Zinkernagel, and Raphael Sznitman. My contribution was the development and implementation of the method; conception and evaluation of the experiments and, together with the co-authors, writing of the paper.
+
+\input{1_introduction}
+\input{3_method}
+\input{4_experiments}
+\input{5_results}
+\input{6_conclusion}

@@ -1,0 +1,20 @@
+\graphicspath{{ch3_oct_localization/}{Figures/}}
+% \graphicspath{{Figures/}}
+
+\chapter{Predicting OCT biological marker localization from weak annotations}
+\label{chapter:oct}
+
+\sidechaptersummary{Localization of biological markers on ETDRS grid, Domain knowledge incorporation into a loss function, En-face biological marker segmentation}
+
+\subsubsection{Synopsis}Recent developments in deep learning have shown success in accurately predicting the location of biological markers in Optical Coherence Tomography (OCT) volumes of patients with Age-Related Macular Degeneration (AMD) and Diabetic Retinopathy (DR). We propose a method that automatically locates biological markers to the Early Treatment Diabetic Retinopathy Study (ETDRS) rings, only requiring B-scan-level presence annotations. We trained a neural network using 22,723 OCT B-Scans of 460 eyes (433 patients) with AMD and DR, annotated with slice-level labels for Intraretinal Fluid (IRF) and Subretinal Fluid (SRF). The neural network outputs were mapped into the corresponding ETDRS rings. We incorporated the class annotations and domain knowledge into a loss function to constrain the output with biologically plausible solutions. The method was tested on a set of OCT volumes with 322 eyes (189 patients) with Diabetic Macular Edema, with slice-level SRF and IRF presence annotations for the ETDRS rings. Our method accurately predicted the presence of IRF and SRF in each ETDRS ring, outperforming previous baselines even in the most challenging scenarios. Our model was also successfully applied to en-face marker segmentation and showed consistency within C-scans, despite not incorporating volume information in the training process. We achieved a correlation coefficient of 0.946 for the prediction of the IRF area. 
+
+\subsubsection{Publication}This chapter is based on a publication\sideauthorcite{tejero2023predicting}, and its contents have been modified slightly to be more consistent with the rest of the thesis. More specifically, \Cref{tab:var_list_loc} has been added to the main text from the supplementary material.
+
+\subsubsection{Author contributions}The work in this chapter was done in collaboration with the University Hospital Bern. The contributing authors were Pablo Márquez Neila, Thomas Kurmann, Mathias Gallardo, Martin Zinkernagel, Sebastian Wolf, and Raphael Sznitman. My contribution was the co-development and implementation of the method; conception and evaluation of the experiments and, together with the co-authors, writing of the paper.
+
+
+\input{01_introduction}
+\input{02_method}
+\input{03_results}
+\input{04_discussion}
+\input{05_conclusion}

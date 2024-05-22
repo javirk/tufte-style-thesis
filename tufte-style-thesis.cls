@@ -57,9 +57,9 @@
 
 %	P A C K A G E   D E F I N I T I O N
 %
-\RequirePackage{emptypage}		% if a page is empty, is is really empty
+\RequirePackage{emptypage}		% if a page is empty, it is really empty
 \RequirePackage{fullwidth}		% for wide environments
-\RequirePackage{sidenotes}		% for margin stuff
+\RequirePackage{sidenotes}	% for margin stuff
 \RequirePackage[
 	hypcap=false				% hypcap=true spits an error
 ]{caption}						% for caption formatting
@@ -89,7 +89,7 @@
 \RequirePackage{amsfonts}		% math fonts
 \RequirePackage{amsmath}		% math stuff
 \RequirePackage{mathtools}		% amsmath extension
-\RequirePackage{physics}		% handy shortcuts for physics
+%\RequirePackage{physics}		% handy shortcuts for physics
 \RequirePackage{xcolor}			% colorz
 \RequirePackage[framemethod=TikZ]{mdframed} % for custom code boxes
 \RequirePackage{tabularx}		% adaptive columns on tables
@@ -97,12 +97,18 @@
 \RequirePackage{enumitem}		% better looking lists
 \RequirePackage{setspace}
 \RequirePackage[
-	hidelinks,
+    hidelinks,
     final,
     breaklinks,
     bookmarks,
-	pdfusetitle,
+    pdfusetitle,
+    colorlinks,
+    linkcolor=burgundy,
+    citecolor=black  % This is for margin notes
 ]{hyperref}	% automatic references in pdf				% automatic references in pdf
+
+%\usepackage[colorlinks,citecolor=red,urlcolor=blue,bookmarks=false,hypertexnames=true]{hyperref} 
+
 \RequirePackage{etoolbox}		% really idk what this does
 \RequirePackage[strict]{changepage}	% needed by sidenotes
 \RequirePackage{placeins}		% for floatbarrier
@@ -115,6 +121,7 @@
 	autocite 	= superscript,
 	backend 	= biber,
 	citestyle 	= numeric-comp,
+        %style       = authoryear,
 	style 		= nature,
 	% citecolor   = niceBlue,
 	sorting		= none,
@@ -143,13 +150,21 @@
   }
 \makeatother
 \RequirePackage{xifthen}
+\RequirePackage{ifoddpage}
+\RequirePackage[object=vectorian]{pgfornament} %%  http://altermundus.com/pages/tkz/ornament/index.html
 
+
+
+% INDEX
+\newcommand{\autoindex}[1]{#1\index{#1}}
 
 %	C O L O R  D E F I N I T I O N
 %
 \definecolor{niceRed}{HTML}{980326}
 \definecolor{niceBlue}{HTML}{025472}
 \definecolor{tooRed}{HTML}{cc0000}
+\definecolor{gray}{HTML}{5B5B5B}
+\definecolor{burgundy}{HTML}{ab002a}
 \if@colorful
 	\renewcommand\thefootnote{\color{niceBlue}\arabic{footnote}}
 	\renewcommand\thesidenote{\color{niceBlue}\arabic{sidenote}}
@@ -177,7 +192,19 @@
 \makeatother
 
 \newcommand{\sidetext}[1]
-{\marginpar{\setstretch{1.0}\RaggedRight\footnotesize\noindent #1 \vskip 4pt}}
+{\marginpar{\setstretch{1.0}\footnotesize\noindent #1 \vskip 3pt}}
+
+\newcommand{\sidedef}[2]
+{\index{#1}\sidenote{\textbf{\titlecap{#1.}} #2}}
+%{\index{#1}\sidenote{\textbf{Def.} #2}}
+
+\newcommand{\sidecitation}[2]{\sidenote{\textit{``#2''}\\ ---\raggedleft \makebox[0pt][r]{}\citeauthor{#1} (\citeyear{#1}).}}
+\newcommand{\sidecitationnonum}[2]{\sidenotetext[~]{\textit{``#2''}\\ ---\raggedleft \makebox[0pt][r]{}\citeauthor{#1} (\citeyear{#1}).}}
+
+
+%\newcommand\sidecite[2][]{\autocite{#2}\sidetext{\ifthenelse{\equal{#1}{}}{}{\vskip #1}%
+%\@for\cle:={#2}\do{\raggedright\makebox[0pt][r]{\autocite{\cle}}\citeauthor{\cle} \citeyear{\cle}.\\\vskip 3pt}%
+%}}
 
 \newenvironment{wide}{
 \begin{fullwidth}[outermargin=-\marginparwidth-\marginparsep, width=\linewidth+\marginparwidth+\marginparsep]
@@ -188,6 +215,35 @@
 % sidenotes reset on new
 \let\oldchap\chapter
 \renewcommand{\chapter}{\setcounter{sidenote}{1}\oldchap}
+
+% sidenote at the beginning
+\ExplSyntaxOn
+\NewDocumentCommand{\sidechaptersummary}{m}
+ {
+  \marginpar
+   {
+    \raggedright
+    \textcolor{burgundy}{\rule{\marginparwidth}{0.4pt}\vspace{2mm}}~
+    \chaptersummary:n { #1 }
+   }
+ }
+\cs_new:Nn \chaptersummary:n
+ {
+ {\sffamily
+ \large{IN~THIS~CHAPTER}
+ \vspace{3mm}
+  \small{
+  \begin{itemize}[label={},leftmargin=0mm,]
+  \setlength\itemsep{2.5mm}
+    \clist_map_inline:nn { #1 }
+    {
+      \item \titlecap{##1}
+    }
+  \end{itemize}
+  }
+  }
+ }
+\ExplSyntaxOff
 
 %	F U L L  A R A B I C (titlepage = page1)
 %
@@ -217,6 +273,12 @@
 }
 \setlength{\headheight}{13.6pt}
 
+\fancypagestyle{plain}{\fancyhead{}}
+\fancyheadoffset[LE,RO]{\dimexpr\marginparsep+\marginparwidth\relax}
+\fancyfootoffset[LE,RO]{\dimexpr\marginparsep+\marginparwidth\relax}
+\renewcommand{\footrulewidth}{\headrulewidth}% to show the width of footer
+
+
 %	T I T L E  H E A D E R S
 %
 
@@ -225,7 +287,7 @@
 
 %	header formatting
 \titlespacing*{\part}{.2\linewidth}{.3\textheight}{0pt}
-\titlespacing*{\chapter}{0pt}{-60pt}{65pt}
+\titlespacing*{\chapter}{0pt}{-60pt}{10pt}
 \titleformat{\part}%[hang]
 	{\thispagestyle{empty}\huge\raggedleft}
 	{\Large\lsstyle\MakeUppercase{\partname}~~\thepart\normalfont}
@@ -234,26 +296,62 @@
 % \let\oldpart\part
 % \renewcommand{\part}{
 % }
-\titleformat{\chapter}[block]
-	{\begin{wide}\thispagestyle{empty}\itshape\huge}
-	{\normalfont\bfseries\huge\thechapter}
-	{1em}
-	{\setstretch{0.9}\raggedright\huge\itshape}[\end{wide}]
+
+\newcommand{\marginsecnumber}[1]{%
+  \makebox[0pt][r]{#1\hspace{7pt}}%
+}
+
+%\newcommand\chapterNum{\@setfontsize{58.1}}
+%\titleformat{\chapter}[block]
+%	{\begin{wide}\thispagestyle{empty}\itshape\huge}
+%	{\normalfont\bfseries\huge\thechapter}
+%	{1em}
+%	{\setstretch{0.9}\raggedright\huge\itshape}[\end{wide}]
+
+\newcommand{\formatsectiontitle}[1]{\itshape\titlecap{#1}}
+
+\titleformat{\chapter}%
+    [% Layout shape (display puts label in separate paragraph)
+        display%
+    ]%
+    {% Underlying font formats
+        \begin{wide}\thispagestyle{empty}
+        \huge%
+        \itshape%
+        \color{gray}
+    }%
+    {% Formatting for the label (number)
+        \raggedleft%
+        \fontsize{100}{100}\selectfont%
+        \textcolor{burgundy}{\thechapter}
+    }%
+    {0em}% Vertical spacing
+    {% Additional code before title text
+    \setstretch{0.9} \titlecap
+    }%
+    [% Additional code after title text
+        %{\titlerule[0.5pt]}%
+        \end{wide}
+    ]%
+    %
+
 \titleformat{\section}
-	{\itshape\Large}
-	{\normalfont\thesection}
-	{1em}
-	{\setstretch{0.9}\raggedright\itshape}
+	{\itshape\large}
+	{\marginsecnumber\thesection}
+	{0em}
+	{\setstretch{0.9}\raggedright\formatsectiontitle}
 \titleformat{\subsection}
 	{\itshape\normalfont}
 	{\raggedright\normalfont\thesubsection}
-	{1em}
+	{0em}
 	{\setstretch{0.9}\itshape}
 \titleformat{\subsubsection}[runin]
 	{}
 	{\itshape\thesubsubsection}
 	{1ex}
-	{\itshape}[~~$\cdot$]
+	%{{\makebox[-10pt][r]{\footnotesize\color{lightgray}$\blacktriangleright$}}\hspace{10pt}\itshape}[~~$\cdot$]
+        {{\makebox[-10pt][r]{\footnotesize\color{lightgray}$\blacktriangleright$}}\hspace{10pt}\scshape}[~~$\cdot$]
+
 
 
 %	M A K E T I T L E
@@ -292,6 +390,20 @@
     \updatelogos{
 		\hspace{20pt}\includegraphics[height=50pt]{#1}
 	}
+}
+
+\newcommand{\sectionline}{%
+  \noindent
+  \begin{center}
+  {\color{burgundy}
+    \resizebox{0.5\linewidth}{1ex}
+    {{%
+    {\begin{tikzpicture}
+    \node  (C) at (0,0) {};
+    \node (D) at (9,0) {};
+    \path (C) to [ornament=85] (D);
+    \end{tikzpicture}}}}}%
+    \end{center}
 }
 
 % 	Doctoral thesis (subsubtitle)
@@ -475,11 +587,11 @@
 }
 %	figure macros
 \AtBeginDocument{\usepackage[export]{adjustbox}} % for 'outer' mode
-\newcommand{\textfig}[4][]{%
+\newcommand{\textfig}[5][!htb]{%
 	\FloatBarrier
-	\begin{figure}[!htb]%
-		\sidecaption{#3\label{#4}}%
-		\includegraphics[width = #1\linewidth, outer]{#2}%
+	\begin{figure}[#1]%
+		\sidecaption{#4\label{#5}}%
+		\includegraphics[width = #2\linewidth, outer]{#3}%
 	\end{figure}%
 }
 \newcommand{\marginfig}[3]{%
@@ -489,27 +601,28 @@
 		\caption{#2\label{#3}}%
 	\end{marginfigure}%
 }
-\newcommand{\widefig}[4][]{%
+\newcommand{\widefig}[5][!htb]{%
 	\FloatBarrier%
-	\begin{figure*}[!htb]%
-		\includegraphics[width=#1\linewidth, outer]{#2}%
-		\sidecaption{#3\label{#4}}%
+	\begin{figure*}[#1]%
+		\includegraphics[width=#2\linewidth, outer]{#3}%
+		\sidecaption{#4\label{#5}}%
 	\end{figure*}%
 }
-\newcommand{\plainfig}[4][]{%
+\newcommand{\plainfig}[5][!htb]{%
 	\FloatBarrier%
-	\begin{figure}[!htb]%
-		\includegraphics[width=#1\linewidth, left]{#2}%
-		\caption{#3\label{#4}}%
+	\begin{figure}[#1]%
+		\includegraphics[width=#2\linewidth, left]{#3}%
+		\caption{#4\label{#5}}%
 	\end{figure}%
 }
-\newcommand{\plainwidefig}[4][]{%
-	\FloatBarrier%
-	\begin{figure*}[!htb]%
-		\includegraphics[width=#1\linewidth, left]{#2}%
-		\caption{#3\label{#4}}%
-	\end{figure*}%
+\newcommand{\plainwidefig}[5][!htb]{%
+    \FloatBarrier%
+    \begin{figure*}[#1]%
+        {\includegraphics[width=#2\linewidth, left]{#3}}%
+        \caption{#4\label{#5}}%
+    \end{figure*}%
 }
+
 %	table macros
 \newcolumntype{Y}{>{\centering\arraybackslash}X} % tabularx column type
 \newenvironment{texttable}[2]{%
@@ -618,9 +731,30 @@
 %	B I B L I O G R A P H I C
 %	      R E F E R E N C E S  %this is black magic to me but it seems 2b working
 \makeatletter
-\newcommand\sidecite[2][]{\autocite{#2}\sidetext{\ifthenelse{\equal{#1}{}}{}{\vskip #1}%
-\@for\cle:={#2}\do{\makebox[0pt][r]{\autocite{\cle}}\fullcite{\cle}.\\\vskip 4pt}%
+
+% So that years have a link
+\DeclareCiteCommand{\citeyear}
+    {\usebibmacro{prenote}}
+    {\hypersetup{citecolor=burgundy}\bibhyperref{\printfield{year}}\bibhyperref{\printfield{extrayear}}}
+    {\multicitedelim}
+    {}
+
+%\newcommand\sidecite[2][]{\autocite{#2}\sidetext{\ifthenelse{\equal{#1}{}}{}{\vskip #1}%
+%\@for\cle:={#2}\do{\makebox[0pt][r]{\autocite{\cle}}\fullcite{\cle}.\\\vskip 4pt}%
+%}}
+
+%% With title
+\newcommand\sideauthorcite[2][]{\autocite{#2}\sidetext{\ifthenelse{\equal{#1}{}}{}{\vskip #1}%
+\@for\cle:={#2}\do{\raggedright\makebox[0pt][r]{\autocite{\cle}}\citeauthor{\cle} (\citeyear{\cle}), \citetitle{\cle}.\\\vskip 4pt}%
 }}
+
+%% Without the title:    
+\newcommand\sidecite[2][]{\autocite{#2}\sidetext{\ifthenelse{\equal{#1}{}}{}{\vskip #1}%
+\@for\cle:={#2}\do{\raggedright\makebox[0pt][r]{\autocite{\cle}}\citeauthor{\cle} \citeyear{\cle}.\\\vskip 3pt}%
+}}
+
+\newcommand\yeartextcite[2][]{\@for\cle:={#2}\do{\citeauthor{\cle} (\citeyear{\cle})}}
+
 \newcommand\sidetextcite[2][]{\sidetext{\ifthenelse{\equal{#1}{}}{}{\vskip #1}%
 \@for\cle:={#2}\do{\makebox[0pt][r]{\autocite{\cle}}\fullcite{\cle}.\\\vskip 4pt}%
 }}
@@ -778,14 +912,13 @@
 \renewcommand{\phi}{\varphi}
 \renewcommand{\epsilon}{\varepsilon}
 \newcommand{\N}{\mathbb{N}}     % shortcuts for usual number sets
-\newcommand{\Z}{\mathbb{Z}}
 \newcommand{\Q}{\mathbb{Q}}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\C}{\mathbb{C}}
 % powers of 10
 \newcommand{\ee}[1]{\cdot 10^{#1}}
 % new vect with overrightarrow style
-\newcommand{\vect}[1]{\:\overrightarrow{#1}}
+%\newcommand{\vect}[1]{\:\overrightarrow{#1}}
 %fi
 
 % TODO

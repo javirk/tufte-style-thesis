@@ -1,0 +1,102 @@
+\documentclass[
+    11pt,
+	colorful,
+	boxey,
+ a4paper
+]{tufte-style-thesis}
+
+\input{imports}
+\input{defs}
+
+\usepackage{geometry}
+
+\geometry{
+  textwidth=320pt, % main text block
+  marginparsep=20pt,
+  marginparwidth=110pt
+}
+\oddsidemargin=0pt
+\evensidemargin=125pt
+%
+%\usepackage[]{}
+
+\addbibresource{refs.bib} % for biblatex
+
+% INFO : used in the titlepage, copyright and stuff.
+\author{Sylvain Kern}
+\title{\texttt{tufte-style-thesis},\\a Tufte-styled \LaTeX{} class for theses}
+\subtitle{Actually more of a mix\\between Edward Tufte and Robert Bringhurst}
+\university{A fancy University}
+\lab{An even fancier Lab}
+\person{Supervisor}{their name}{their job}
+\person{Cosupervisor}{also their name}{also their job}
+\person{Jury members}{jury 1}{jobs}
+\person{}{jury 2}{\dots}
+\logo{example-image-a}
+\logo{example-image-b}
+\logo{example-image-c}
+\shoutouts{For my homies}
+
+\begin{document}
+
+\ifdebug
+    \layout
+\fi
+
+%\maketitle
+
+\frontmatter
+
+%\chapter{Abstract}
+%Placeholder
+%
+%
+%\chapter{Acknowledgements}
+%Placeholder
+%
+%\tableofcontents
+%\listoffigures
+%\listoftables
+%\listoflistings
+
+
+\mainmatter
+
+% \import{ch1_introduction/}{introduction}
+\import{ch2_background/}{background}
+%\import{ch3_oct_localization/}{oct_localization}
+%\import{ch4_fullweak/}{fullweak.tex}
+%\import{ch5_tist}{tist.tex}
+%\import{ch6_sam_da}{sam_da.tex}
+\backmatter
+
+\setstretch{1}
+\thispagestyle{empty}
+\printbibliography
+\cleardoublepage
+
+%%%%%%%%% APPENDICES
+\part*{Appendix}
+%\appendix
+
+\setcounter{table}{0}
+\setcounter{figure}{0}
+
+\renewcommand{\thetable}{A\arabic{table}}  %% Change this A to something that uses the chapter name
+\renewcommand{\thefigure}{A\arabic{figure}}  %% Change this A to something that uses the chapter name
+
+%\import{appendices/introduction}{app_intro.tex}
+%\import{appendices/sam_da}{app_sam_da.tex}
+%\import{appendices/fullweak}{app_fullweak.tex}
+
+\cleardoublepage
+
+
+\begin{wide}
+\thispagestyle{empty}
+\printindex
+\end{wide}
+
+
+
+\end{document}

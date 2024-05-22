@@ -1,0 +1,99 @@
+% Introduction to Machine Learning in Vision
+%   Overview of Machine Learning (ML) - This is not necessary as a subsection.
+%   Deep Neural Networks (DNN) in Computer Vision
+%   Key Concepts in ML for Vision Applications - feature extraction, model architectures (bridge for the next), learning paradigms (introduce only), evaluation metrics, 
+
+\section{Machine Learning in Computer Vision}
+
+The field of computer vision saw its birth during the second half of the twentieth century. Initially, it was regarded as a relatively straightforward problem\sideauthorcite{sejnowski2018deep}, with early efforts focused on the manual extraction of features using algorithms that attempted to emulate the capabilities of the human visual system. However, the realization that features could take an infinite number of forms led to the hard truth that vision was a more complex problem than had been previously assumed. Soon, these manual efforts were redirected towards automatic feature extraction, with machine learning becoming a pivotal component. Since then, machine learning has significantly transformed the field of computer vision, enabling systems to learn from large datasets and make accurate predictions automatically. Deep learning, a subset of machine learning, has driven these advancements, demonstrating exceptional capabilities in tasks such as image recognition, object detection, and scene understanding. 
+
+\subsection{Deep Learning in Computer Vision}
+\label{subsec:deep_learning}
+At first sight, the term ``Deep learning'' may sound pretentious. Why is it called ``Deep'' and what differentiates it from ``Machine learning''?  As it has been mentioned above, deep learning refers to a subset of techniques within the machine learning paradigm. These techniques have shown such unprecedented capabilities in world understanding that have led to the emergence of a new field. What distinguishes them from traditional machine learning algorithms is the use of neural networks with multiple layers. The term ``deep'' alludes to the stacking of these layers.
+
+Neural networks lie, therefore, at the core of deep learning. Formally, these are functions $f$ that transform a set of inputs $\vect{x}$ into a set of outputs $\vect{y}$ making use of their parameters $\vect{\theta}$: 
+\begin{equation*}
+    \vect{y} = f(\vect{x};\vect{\theta}).
+\end{equation*}
+
+Thanks to their parameters, they work as universal function approximators\sideauthorcite{cybenko1989approximation}, meaning that with appropriate weights, they can represent a variety of functions. The goal of neural networks is to learn these weights.
+
+The standard deep learning model is the \autoindex{multilayer perceptron} (MLP), or feed-forward neural network\sideauthorcite{rumelhart1986learning}. Here, the previously mentioned function $f$ is composed of several layers to produce an output:
+\begin{equation*}
+    f(\vect{x}) = f_L(f_{L-1}(...f_1(\vect{x}))).
+\end{equation*}
+
+Each layer contains the parameters $\vect{\theta_l}$ as a set of weights $\vect{W}_l$ and biases $\vect{b}_l$ that are applied to the input. Moreover, in order to fulfill the universal approximation theorem, each layer also includes a non-linear transformation or activation function\sidenote{Without a non-linear activation, all the transformations would be affine, and therefore, the resulting function would also be affine.} $g_l$:
+\begin{equation*}
+    f_l(\vect{x};\vect{W}_l,\vect{b}_l) = {g_l}(\vect{W}_l\vect{x} + \vect{b}_l).
+\end{equation*}
+The activation function can take several forms, and their in-depth characterization lies outside the scope of this thesis. The most used functions are Rectified linear unit (ReLU)\sidecite{nair2010rectified}, sigmoid, or softmax\sidenote{ReLU: $$g(\vect{x})=\max(0, \vect{x}),$$ Sigmoid: $$g(\vect{x})=(1+\exp(-x))^{-1},$$ Softmax: $$g(\vect{x})=\dfrac{\exp(x_i)}{\sum_j\exp(x_j)}, \forall i\in {1,...,J}$$ Note that the softmax activation function acts on all the components of $\vect{x}$ in the layer. Whereas ReLU and sigmoid act individually.}. For a thorough description and analysis of activation functions, we instantiate the reader to \yeartextcite{dubey2022activation}.
+
+\textfig[t]{1}{Figures/mlp.pdf}{Multi-layer perceptron with three layers, a two-dimensional input, and a one-dimensional output. Subindices denote the layer number, $h_i$ is the activation function of layer $i$, $\vect{W}$ and $\vect{b}$ are weights and biases, respectively. The color of the arrows represents the variable weight values, which mediate the contribution of a node in the subsequent layer.}{fig:mlp}
+
+This theoretical foundation for a single node (or neuron, hence \textit{neural} networks) allows us to build an MLP, as depicted in \Cref{fig:mlp}. In that figure, we see a multi-layer perceptron with three layers, a two-dimensional input, and a one-dimensional output. All the layers between the input and the output are called \textit{hidden layers}. MLPs have two main features: firstly, all the nodes in one layer are connected to all the nodes in the subsequent layer. Thus, the contribution of each link is mediated by the weight $\vect{W}_l$. Secondly, there are no backward connections\sidenote{The output of layer $i$ does not return to layer $i-1$ in any way.}, hence the name \textit{feed-forward neural networks}.
+
+Multilayer perceptrons have demonstrated remarkable performance on a variety of tasks, which has led to their becoming the fundamental component of deep learning. Nevertheless, their application to computer vision is not straightforward for several reasons. Images are composed of a set of pixels that do not exist independently from each other. \jgt{Nearby pixels} are more strongly correlated because they are more likely to belong to the same object. From \Cref{fig:mlp}, we can see that MLPs take vectors as inputs, but spatial information is lost once an image is transformed into a flattened vector. Moreover, even images that are considered low-resolution contain over 10,000 pixels\sidenote{An image that is 100 pixels in width and height, for example.}, and, as explained above, MLP layers are fully connected. Consequently, the number of parameters grows linearly with the number of nodes. Therefore, computation and storing space turn prohibitively expensive as the neural network grows. On the same line, such high dimensional spaces might suffer from the curse of dimensionality\sidedef{curse of dimensionality}{As the number of dimensions increases, so does the number of configurations. Thus, the amount of information covered by an observation decreases~\cite{bellman1957dynamic}.}, whereby the information supplied by each data point decreases.
+
+\subsubsection{Convolutional neural networks (CNNs)} Devised by \yeartextcite{lecun1998gradient}, CNNs are a type of neural network designed for the processing of data with spatial correlation, such as time series (1D) or images (2D). They owe their name to the convolution operation, which represents the fundamental operation of these networks. Convolution is an operation on two functions $x(t)$ and $w(t)$ typically denoted as $(x\ast w)(t)$. It is defined as
+
+\begin{equation}
+    (x\ast w)(t)\coloneqq \int x(\tau)w(t-\tau)d\tau,
+    \label{eq:convolution}
+\end{equation}
+where the limits of integration are defined by the support of the functions $x(t)$ and $w(t)$. 
+
+We can now interpret an image as a discrete two-dimensional function of the spatial position $x(i,j): \N^2\rightarrow [0, 255]^3$, whereby each pixel position returns a color intensity in RGB8. In this case, the function $w$ must also be two-dimensional and discrete. Thus, \Cref{eq:convolution} changes to:
+
+\begin{equation}
+    (x\ast w)(i,j)\coloneqq \sum_m\sum_n x(m,n) w(i-m, j-n).
+    \label{eq:convolution_2d}
+\end{equation}
+
+This is the operation performed by convolutional layers in CNNs, where $x$ represents the image and the function $w$ is called \textit{kernel}\sidenote{Or filter. They will be treated as synonyms along this text}. The output is called \textit{feature map}. Usually, the kernel will be smaller than the image, and its parameters will be learned.
+
+From \Cref{eq:convolution_2d}, we notice that opposite to MLPs, convolutional layers only affect the neighbors of the pixel $(i, j)$, favoring spatial relations. Also, for this reason, the number of parameters is significantly lower. Furthermore, the convolutional setup enables the usage of variable size images. 
+
+The output of a two-dimensional convolutional layer is also two-dimensional. In this case, how do we output a single value prediction in this case, as done in \Cref{fig:mlp}? The answer is \autoindex{pooling layers}. These layers summarize the features in patches of the feature map, effectively downsampling it by the size of their kernel. The most common pooling operations are average pooling and maximum pooling, which average and take the maximum value of a patch, respectively.
+
+\textfig[t]{0.8}{Figures/cnn_image.pdf}{\JGT{Convolutional layer}}{fig:cnn_image}
+
+CNNs are usually not fully convolutional, meaning that after a series of convolutional layers, they contain a global pooling operation that transforms the feature maps into a flattened vector, which can be input to the MLP responsible for the final prediction. In \Cref{chapter:oct}, we will dive deeper into the different ways of performing this operation. 
+
+\subsubsection{Attention networks}
+Attention networks have rapidly become the cornerstone for large models due to their impressive performance and generalization capabilities. They are composed of MLPs whose results are combined in a distinct manner from the feedforward previously described. Given their relevance in the current deep learning landscape and their ramifications to different modalities (language and vision, particularly), attention networks will be the subject of a dedicated section (\Cref{sec:attention}).
+
+\subsection{Key Concepts in Deep Learning for Vision}
+%   Key Concepts in ML for Vision Applications - feature extraction, model architectures (bridge for the next), learning paradigms (introduce only), evaluation metrics, 
+We have seen that models are one of the fundamental building blocks of deep learning. As explained above, models contain parameters that, when properly tuned, can represent a variety of functions. The reader may now wonder how these parameters are tuned, and has probably noticed that we used the word \textit{``learn''} when referring to this procedure in \Cref{subsec:deep_learning}. Machine learning models, and deep learning as an extension, are algorithms with the peculiarity that they learn from experience\sidecitation{mitchell1997machine}{A computer program is said to learn from experience E with respect to some class of tasks T and performance measure P, if its performance at tasks in T, as measured by P, improves with experience E.}, understanding experience as a set of examples or data points that model a task. A task is an activity that the algorithm has to accomplish, and it may take multiple forms: classification, regression, etc\sidenote{See~\cite{Goodfellow-et-al-2016} for a more thorough description of possible tasks.}. In the context of vision, images of cats and dogs with a classification label may constitute examples from an experience and a task.
+
+The model weights are, therefore, tuned to produce an output that closely resembles the examples. Quantitatively, this is measured by a performance metric. In theory, the model weights could be modified to maximize this performance metric, but this approach would be suboptimal for a variety of reasons. First, \textit{learning} from data means not only being able to reproduce that data verbatim, but also reacting effectively when new, unseen data is presented\sidenote{Assuming that new data follows the i.i.d conditions, \ie, examples are independent and training and testing sets are identically distributed.}. In other words, the model has to be capable of generalizing.
+
+\subsubsection{Maximum Likelihood Estimation (MLE)}
+One common approach is to utilize \autoindex{Maximum Likelihood Estimation} (MLE), a method for estimating the parameters of a model in such a way that the likelihood of the observed data is maximized. Formally, let $\vect{x}^{(i)}$ be an example drawn independently from $\mathbb{X}$ and $f(\vect{x};\vect{\theta})$ a model that parametrizes a distribution $p_{model}(\vect{x};\vect{\theta})$ which estimates the true probability $p_{data}(\vect{x})$. The maximum likelihood estimator $\vect{\theta}^*_{ML}$ is given by:
+\begin{equation}
+    \vect{\theta}^* = \argmax_\theta p_{model}(\mathbb{X};\vect{\theta}) = \argmax_\theta \prod_{i=1}^m p_{model}(\vect{x}^{(i)};\vect{\theta}),
+\end{equation}
+which intuitively means selecting the network parameters $\vect{\theta}^*$ that make the observed data most probable. This equation can be further transformed to use the empirical distribution\sidenote{The logarithm converts the product into a sum without changing the $\argmax$ result.}:
+\begin{equation}
+    \vect{\theta}^* = \argmax_\theta \mathbb{E}_{\vect{x}\sim \hat{p}_{data}} \log p_{model}(\vect{x};\vect{\theta}).
+    \label{eq:mle}
+\end{equation}
+It can be proved\sideauthorcite{Goodfellow-et-al-2016} that \Cref{eq:mle} tries to match the model distribution $p_{model}$ to the empirical distribution $\hat{p}_{data}$.
+
+The process to obtain $\vect{\theta}^*$ involves, therefore minimizing the loss function, or computing its derivative with respect to each parameter $\theta_i$. 
+
+
+In practice, we will designate the objective to maximize as \textit{loss function} and will denote it as $\mathcal{L}$ along this thesis. Moreover, in the field of machine learning, the maximization problem is typically converted into a minimization. Thus, \Cref{eq:mle} results:
+\begin{equation}
+    \vect{\theta}^* = \argmin_\theta \mathbb{E}_{\vect{x}\sim \hat{p}_{data}} \mathcal{L}(\theta).
+\end{equation}
+
+
+
+
+
+
+% In vision, experience = images
+% Gradient descent
+

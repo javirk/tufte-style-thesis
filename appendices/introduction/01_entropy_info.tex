@@ -1,0 +1,45 @@
+\section{Information Entropy for Label Information Estimation}
+
+Let us define $X$ as a discrete random variable that can take values $x$ representing the different discrete labels in a machine learning problem, distributed according to $p: x\rightarrow [0, 1]$ such that $p(x)=\mathbb{P}[X=x]$. We can estimate the amount of information conveyed by a single label using information entropy, denoted by $H(X)$:
+\begin{equation}
+    H(X)=-\sum_{x\in X} p(x)\log_b p(x),
+    \label{eq:entropy}
+\end{equation}
+which represents the average uncertainty when label $x$ is presented. Intuitively, a larger $H(X)$ means that one would need a larger space to store the amount of information in $X$. When $b=2$, this information entropy is given in bits.
+
+\subsection{Image Classification}
+For multi-class image classification, when only one label is allowed per image, $X$ can take one discrete value per image. Therefore, in a balanced dataset with $C$ classes, $p(x)=\dfrac{1}{C}$:
+\[
+H_{cls}(X) = - \sum_i^C \dfrac{1}{C}\log_2\dfrac{1}{C},
+\]
+which for $C=10$ classes, results in $H_{cls}(X)\approx \qty{3.32}{\bit}$.
+
+\subsection{Fine-Grained Image Segmentation}
+Image segmentation can be understood in a variety of ways. Here, we will focus on fine-grained image segmentation, \ie classifying every pixel into a class. Once more, we can use \Cref{eq:entropy} to estimate the information entropy of each pixel $H_{pixel}(X)$, and then multiply by the number of pixels to compute the total entropy of the annotation. For an image with width $W$ and height $H'$, this results in:
+\begin{equation}
+    H_{seg}(X) = W\times H' \times H_{pixel}(X),
+    \label{eq:seg_entropy}
+\end{equation}
+which corresponds to \qty{33}{\kilo\bit} when $W=100$ and $H'=100$ pixels.
+
+This provides us with a higher bound for information entropy in image segmentation. One could argue, however, that segmentation masks are usually not annotated pixel by pixel, but with polygons or drawings that group a number of pixels that belong to the same class. Nonetheless, computing this value taking this into account turns more complicated.
+
+\subsection{Polygon-Based Image Segmentation}
+Let $P$ be the number of polygons to segment an image and $N$ the average number of vertices in each polygon $p$. Each vertex is represented by two values $(x, y)$ representing its position in an image with width $W$ and height $H'$. This results in $H_{vertex}=\log_2(W) + \log_2(H)$\unit{\bit} for a single vertex. A polygon is defined as a group of vertices and has an associated class\sidenote{We could also assign a class to each vertex, but that would produce a larger information entropy, and it would not be accurate.}, therefore:
+\begin{equation*}
+    H_{polygon}(X) = N(\log_2(W) + \log_2(H)) + \log_2(C)
+\end{equation*}
+Hence, for $P$ polygons, this results in:
+\begin{equation}
+    H_{pol-seg}(X) = P[N(\log_2(W) + \log_2(H)) + \log_2(C)].
+    \label{eq:polyseg_entropy}
+\end{equation}
+It can be proved that $H_{seg}(X) > H_{pol-seg}(X)$ when $P$ and $N$ are sufficiently small compared to the image size.
+
+\subsection{Object Detection with Bounding Boxes}
+Object detection with bounding boxes is a special case of polygon-based image segmentation in which each polygon has four vertices ($N=4$):
+\begin{equation}
+    H_{det}(X) = O\times [4\times(\log_2(W) + \log_2(H)) + \log_2(C)],
+    \label{eq:bbox_entropy}
+\end{equation}
+where $O\equiv P$ represents the number of objects in this case. For an image with $W=100$ and $H'=100$ pixels and $O=5$, this results in $H_{det}(X)=\qty{282}{\bit}$.
