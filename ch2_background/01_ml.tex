@@ -9,11 +9,11 @@ The field of computer vision saw its birth during the second half of the twentie
 
 \subsection{Deep Learning in Computer Vision}
 \label{subsec:deep_learning}
-At first sight, the term ``Deep learning'' may sound pretentious. Why is it called ``Deep'' and what differentiates it from ``Machine learning''?  As it has been mentioned above, deep learning refers to a subset of techniques within the machine learning paradigm. These techniques have shown such unprecedented capabilities in world understanding that have led to the emergence of a new field. What distinguishes them from traditional machine learning algorithms is the use of neural networks with multiple layers. The term ``deep'' alludes to the stacking of these layers.
+At first sight, the term ``Deep learning'' may sound pretentious. Why is it called ``Deep'' and what differentiates it from ``Machine learning''?  As it has been mentioned above, deep learning refers to a subset of techniques within the machine learning paradigm. These techniques have shown such unprecedented capabilities in world understanding that have led to the emergence of a new field. However, what distinguishes them from traditional machine learning algorithms is the use of neural networks with multiple layers. The term ``deep'' alludes to the stacking of these layers.
 
 Neural networks lie, therefore, at the core of deep learning. Formally, these are functions $f$ that transform a set of inputs $\vect{x}$ into a set of outputs $\vect{y}$ making use of their parameters $\vect{\theta}$: 
 \begin{equation*}
-    \vect{y} = f(\vect{x};\vect{\theta}).
+    \vect{y} = f(\vect{x};\vect{\theta}), f: \real^N \rightarrow \real^M.
 \end{equation*}
 
 Thanks to their parameters, they work as universal function approximators\sideauthorcite{cybenko1989approximation}, meaning that with appropriate weights, they can represent a variety of functions. The goal of neural networks is to learn these weights.
@@ -50,50 +50,135 @@ We can now interpret an image as a discrete two-dimensional function of the spat
     \label{eq:convolution_2d}
 \end{equation}
 
-This is the operation performed by convolutional layers in CNNs, where $x$ represents the image and the function $w$ is called \textit{kernel}\sidenote{Or filter. They will be treated as synonyms along this text}. The output is called \textit{feature map}. Usually, the kernel will be smaller than the image, and its parameters will be learned.
+This is the operation performed by convolutional layers in CNNs, where $x$ represents the image and the function $w$ is called \textit{kernel}\sidenote{Or filter. They will be treated as synonyms along this text}. The output is named \textit{feature map}. Usually, the kernel will be smaller than the image, and its parameters will be learned.
 
 From \Cref{eq:convolution_2d}, we notice that opposite to MLPs, convolutional layers only affect the neighbors of the pixel $(i, j)$, favoring spatial relations. Also, for this reason, the number of parameters is significantly lower. Furthermore, the convolutional setup enables the usage of variable size images. 
 
-The output of a two-dimensional convolutional layer is also two-dimensional. In this case, how do we output a single value prediction in this case, as done in \Cref{fig:mlp}? The answer is \autoindex{pooling layers}. These layers summarize the features in patches of the feature map, effectively downsampling it by the size of their kernel. The most common pooling operations are average pooling and maximum pooling, which average and take the maximum value of a patch, respectively.
+The output of a two-dimensional convolutional layer is also two-dimensional. In this case, how do we output a single value prediction, as done in \Cref{fig:mlp}? The answer is pooling layers\index{pooling layer}\JGT{cite?}. These layers summarize the features in patches of the feature map, effectively downsampling it by the size of their kernel. The most common pooling operations are average pooling and maximum pooling, which average and take the maximum value of a patch, respectively.
 
-\textfig[t]{0.8}{Figures/cnn_image.pdf}{\JGT{Convolutional layer}}{fig:cnn_image}
+\textfig[t]{0.8}{Figures/cnn_image.pdf}{Illustration of a convolutional layer. The kernel slides over the input image and detects specific patterns, such as edges or textures. The resulting feature map highlights the presence of these patterns across the input image.}{fig:cnn_image}
 
-CNNs are usually not fully convolutional, meaning that after a series of convolutional layers, they contain a global pooling operation that transforms the feature maps into a flattened vector, which can be input to the MLP responsible for the final prediction. In \Cref{chapter:oct}, we will dive deeper into the different ways of performing this operation. 
+CNNs are usually not fully convolutional, meaning that after a series of convolutional layers, they contain a global pooling operation that transforms the feature maps into a flattened vector, which can be input to the MLP responsible for the final prediction. In \Cref{chapter:oct}, we will dive deeper into the different ways of performing this operation. \JGT{Partial convolutions!}
 
 \subsubsection{Attention networks}
+\label{subsub:attention}
 Attention networks have rapidly become the cornerstone for large models due to their impressive performance and generalization capabilities. They are composed of MLPs whose results are combined in a distinct manner from the feedforward previously described. Given their relevance in the current deep learning landscape and their ramifications to different modalities (language and vision, particularly), attention networks will be the subject of a dedicated section (\Cref{sec:attention}).
 
 \subsection{Key Concepts in Deep Learning for Vision}
 %   Key Concepts in ML for Vision Applications - feature extraction, model architectures (bridge for the next), learning paradigms (introduce only), evaluation metrics, 
 We have seen that models are one of the fundamental building blocks of deep learning. As explained above, models contain parameters that, when properly tuned, can represent a variety of functions. The reader may now wonder how these parameters are tuned, and has probably noticed that we used the word \textit{``learn''} when referring to this procedure in \Cref{subsec:deep_learning}. Machine learning models, and deep learning as an extension, are algorithms with the peculiarity that they learn from experience\sidecitation{mitchell1997machine}{A computer program is said to learn from experience E with respect to some class of tasks T and performance measure P, if its performance at tasks in T, as measured by P, improves with experience E.}, understanding experience as a set of examples or data points that model a task. A task is an activity that the algorithm has to accomplish, and it may take multiple forms: classification, regression, etc\sidenote{See~\cite{Goodfellow-et-al-2016} for a more thorough description of possible tasks.}. In the context of vision, images of cats and dogs with a classification label may constitute examples from an experience and a task.
 
-The model weights are, therefore, tuned to produce an output that closely resembles the examples. Quantitatively, this is measured by a performance metric. In theory, the model weights could be modified to maximize this performance metric, but this approach would be suboptimal for a variety of reasons. First, \textit{learning} from data means not only being able to reproduce that data verbatim, but also reacting effectively when new, unseen data is presented\sidenote{Assuming that new data follows the i.i.d conditions, \ie, examples are independent and training and testing sets are identically distributed.}. In other words, the model has to be capable of generalizing.
+The model weights are, therefore, tuned to produce an output that closely resembles the examples. Quantitatively, this is measured by a performance metric. In theory, the model weights could be modified to maximize this performance metric, but this approach would be suboptimal for a variety of reasons. Primarily, \textit{learning} from data means not only being able to reproduce that data verbatim, but also reacting effectively when new, unseen data is presented\sidenote{Assuming that new data follows the i.i.d conditions, \ie, examples are independent and training and testing sets are identically distributed.}. In other words, the model has to be capable of generalizing.
 
 \subsubsection{Maximum Likelihood Estimation (MLE)}
-One common approach is to utilize \autoindex{Maximum Likelihood Estimation} (MLE), a method for estimating the parameters of a model in such a way that the likelihood of the observed data is maximized. Formally, let $\vect{x}^{(i)}$ be an example drawn independently from $\mathbb{X}$ and $f(\vect{x};\vect{\theta})$ a model that parametrizes a distribution $p_{model}(\vect{x};\vect{\theta})$ which estimates the true probability $p_{data}(\vect{x})$. The maximum likelihood estimator $\vect{\theta}^*_{ML}$ is given by:
+One common approach is to utilize \autoindex{Maximum Likelihood Estimation} (MLE), a method for estimating the parameters of a model in such a way that the likelihood of the observed data is maximized. Formally, let $\vect{x}^{(i)}$ be an example drawn independently from $\mathbb{X}$, and $f(\vect{x};\vect{\theta})$ a model that parametrizes a distribution $p_{model}(\vect{x};\vect{\theta})$ which estimates the true probability $p_{data}(\vect{x})$. The maximum likelihood estimator $\vect{\theta}^*_{ML}$ is given by:
 \begin{equation}
     \vect{\theta}^* = \argmax_\theta p_{model}(\mathbb{X};\vect{\theta}) = \argmax_\theta \prod_{i=1}^m p_{model}(\vect{x}^{(i)};\vect{\theta}),
 \end{equation}
-which intuitively means selecting the network parameters $\vect{\theta}^*$ that make the observed data most probable. This equation can be further transformed to use the empirical distribution\sidenote{The logarithm converts the product into a sum without changing the $\argmax$ result.}:
+which intuitively means selecting the network parameters $\vect{\theta}^*$ that make the observed data most probable. This equation can be further transformed to use the empirical distribution\sidenote{The logarithm transforms the product into a sum without altering the result of $\argmax$. This enables the use of the expected value.}. Moreover, in the field of machine learning, the maximization problem is typically converted into a minimization:
 \begin{equation}
-    \vect{\theta}^* = \argmax_\theta \mathbb{E}_{\vect{x}\sim \hat{p}_{data}} \log p_{model}(\vect{x};\vect{\theta}).
+    \vect{\theta}^* = \argmin_\theta \mathbb{E}_{\vect{x}\sim \hat{p}_{data}} [- \log p_{model}(\vect{x};\vect{\theta})].
     \label{eq:mle}
 \end{equation}
-It can be proved\sideauthorcite{Goodfellow-et-al-2016} that \Cref{eq:mle} tries to match the model distribution $p_{model}$ to the empirical distribution $\hat{p}_{data}$.
+It can be proved\sideauthorcite{Goodfellow-et-al-2016} that \Cref{eq:mle} tries to match the model distribution $p_{model}$ to the empirical distribution $\hat{p}_{data}$. 
 
-The process to obtain $\vect{\theta}^*$ involves, therefore minimizing the loss function, or computing its derivative with respect to each parameter $\theta_i$. 
-
-
-In practice, we will designate the objective to maximize as \textit{loss function} and will denote it as $\mathcal{L}$ along this thesis. Moreover, in the field of machine learning, the maximization problem is typically converted into a minimization. Thus, \Cref{eq:mle} results:
+From now on, we will designate the objective to minimize as \textit{cost function}, which can be expressed as the sum of individual \textit{loss functions}\sidedef{Loss function}{Function that measures the discrepancy between the predicted value and the target. It provides a single real number that represents the model's performance, which is minimized during training.} over all training examples ($\mathcal{L}$):
 \begin{equation}
-    \vect{\theta}^* = \argmin_\theta \mathbb{E}_{\vect{x}\sim \hat{p}_{data}} \mathcal{L}(\theta).
+    J(\vect{\theta}) = \mathbb{E}_{\vect{x}\sim \hat{p}_{data}} [\mathcal{L}(\vect{\theta})]
 \end{equation}
 
+The process to obtain $\vect{\theta}^*$ involves minimizing the per-sample loss function, or computing its derivative with respect to each parameter $\theta_i$. Given the complexity of neural networks, this process, referred to as \textit{optimization}, cannot be achieved analytically. A number of methods have been proposed to address this issue, and all of them are based on repeatedly taking steps in the opposite direction of the gradient of the loss function at the current point, which gives rise to the term \textit{gradient descent}. The detailed characterization of these methods is beyond the scope of this thesis, and we will only mention them briefly here. SGD (Stochastic Gradient Descent) or ADAM\sideauthorcite{kingma2014adam} are two of the most popular gradient descent optimization algorithms.
 
+\subsubsection{Hyperparameters}
+Optimization is regulated by a series of parameters that are not optimized by the training algorithm. These parameters are external to the model, hence their designation as hyperparameters\sidedef{hyperparameter}{In contrast to a model parameter, an external variable that is not tuned by the optimizer and that guides specific details of the learning process.}. These hyperparameters can take on a variety of forms, including the learning rate applied to the optimizer, the optimizer algorithm itself, or even the model choice (depth or dimensions of the neural network). All of them share the common characteristic that they are not differentiable and, therefore, not optimizable with gradient descent.
 
+\subsubsection{Regularization}
+Neural networks are universal function approximators, but their ability to fit complex functions depends on their complexity. This capability is referred to as capacity\sidedef{Capacity of a model}{Ability of a model to fit a variety of functions. It is a synonym for complexity.}. Higher capacity is not necessarily better, as such models could memorize properties of the training set, leading to overfitting. The capacity of a model can be controlled either by changing the hypothesis space for $f$\sidenote{\ie~modifying the neural network architecture in deep learning.}, or by adding regularization to the learning algorithm.
 
+The objective of regularization is to encourage the model to learn the underlying features of the data rather than memorizing it. There are various methods for achieving this, with early stopping or dropout techniques falling within this category. Explicit regularization, however, is of special relevance to this thesis\sidenote{See \Cref{sec:oct_method}.}. Here, a term is added to the loss function of the optimization problem in order to constrain or penalize possible solutions. Typically, this is observed in L1 or L2 regularization, where certain weight configurations are penalized, but it is also used in other contexts to achieve various goals. For example, the loss function to train variational autoencoders incorporates a term that penalizes latent distributions that are far from standard normal distributions\sideauthorcite{kingma2013auto}.
 
+\subsubsection{Feature extraction}
+%\JGT{An image has many pixels (a lot of fine-grained information). It's better to reduce it by compressing it into a lower-dimensional space. Downstream tasks (define that term) are easier this way. Explain also how feature extraction is done in practice and why this is relevant for us (with big datasets you can train a good feature extractor that is then finetuned with a small dataset).}
 
-% In vision, experience = images
-% Gradient descent
+We have seen in the previous sections that neural networks generate feature maps that are fed to the MLP classifier, which is responsible for the final prediction. These feature maps are typically less complex than the input, with a lower number of spatial dimensions but a higher number of channels. They encode different aspects of the original input\sidenote{The correspondence of feature maps to human-perceivable features is an open question in the research community. Some works attempt to build a disentangled and interpretable space~\cite{karras2019style}.}. The reduction in complexity facilitates the task of the classifier, which maps the features to the task's classes. For this reason, a powerful encoder (\ie~one that is able to disentangle meaningful features from the input for a variety of tasks) is \jgt{preferred} over one tailored to a specific dataset, domain, or task. This process is referred to as feature extraction\sidedef{Feature extraction}{Process of converting raw data into lower dimensional space with a disentangled representation.}.
 
+Typically, the feature extractor is trained together with the classifier, which is why larger datasets and extended training periods generally result in a more robust and effective feature extractor. Therefore, pretrained models are often utilized as feature extractors, because they have already been trained on large amounts of data, providing a strong foundation of learned features that can be fine-tuned for specific tasks with relatively smaller datasets. Traditionally, ImageNet\sideauthorcite{imagenet_cvpr09} has served as a pretraining dataset, as it is composed of over one million images.
+
+It is important to note that joint training with the classifier is not the only approach to obtaining a powerful classifier. Other strategies, particularly those included in the \textit{semi-supervised} and \textit{unsupervised} learning paradigms, are specifically designed for this task\sidenote{See \Cref{sec:training_paradigms} for a detailed description of the different learning paradigms and their goals.}
+
+\subsection{Performance metrics}
+
+\JGT{An example or something before starting}
+Once a model is trained, one has to assess whether its performance is satisfactory. There exist countless different metrics serving diverse purposes, and a detailed characterization of them could fill another dissertation. Hence, we will briefly explain only the metrics that will be directly relevant to the present text because they will be used in the assessment of the proposed methods.
+
+In an image classification problem, a model predicts whether or not an object is present in the image\sidenote{Or objects. This discussion holds as well for multilabel and multiclass scenarios.}. The model, therefore, can either align with reality, agreeing with the presence (or not) of the object, or disagree, predicting that the object is present when it is not, or vice-versa. This opens up four possible scenarios, depending on the combination of the model's prediction and reality, as shown in \Cref{tab:confusion_matrix_background}. In that table, also called \textit{confusion matrix} when it contains quantities, we see that True Positives (TP) and True Negatives (TN) correspond to the correct predictions of the model. At the same time, False Positives (FP) and False Negatives (FN) denote the incorrect predictions.
+
+\begin{margintable}[]\small
+\caption{Confusion matrix for a binary classification model showing the relationship between the actual labels and the model's predictions. T and F are acronyms for True and False, respectively. P and N, for positive and negative.}
+\label{tab:confusion_matrix_background}
+\begin{tabular}{cc|cc}
+ &  & \multicolumn{2}{c}{\textbf{Model}} \\
+ &  & + & - \\ \hline
+\multirow{2}{*}{\rotatebox[origin=c]{90}{\textbf{Actual}}} & + & TP & FN \\
+ & - & FP & TN \\ \hline
+\end{tabular}
+\end{margintable}
+
+The previous quantities may be combined in multiple ways to produce metrics. Most interesting to the present work are sensitivity (or recall), precision, specificity, and false positive rate:
+\begin{itemize}
+    \item Sensitivity or recall: Probability of a positive prediction given that the ground truth is truly positive.
+    \begin{equation*}
+        \text{Recall} = \dfrac{TP}{TP + FN}
+    \end{equation*}
+    \item Precision: Fraction of relevant predictions among the positively labeled instances.
+    \begin{equation*}
+        \text{Precision} = \dfrac{TP}{TP + FP}
+    \end{equation*}
+    \item Specificity: Probability of a positive test result given that the ground truth is truly positive.
+    \begin{equation*}
+        \text{Specificity} = \dfrac{TN}{FP + TN}
+    \end{equation*}
+    \item False positive rate (FPR): Ratio of negative events incorrectly classified as positive (false positives) to the total number of actual negative events. It is related to specificity: 
+    \begin{equation*}
+        \text{FPR} = 1 - \text{Specificity} = \dfrac{FP}{FP + TN}
+    \end{equation*}
+\end{itemize}
+
+When considered individually, these metrics are not particularly useful, as they could be easily tricked. One may obtain near-perfect precision by retrieving very few objects, but all of them correctly identified\sidenote{The number of TP will increase while keeping FP low and making precision close to 1.}. Likewise, perfect recall can be obtained with a model that outputs 1 regardless of the input\sidenote{In this way, the number of FN will be zero, leading thus to a recall of 1.}. Following this thread, one can argue that precision and recall are inversely related, and a model that could score high in both of them would be desirable. The \textit{\autoindex{precision-recall curve}}, as illustrated in \Cref{fig:metrics_curves}, precisely fulfills this function by expressing precision as a function of recall\sidenote{One should read this plot as \textit{"precision at a recall of X"}.}. An oracle\sidedef{Oracle}{In machine learning, a source that can provide the correct output for any input.} would have a precision-recall curve that would pass over the point $(1,1)$. This is quantified via the \textit{\autoindex{average precision}} (AP), defined as the area under the precision-recall curve:
+\begin{equation*}
+    \text{AP} = \sum_n (R_n - R_{n-1})P_n.
+\end{equation*}
+
+\textfig[t]{1}{Figures/metrics_curves.pdf}{Average-precision and ROC curves for a binary classification model. The dashed line on the ROC Curve corresponds to the performance of a random classifier.}{fig:metrics_curves}
+
+% ROC = TPR (Recall) against FPR
+A similar argument can be applied to recall and the false positive rate. Since false positives correspond to mispredictions, the FPR of a model is better the lower its value. This can be achieved by predicting the label negative for any input, but such a predictor would obtain a disastrous recall score. In the same vein as the precision-recall curve, the \textit{receiver operating characteristic curve} (\textit{\autoindex{ROC}}) plots recall (sometimes referred to as True Positive Rate) as a function of FPR, as illustrated on the right side of \Cref{fig:metrics_curves}. The ROC curve is usually depicted with an additional diagonal line that corresponds to the performance of a random classifier. An ROC curve that falls under this line performs worse than a random. The \textit{Area Under the ROC Curve} (ROC AUC) is the quantitative metric:
+\begin{equation*}
+    \text{ROC AUC} = \sum_n (FPR_n - FPR_{n-1})R_n
+\end{equation*}
+
+It is important to realize that a high value of ROC AUC does not provide any information about precision. For this reason, average precision and ROC AUC should be used together to characterize a classifier. In \Cref{chapter:oct}, we will apply both metrics to quantify the performance of a biological marker localizer in OCT scans.
+
+\JGT{A bridge or something?}The metrics that we have introduced so far are focused on image classification\sidenote{Albeit precision and recall can be applied to bounding box image detection with slight modifications.}, but what happens with image segmentation, for instance? Here, the model's output is a label map with the same dimensions as the original image, which is compared to the corresponding ground truth label. Although it would be fair to regard this as a pixel classification problem and hence use the same metrics averaged over all the pixels, this would often lead to errors due to the imbalance of classes within the images. In a binary segmentation task, for instance, where the pixels are classified in either background or foreground, it is expected to find more pixels that belong to the background. These would raise metrics like specificity or accuracy\sidenote{Not introduced before, accuracy is defined as $$\text{Acc.} = \dfrac{TP+TN}{TP+TN+FP+FN}$$} but would not reflect the real performance of the model.
+
+The \textit{\autoindex{Intersection Over Union}} (IoU), or Jaccard Index\sideauthorcite{jaccard1902lois}, has been widely adopted as a metric for image segmentation. It quantifies the percentage overlap between the target mask\sidedef{(segmentation) mask}{Multi-channel image where each pixel indicates the category to which it belongs. Also called \textit{label map}.} and the prediction output. As its name suggests, it is equal to the ratio of the common pixels (intersection) between both masks and the total number of pixels (union):
+\begin{equation*}
+    \text{IoU}(A,B) = \dfrac{A\cap B}{A \cup B},
+\end{equation*}
+which for binary segmentation takes the form:
+\begin{equation}
+    \text{IoU} = \dfrac{TP}{TP + FP + FN}.
+    \label{eq:iou}
+\end{equation}
+The analysis of \Cref{eq:iou} can help us understand the main drawback of IoU, namely that it over-penalizes small objects. Indeed, when the number of positive pixels in the target mask is low, a minor increase in the false predictions of the model can result in a significant decline in IoU.
+ 
+Closely related to IoU, the \textit{\autoindex{Dice} coefficient}\sideauthorcite{dice1945measures}\sidenote{Also called Dice score, or simply Dice.} quantifies a similar metric but tries to avoid the pitfalls of IoU. The Dice score is obtained by taking the harmonic mean of precision and recall, and it is therefore equivalent to the F1 score in classification. For binary segmentation, this is:
+\begin{equation*}
+    \text{Dice Score} = \dfrac{2TP}{2TP + FP + FN},
+    \label{eq:dice}
+\end{equation*}
+which corresponds to dividing twice the area of intersection and the total area, as opposed to the union.
+
+By construction, both IoU and Dice score are \jgt{confined} between 0 and 1. Furthermore, it is particularly relevant that IoU is strictly less than or equal to the corresponding Dice Score for the same pair of masks. This confirms the intuition that IoU over-penalizes small objects. In practice, since both metrics are closely related, the election of one over the other obeys simply the preference of the author. 
+
+Dice score will become relevant in \Cref{chapter:fullweak}, where we will present a method to estimate it for untrained models based on the number of training samples and previous performance. On the other hand, the segmentation results in \Cref{chapter:samda} will be expressed in terms of IoU.

@@ -406,6 +406,21 @@
     \end{center}
 }
 
+\newcommand{\sectionlinenew}{%
+  \noindent
+  \begin{center}
+  {\color{burgundy}
+    {%
+    {\begin{tikzpicture}
+
+    \draw[burgundy, thick] (-4,0) -- (-0.25,0);
+    \draw[burgundy, thick] (0.25,0) -- (4,0);
+    \filldraw[burgundy] (0,0) circle (1pt);
+    
+    \end{tikzpicture}}}}%
+    \end{center}
+}
+
 % 	Doctoral thesis (subsubtitle)
 \newcommand\type[1]{\renewcommand\@type{#1}}
 \newcommand\@type{Doctoral thesis}

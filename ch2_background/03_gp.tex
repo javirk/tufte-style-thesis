@@ -1,0 +1,59 @@
+% Gaussian Processes
+%   Basics of Gaussian Processes
+%   Applications of Gaussian Processes
+
+\section{Estimating with Uncertainty: Gaussian Process Regression}
+Suppose you need to predict the temperature at multiple geographical locations using a limited set of measurements taken periodically every week. You make sure that the measuring device is sufficiently precise and that you are following a procedure that minimizes systematic errors\sidedef{Systematic error}{Consistent deviation of a measurement from its true value. Contrast with random noise.}. However, you notice that the measurements are rather noisy, and quickly realize that the underlying property (temperature) is intrinsically noisy because it depends on a number of variables that fluctuate with high frequency. For these reasons, you come to the conclusion that instead of predicting a single temperature point, it is more sensible to estimate this value along with a confidence interval. 
+
+\JGT{LINK!} Gaussian Process Regression was first introduced by Danie G. Krige in 1951\sideauthorcite{krige1951statistical} and later formalized by \yeartextcite{matheron1962traite}. It provides a non-parametric extension to linear regression and is equipped with an uncertainty estimation. Furthermore, Gaussian process regression gives the Best Linear Unbiased Predictor (BLUP)\sidenote{See \Cref{app:blup} for the mathematical proof of this statement.}\sidedef{Best Linear Unbiased Predictor}{Among a set of unbiased predictors, the one with the lowest variance.}. They have been applied to several fields - from the original application to geostatistics to disease progression\sidecite{lorenzi2019probabilistic}, predictive soil modeling\sidecite{gonzalez2007creating} or segmentation performance prediction\sidecite{Tejero_2023_CVPR}.
+
+In the following sections, we will first explain multivariate Gaussian processes. This will be followed by a discussion on the advantages of Gaussian processes over traditional parametric models. Finally, we will see how Gaussian processes can be used to tackle the aforementioned example of temperature prediction.
+
+% Advantages over parametric models: They treat data as random variables within a gaussian distribution.
+% In contrast, a Gaussian Process can model the temperature as a continuous function across space, inherently incorporating the uncertainty due to sparse data. By treating the temperature at each location as a random variable within a joint Gaussian distribution, GPs provide a robust framework for making predictions and quantifying the confidence in these predictions. This approach not only accounts for the observed data but also allows for incorporating prior beliefs about the spatial correlation of temperatures, leading to more accurate and reliable estimates.
+
+
+\subsection{Multivariate Gaussian Processes}
+
+The omnipresent univariate Gaussian distribution describes a single random variable that follows a normal distribution. It is characterized by its mean $\mu$ and variance $\sigma^2$, and its probability density function (PDF)\sidedef{Probability Density Function}{\jgt{TODO}} is given by:
+\begin{equation*}
+    f(x) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left(-\frac{(x - \mu)^2}{2\sigma^2}\right).
+\end{equation*}
+This is usually denoted as $N(\mu, \sigma^2)$, thus a random variable $X$ that is normally distributed is $X\sim N(\mu, \sigma^2)$. The normal distribution is relevant and applicable in many fields due to the central limit theorem\sidedef{Central limit theorem}{\jgt{TODO}}, which states that the average of a large number of independent and identically distributed random variables is a random variable whose distribution converges to a normal distribution.
+
+A generalization of this concept to multiple variables leads to the multivariate Gaussian distribution. Let $\vect{X} \in \real^d$ be a random variable of $d$ dimensions that follows a Gaussian distribution. Because $X$ has multiple dimensions, the distribution will be multivariate and will have a mean vector $\vect{\mu}\in\real^d$ and a covariance matrix $\vect{\Sigma}\in\real^{d\times d}$. Hence, the probability density function will be:
+\begin{equation}
+    f(\vect{x}) = \frac{1}{\sqrt{(2\pi)^n |\vect{\Sigma}|}} \exp\left(-\frac{1}{2}(\vect{x} - \vect{\mu})^T \vect{\Sigma}^{-1} (\vect{x} - \vect{\mu})\right).
+    \label{eq:gaussian_dist}
+\end{equation}
+To illustrate, \Cref{fig:bivariate_gaussian} shows a multivariate, two-dimensional Gaussian distribution with mean $\vect{\mu} = (0,0)$ and covariance matrix $\vect{\Sigma} = \bigl( \begin{smallmatrix}1 & 0.5\\ 0.5 & 1\end{smallmatrix}\bigr)$. Along with the distribution, the discontinuous lines represent the eigenvectors of the covariance matrix, which indicate the directions where the distribution spreads the most.
+
+\marginfig{Figures/bivariate_distribution.pdf}{Multivariate, two-dimensional Gaussian distribution. $\vect{\mu} = (0,0)$ and $\vect{\Sigma} = \bigl( \begin{smallmatrix}1 & 0.5\\ 0.5 & 1\end{smallmatrix}\bigr)$. The discontinuous lines represent the eigenvectors of the covariance matrix.}{fig:bivariate_gaussian}
+
+Having established the basis of Gaussian distributions, the final step is to go from a single distribution to a process. A stochastic process is characterized by an additional indexing of the variables with respect to space or time. \jgt{Therefore}, the distribution of a stochastic process is the joint distribution of infinitely many random variables indexed by this quantity. Formally, if $x \in X \subset \real^n$ represents the indexing variable, a stochastic process is defined as:
+\begin{equation*}
+    y = \{ y(x) : x\in X\}.
+\end{equation*}
+A Gaussian process (GP)\sidedef{Gaussian Process}{\jgt{TODO} collection of random variables, any finite number of which have consistent Gaussian distributions.} is a particular case of stochastic process in which every set of indices $\{x_1,...,x_n\}$ follows a multivariate Gaussian distribution:
+\begin{equation*}
+    (y(x_1), ..., y(x_n)) \sim N_n(\vect{\mu}, \vect{\Sigma}).
+\end{equation*}
+When this condition is fulfilled, we will say that the function $y$ is a Gaussian process, and denote it with:
+\begin{equation*}
+    y(\cdot)\sim\mathcal{GP}(\mu, k).
+\end{equation*}
+$\mu$ and $k$ are the mean and covariance\sidenote{In GPs, the covariance function is also called kernel.} \textit{functions} of the GP, as they depend on the index, \ie~$\mu \equiv \mu(\vect{x})$, $k \equiv k(\vect{x, x'})$. The meaning of these functions is equivalent to that of $\mu$ and $\Sigma$ in \Cref{eq:gaussian_dist}. They represent the first and (mixed) second moments of the underlying distribution at every point:
+\begin{align*}
+    \mu(\vect{x}) &= \mathbb{E}(y(\vect{x}))  \\
+    k(\vect{x, x'}) &= \text{Cov}(y(\vect{x}), y(\vect{x'}))  \\
+\end{align*}
+
+Hence, a Gaussian process is completely defined by its mean and covariance functions, which can be chosen almost freely\sidenote{The mean function does not have any constraints, but the covariance must be positive semi-definite.} to adapt to the prior knowledge of the task. The mean function is usually set to a constant value (usually $\mu(\vect{x}) = 0$) because it is only rarely that we have prior knowledge of this quantity\sideauthorcite{bishop2006pattern}. The covariance function, on the other hand, is generally assumed to depend on the distance between the locations $|x-x'|$, and determines the hypothesis space of functions. Therefore, it can take any form depending on the problem:
+\begin{itemize}
+    \item Squared Exponential:
+    \item Periodic: 
+\end{itemize}
+
+% Resources: 
+% https://www.microsoft.com/en-us/research/uploads/prod/2006/01/Bishop-Pattern-Recognition-and-Machine-Learning-2006.pdf
+% https://gaussianprocess.org/gpml/chapters/RW.pdf
