@@ -1,0 +1,77 @@
+\section{Differentiability of Segmentation Loss Functions}\label{app:iou}
+
+% Based on: https://arxiv.org/pdf/2304.04319 (only for DSC)
+
+We hereby proof that Dice loss is differentiable while IoU (Intersection over Union) loss is not. We begin by defining both loss functions and the used variables. Then, we reproduce the derivation in \yeartextcite{kervadec2023dice} for the gradients of the Dice loss and apply the same steps to IoU.
+
+Let $y^{(\cdot,\cdot)}:(\Omega \times \K)\rightarrow\{0, 1\}$ be a one-hot encoded ground-truth segmentation in a D-dimensional image space $\Omega \subset \real^D$ with $\K$ classes, and $s^{(\cdot,\cdot)}_{\vect{\theta}}:(\Omega \times \K)\rightarrow[0, 1]$ the predicted segmentation probabilities from a model with parameters $\vect{\theta}$.
+
+\begin{definition}[Dice loss]
+The Dice loss with $\K$ classes is the average over the classes of one minus the Dice Score\sidenote{\nameref{subsec:perf_metrics} in \Cref{sec:ml}.}:
+\begin{equation}
+    \mathcal{L}_\text{Dice}(y, s_{\vect{\theta}}) \coloneq \dfrac{1}{|\K|}\sum_{k\in\K}\left(1 - \dfrac{2\sum_{i\in\Omega} \ysup{i}{k}\stheta{i}{k}}{\sum_{i\in\Omega}\left[\ysup{i}{k} + \stheta{i}{k}\right]}\right)
+    \label{eq:app_diceloss}
+\end{equation}
+\end{definition}
+
+\begin{definition}[IoU loss]
+    Following an equivalent definition, the IoU loss with $\K$ classes is the average over the classes of one minus the IoU\sidenote{\nameref{subsec:perf_metrics} in \Cref{sec:ml}.}:
+    \begin{equation*}
+        \mathcal{L}_\text{IoU}(y, s_{\vect{\theta}}) \coloneq \dfrac{1}{|\K|}\sum_{k\in\K}\left(1 - \dfrac{\ysup{\cdot}{k}\cap\stheta{\cdot}{k}}{\ysup{\cdot}{k} \cup \stheta{\cdot}{k}}\right),
+    \end{equation*}
+    where $\ysup{\cdot}{k}$ represents the class $k$ of the set of pixels $\Omega$. To put it in terms of \Cref{eq:app_diceloss}, one can identify the intersection with the product and expand the union term\sidenote{For two probability distributions, $A\cup B = A + B - A\cap B$.}:
+    \begin{equation*}
+        \mathcal{L}_\text{IoU}(y, s_{\vect{\theta}}) \coloneq \dfrac{1}{|\K|}\sum_{k\in\K}\left(1 - \dfrac{\sum_{i\in\Omega}\ysup{i}{k}\stheta{i}{k}}{\sum_{i\in\Omega}\ysup{i}{k} + \stheta{i}{k} - \ysup{i}{k}\stheta{i}{k}}\right),
+    \end{equation*}
+\end{definition}
+
+% Dice loss
+\begin{theorem}[Dice loss is differentiable]
+    The gradients of the Dice loss with respect to the model parameters are continuous in the domains of $y$ and $s_{\vect{\theta}}$.
+\end{theorem}
+\begin{proof}
+    We start by defining two auxiliary variables to relax the notation: 
+    \begin{align*}
+        I^k &= \sum_{i\in\Omega} \ysup{i}{k}\stheta{i}{k} \\
+        M^k &= \sum_{i\in\Omega}\left(\ysup{i}{k} + \stheta{i}{k}\right)
+    \end{align*}
+    Dice loss results then in:
+    \begin{equation*}
+        \mathcal{L}_\text{Dice}(y, s_{\vect{\theta}}) = \dfrac{1}{|\K|}\sum_{k\in\K}\left(1 - \dfrac{2I^k}{M^k}\right),
+    \end{equation*}
+    and the gradient for each element in $\Omega\times \K$:
+    \begin{equation}
+        \nabla \mathcal{L}_\text{Dice} = \dfrac{\partial \mathcal{L}_\text{Dice}}{\partial \stheta{i}{k}} = - \dfrac{2}{\left(M^k\right)^2}\left( \dfrac{\partial I^k}{\partial \stheta{i}{k}} M^k - I^k \dfrac{\partial M^k}{\partial \stheta{i}{k}}\right) = -2 \cdot \dfrac{\ysup{i}{k}M^k - I^k}{\left(M^k\right)^2},
+        \label{eq:app_diceloss_proof}
+    \end{equation}
+    where we have used $\frac{\partial \stheta{j}{k}}{\partial \stheta{i}{k}} = 1$ only if $i = j$.
+    
+    We can see that the continuity of \Cref{eq:app_diceloss_proof} depends only on the values of $M^k$. To proof that it is continuous we only have to focus on the vicinity of $M^k = 0$:
+    \begin{equation*}
+        \lim_{M^k\rightarrow0}\nabla \mathcal{L}_\text{Dice} = - \ysup{i}{k},
+    \end{equation*}
+    where we have used the fact that $M^k= 0 \Rightarrow I^k= 0$.
+    
+    Therefore, the Dice loss is differentiable in its domain.    
+\end{proof}
+
+% IoU loss
+\begin{theorem}[IoU loss is not differentiable]
+    The gradients of the IoU loss with respect to the model parameters are not continuous in the domains of $y$ and $s_{\vect{\theta}}$.
+\end{theorem}
+\begin{proof}
+    Applying a similar approach as for the Dice loss, we can write the IoU loss as:
+    \begin{equation*}
+        \mathcal{L}_\text{IoU}(y, s_{\vect{\theta}}) = \dfrac{1}{|\K|}\sum_{k\in\K}\left(1 - \dfrac{I^k}{M^k - I^k}\right),
+    \end{equation*}
+    and its gradients:
+    \begin{equation}
+        \nabla \mathcal{L}_\text{IoU} = \dfrac{\partial \mathcal{L}_\text{IoU}}{\partial \stheta{i}{k}} = - \dfrac{\ysup{i}{k}M^k - I^k}{(M^k-I^k)^2}
+        \label{eq:app_iouloss_proof}
+    \end{equation}
+    In this case, the continuity of \Cref{eq:app_iouloss_proof} depends on $M^k-I^k = 0$, or $M^k= I^k$. Trivially, we see that
+    \begin{equation*}
+        \lim_{M^k\rightarrow I^k}\nabla \mathcal{L}_\text{IoU} = - \infty.
+    \end{equation*}
+    The IoU loss is not differentiable in its domain.    
+\end{proof}

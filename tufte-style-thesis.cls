@@ -340,6 +340,11 @@
 	{\marginsecnumber\thesection}
 	{0em}
 	{\setstretch{0.9}\raggedright\formatsectiontitle}
+% \titleformat{\subsection}
+%	{\itshape\normalfont}
+%	{\marginsecnumber\thesubsection}
+%	{0em}
+%	{\setstretch{0.9}\itshape}
 \titleformat{\subsection}
 	{\itshape\normalfont}
 	{\raggedright\normalfont\thesubsection}
@@ -528,23 +533,23 @@
 \makeatother
 
 %	COLOPHON
-\AtEndDocument{
-	\cleardoublepage
-	\pagestyle{empty}
-	\footnotesize\raggedleft
-	\hfill
-	\vfill
-	\noindent This document was typeset using \LaTeX{} and the \texttt{tufte-style-thesis} class.
-
-	The style is heavily inspired by the works of Edward R. Tufte and Robert Bringhurst.
-
-	This is available on here:
-
-	\vskip 8pt
-
-	\centering \url{https://github.com/sylvain-kern/tufte-style-thesis/}.\\
-	\raggedleft\noindent Feel free to contribute!
-}
+%\AtEndDocument{
+%	\cleardoublepage
+%	\pagestyle{empty}
+%	\footnotesize\raggedleft
+%	\hfill
+%	\vfill
+%	\noindent This document was typeset using \LaTeX{} and the \texttt{tufte-style-thesis} class.
+%
+%	The style is heavily inspired by the works of Edward R. Tufte and Robert Bringhurst.
+%
+%	This is available on here:
+%
+%	\vskip 8pt
+%
+%	\centering \url{https://github.com/sylvain-kern/tufte-style-thesis/}.\\
+%	\raggedleft\noindent Feel free to contribute!
+%}
 
 %	F I G U R E S  A N D  S T U F F
 %

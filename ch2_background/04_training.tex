@@ -1,2 +1,111 @@
-\section{Training}
+% Training Strategies in Machine Learning
+%   Supervised Learning: The Traditional Approach. 
+%       - Formal definition (MLE)
+%       - Usage in neural networks, different loss functions
+%       - Problems: overfitting, generalization error, data availability (short)
+%   Semi-Supervised and Unsupervised Learning: Advanced Techniques
+%   Reinforcement Learning and Other Methods - very short
+
+\section{Training Strategies in Machine Learning}
 \label{sec:training_paradigms}
+
+In an earlier section\sidenote{See \nameref{subsubsec:mle} in \Cref{sec:ml}.}, we discussed Maximum Likelihood Estimation (MLE) as a method for estimating the parameters of a statistical model. MLE involves optimizing the parameter values to maximize the likelihood function, which measures how well the model explains the observed data. Having established the principles of MLE, we will now examine the nuances of the phrase ``observed data''. We will do this from the perspective of the different learning paradigms that stem from the presence (or absence) of supervision labels: supervised, unsupervised, and reinforcement learning. In the process, we will make a connection to feature extraction\sidenote{See \nameref{subsubsec:feature_extraction} in \Cref{sec:ml}.}.
+
+\subsection{Supervised Learning: Learning by Seeing}
+The supervised paradigm can be considered the most well-established and widely used. In this paradigm, the algorithm is trained on samples paired with their desired output label, what is known as a \textit{labeled dataset}\sidedef{Labeled Dataset}{A dataset that contains pairs $(x_i, y_i)$, where $x_i$ is the sample and $y_i$ is the label that the model should output for it.}. Therefore, supervised learning aims to learn a mapping from inputs to outputs in the hope that when the trained algorithm is presented with new inputs, the variety of seen samples in the training set enables it to generalize.
+
+The addition of labels modifies the MLE equation slightly. We will repeat the general equation for MLE (\Cref{eq:mle}) here for convenience:
+\begin{equation}
+    \vect{\theta}^*_{\text{MLE}} = \argmin_\theta \mathbb{E}_{\vect{x}\sim \hat{p}_{\text{data}}} [- \log p_{\text{model}}(\vect{x};\vect{\theta})].
+    \label{eq:mle2}
+\end{equation}
+The optimized weights $\vect{\theta}^*_{\text{MLE}}$ try to match the model distribution $p_{model}$ to the empirical distribution $\hat{p}_{data}$. In supervised learning, however, the empirical distribution is conditioned on the labels $\vect{y}$, and the optimal weights (now $\vect{\theta}^*_{\text{sup}}$) result in:
+\begin{equation}
+    \vect{\theta}^*_{\text{sup}} = \argmin_\theta \mathbb{E}_{(\vect{x}, \vect{y})\sim \hat{p}_{\text{data}}} [- \log p_{\text{model}}(\vect{y}|\vect{x};\vect{\theta})].
+    \label{eq:ml_supervised}
+\end{equation}
+
+The loss function in the supervised learning paradigm is, therefore, a measure of how well a model fits the training data. We denote a training sample $i$ by $\{(x_i, y_i)\}$ from a set of size $N$, such that $x_i$ is the feature vector (input data) and $y_i$ is its label. The loss of predicting the value $\hat{y}_i$ for sample $x_i$ is $\mathcal{L}(y_i, \hat{y}_i)$, and the cost function becomes:
+\begin{equation}
+    J(\theta) = \dfrac{1}{N}\sum_{i=1}^N \mathcal{L}(y_i, \hat{y}_i).
+    \label{eq:cost_supervised}
+\end{equation}
+It is important to note that minimizing the cost function defined in \Cref{eq:cost_supervised} is not strictly equal to \Cref{eq:ml_supervised} due to the different data distributions. In \Cref{eq:ml_supervised}, the expectation is taken over the true underlying data distribution $p_{\text{data}}$. In a machine learning problem, however, we can only long for a set of samples that generate a distribution $\hat{p}_{\text{data}}$, and this is the distribution used in \Cref{eq:cost_supervised}. Minimizing the cost function averaged over the training samples is called \textit{empirical risk minimization}\sidedef{Empirical Risk}{Measure of error calculated over a finite sample dataset, used to evaluate the performance of a learning algorithm.}. 
+
+Nevertheless, minimizing the empirical risk is not free of risk. Usually, it leads to overfitting\sidenote{An algorithm that has memorized the training set minimizes the empirical risk.}. Other times, the associated loss function is non-differentiable. For these reasons, the empirical risk is often not minimized in practice. It is replaced by a slightly different quantity free of these issues known as the \textit{surrogate loss function}. The surrogate loss function is even further apart from the initial objective than the empirical risk but provides other advantages depending on its form\sidenote{The surrogate loss function is generally called simply ``loss function''. This will be the denomination in this thesis as well.}. We will now introduce some surrogate loss functions that are particularly relevant to this thesis. 
+
+% 0-1 Loss
+% Cross Entropy Loss
+% Dice Loss
+% Focal Loss
+
+\subsubsection{0-1 Loss} The 0-1 loss function may be used in a classification task to measure the accuracy of predictions. This assigns a loss of 0 for correct classifications and 1 for incorrect ones. The per-sample loss will be:
+\begin{equation}
+    \mathcal{L}_i(y_i,\hat{y}_i)=     \begin{cases}
+      0 & y_i = \hat{y}_i\\
+      1 & y_i \neq \hat{y}_i
+    \end{cases}
+    \label{eq:01loss}
+\end{equation} 
+This loss function is directly aligned with the goal of minimizing classification errors. However, its non-convex and discontinuous nature makes it computationally intractable, and gradient methods cannot be applied to it. This means that the value of the loss function does not provide any information on how to modify the solution to improve $\mathcal{L}$. For these reasons, the 0-1 loss function in \Cref{eq:01loss} is never used in practice and is instead substituted with others with \textit{nicer} mathematical properties.
+
+\subsubsection{Cross-Entropy Loss} provides a continuous and differentiable approximation to the 0-1 loss, making it suitable for gradient-based optimization methods. Instead of looking at predictions and labels as points that can take discrete values, they are treated as two different distributions. The cross-entropy loss measures the dissimilarity between the predicted probability distribution and the true distribution, penalizing confident but incorrect predictions more heavily than less certain ones:
+\begin{equation}
+    \mathcal{L}_i(y,\hat{y})= -\sum_{c=0}^N y_c\log p(\hat{y}_c),
+    \label{eq:celoss}
+\end{equation}
+for $N$ classes, where $y \sim \hat{p}_\text{data}$ and $p(\hat{y}_c)$ is the predicted probability of class $j$\sidenote{Compared to \Cref{eq:01loss}, the subindex $i$ referring to the sample within the dataset has been dropped from $y$ and $\hat{y}$. Note that the loss in \Cref{eq:celoss} is also applied per sample.}.
+
+Since semantic segmentation involves classifying individual pixels, cross-entropy loss is also used for this task.
+
+\subsubsection{Focal Loss} From \Cref{eq:celoss}, we can see that cross-entropy loss weighs all the samples equally regardless of their difficulty. This is suboptimal in those situations with imbalanced datasets where many of the samples are easy to classify. In this scenario, the loss value tends to 0 for many samples, leading to a very low signal after averaging over the dataset. Focal loss aims to prevent this issue by weighting more the samples that are hard to classify:
+\begin{equation}
+    \mathcal{L}_i(y,\hat{y})= -\sum_{c=0}^N (1-p_c)^\gamma y_c\log p_c,
+    \label{eq:focalloss}
+\end{equation}
+where $p_c \equiv p(\hat{y}_c)$. Here, $\gamma > 0$ is a parameter that adjusts the rate at which easy examples are down-weighted\sidenote{When $\gamma = 0$, focal loss becomes cross-entropy loss.}.
+
+\subsubsection{Dice Loss} Even if cross-entropy loss and focal loss are suitable for segmentation, they are mainly used in classification problems. Dice loss aims to maximize the Dice score (DSC)\sidenote{See \nameref{subsec:perf_metrics} in \Cref{sec:ml} for a detailed explanation of the Dice metric.}, \ie~maximize the overlap between the target and the predicted mask, or minimize $1 - \text{DSC}$:
+\begin{equation}
+    \mathcal{L}_i(y,\hat{y}) = 1 - \text{DSC}(y, \hat{y}).
+    \label{eq:diceloss}
+\end{equation}
+
+It has become the standard loss for segmentation because of its nice mathematical properties --- it is differentiable, continuous, and convex --- and because it maximizes the exact evaluation metric. For this reason, the dice loss is not a surrogate loss function. This does not contradict what was said before: surrogate loss functions should be used as long as the evaluation objective has undesirable properties, such as not being differentiable. 
+
+One may wonder why we choose Dice score over IoU for the loss function. The IoU loss function defined as in \Cref{eq:diceloss}, but substituting DSC for IoU is not differentiable. See \Cref{app:iou} for a demonstration that Dice loss is differentiable and IoU is not.
+
+\subsection{Semi-Supervised, Unsupervised and Self-Supervised Learning}\label{subsec:semi_self}
+In the previous section we saw that supervised learning relies on target labels to learn a mapping from input to output. Semi-supervised and unsupervised learning are two learning paradigms in which the annotations are either limited or nonexistent, respectively. In both cases, the main goal of the model is to generate a meaningful, reduced representation of the data that can bootstrap it on a subsequent task that does have annotations\sidenote{See \nameref{subsubsec:feature_extraction} in \Cref{sec:ml}.}. Most often, unsupervised learning models are trained by reproducing the input data, and using the reproduction error as the signal for training. When this happens, unsupervised learning becomes \textit{self-supervised learning}\sidedef{Self-Supervised Learning}{Paradigm in which the system learns to label data using the data itself, without requiring manually labeled examples.} because the training labels are contained within the data. This is the preferred technique to train autoencoders\sideauthorcite{kramer1991nonlinear} and their extensions to deep neural networks\sideauthorcite{kingma2013auto}. 
+
+Humanity has never before had access to such huge amounts of data as we have now\sidenote{We saw it in \Cref{fig:model_compute}, where the size of the points indicates the dataset size.}. However, the labels for this data are, at most, coarse. Let us think, for instance, about how many videos are uploaded to YouTube every day, all of them with a title that coarsely describes the contents of the video. For this reason, self-supervised and unsupervised learning algorithms have gained traction in the past years. This is how (now well-known) models like DINO~\sideauthorcite{caron2021emerging} emerged for large model pre-training. At the same time, self-supervised techniques have proved successful for domain adaptation, where it is common to only have access to annotations in one of the domains. We will dive into this scenario later in \Cref{sec:domain_adaptation}.
+
+%\sectionlinenew
+The line that separates supervised and unsupervised learning tasks is becoming increasingly blurred. In which category does image description, for instance, fall? It is definitely not fully unsupervised because the model has to learn the most relevant parts of the image. However, strict, fully-supervised training in which one image has a single description would not be ideal either because it would not represent the subjectivity involved in the process.
+
+\subsection{Reinforcement Learning}\index{Reinforcement Learning}
+Although not directly applicable to the present text, it is worth mentioning the role that Reinforcement Learning (RL) plays as a learning paradigm, especially because of its implications in large language models\sidenote{The identification of LLM training with RL is subject to a debate that will be clarified later.}. For this reason, this section does not strive to be an in-depth discussion of the vast topic of Reinforcement Learning, and many details will be left behind in the interest of space. The book \textit{Reinforcement Learning: An Introduction}\sideauthorcite{sutton2018reinforcement} is the reference for RL nowadays.
+
+Reinforcement learning is different from the two previous learning paradigms in its nature. Unlike supervised learning, which relies on annotated labels, and unsupervised learning, where the model identifies patterns within the data, reinforcement learning involves the model learning from the outcomes of its actions. Specifically, after the model executes an action, it receives feedback on its performance from the environment. Given the sequential nature of reinforcement learning, it is particularly suitable for robotic systems. A robot is considered an \textit{\autoindex{agent}} that observes the \textit{\autoindex{state}} of its environment, and its task is to learn a \textit{\autoindex{policy}} that allows it to take the best \textit{actions} to achieve a \textit{goal}. Consider, for example, a robot that is learning to drive in a circuit. Here, the state would be the current position, and the actions would be either to steer the wheel, accelerate, or brake. The policy would be the function that tells the robot which action to take next based on the position.
+
+The two previous learning paradigms revolved around a loss function as the objective that had to be minimized. The idea in reinforcement learning is similar, but the nomenclature differs. The goals that the agents have to achieve are defined by a \textit{reward function}\sidedef{Reward Function}{Function that assigns a numerical value as feedback to an agent after taking an action in a given state.} that assigns a numerical value to each action that the agent might take from a given state\sidenote{The reward function is usually unknown to the agent.}. Therefore, the best policy ($\pi: S \rightarrow A$) will be one that chooses actions that maximize the cumulative reward over time from a given state. This process is usually described as a Markov Decision Process (MDP) because the future rewards depend only on the present state and not on the past actions that led to it.
+
+More formally, at each time step $t$, the agent uses the current state $s_t$ to perform an action $a_t$ based on its policy $a_t=\pi(s_t)$. The environment then responds to the action with a reward $r_t=r(s_t, a_t)$ and the next state $s_{t+1}=\delta(s_t, a_t)$. The agent's goal is to learn a policy that maximizes the reward. The simplest way would be to maximize the immediate reward, but given that a high immediate reward is not a guarantee that high posterior rewards will follow, this approach is insufficient; the agent must aim to maximize the cumulative reward over time. We define the \textit{discounted cumulative reward} $V^\pi$ by following a policy $\pi$ from an initial state $s_t$:
+\begin{equation*}
+    V^\pi(s_t) \coloneq \sum^\infty_{i=0}\gamma^i r_{t+i},
+\end{equation*}
+where $0 \leq \gamma \leq 1$ is a constant discount factor that determines how much future rewards are weighted with respect to earlier ones. 
+
+The agent's objective is to determine the optimal policy $\pi^*$ that maximizes $V^\pi(s)$ for every $s$ in the set of states $S$:
+\begin{equation*}
+    \pi^* \coloneq \argmax_\pi V^\pi (s).
+\end{equation*}
+
+The episodic nature of reinforcement learning has boosted its applications to fields outside of robotics. Particularly, it has seen significant success applied to games because the rules and reward functions are set and easy to compute\sidenote{This is the case of AlphaZero, an algorithm trained to play Go beyond human capabilities only through self-play. See \cite{silver2017mastering}.}. However, RL is very difficult to implement in practice due to the complexity of defining a reward function that is not prone to reward hacking\sidedef{Reward Hacking}{Phenomenon where an AI system exploits loopholes or unintended shortcuts in a reward function to maximize rewards without effectively performing the desired task.}, and the need to simulate an environment that reproduces the one where the robots will be deployed.
+
+\subsubsection{Reinforcement Learning in Large Language Models?}
+In 2019, OpenAI published a paper that presented a method that would later revolutionize the world of AI\sideauthorcite{ziegler2019fine}. It gave rise to LLMs the way we now know them, capable of writing text often indistinguishable from that written by humans. They tried to solve the human-alignment problem\sidedef{AI Alignment}{Process of ensuring that an AI system's goals and behaviors are in harmony with the designer's intentions.} of language models by optimizing them with a reward function that incorporated human feedback. The definition of such a reward function was challenging, and it was therefore replaced with a supervised model trained with human-annotated preferential data. The supervised (preference classifier) model served as the reward function for the language model through policy optimization. Upon the publication of that work, the term ``Reinforcement Learning from Human Feedback'', or RLHF, was coined to refer to this process. 
+
+Although the terminology of RLHF identifies with that of RL - \textit{reward function} for the supervised model, \textit{policy} and \textit{agent} for the language model after receiving a prompt or \textit{state}, etc. - and the name even suggests that the former is a subset of the latter, they should not be confused. As the agent takes a new step in traditional RL, it extracts \textit{new} information from the environment. On the other hand, in RLHF, this information is already contained within the agent; hence, the agent is learning from internal feedback. The only external information is contained in the preference classifier.
+
+Another aspect that essentially distinguishes RLHF and RL is the episodic nature that we emphasized previously. As stated before, the reward in RL is given after each action, and the discounted cumulative reward takes the future into account. Since a neural network acts as the reward function in RLHF, the reward can only be assigned after a whole rollout\sidenote{Rollout can be identified with ``sentence'' for LLMs.} has been produced. This completely eliminates sequential decision-making and transforms the RL involved into a single-step process, or contextual bandit\sidedef{Contextual Bandit}{Learning problem where an agent must make sequential decisions based on observed contexts or features, aiming to maximize cumulative rewards. Different from RL, actions only affect the current state and not the future.}.

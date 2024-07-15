@@ -100,14 +100,29 @@
 \usepackage{stackengine}
 \usepackage{imakeidx}	% for index
 \makeindex[columns=3]
+\usepackage{amsthm}
 
 \usepackage[noabbrev,capitalize]{cleveref}
 %\crefname{section}{Sec.}{Secs.}
 %\crefname{section}{\textsection}{Secs.}
-\crefformat{section}{(\textsection#2#1#3)}
-\Crefname{section}{Section}{Sections}
+\crefformat{section}{\textsection#2#1#3}
+\Crefname{section}{\S}{\S}
+\crefformat{subsection}{(\textsubsection#2#1#3)}
+\Crefname{subsection}{\S}{\S}
 \Crefname{table}{Table}{Tables}
 \crefname{table}{Tab.}{Tabs.}
+\crefname{sidenote}{SN}{sn}
 
 \usepackage{titlecaps}
 \Addlcwords{are or for of as into a on}
+
+\makeatletter
+\def\cref@getref#1#2{%
+  \xdef\@lastusedlabel{#1}%
+  \expandafter\let\expandafter#2\csname r@#1@cref\endcsname%
+  \expandafter\expandafter\expandafter\def%
+    \expandafter\expandafter\expandafter#2%
+    \expandafter\expandafter\expandafter{%
+      \expandafter\@firstoftwo#2}}%
+\creflabelformat{section}{#2\S\nameref*{\@lastusedlabel}#3}
+\makeatother

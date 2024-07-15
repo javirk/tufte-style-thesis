@@ -3,11 +3,11 @@
 %   Applications of Gaussian Processes
 
 \section{Estimating with Uncertainty: Gaussian Process Regression}
-Suppose you need to predict the temperature at multiple geographical locations using a limited set of measurements taken periodically every week. You make sure that the measuring device is sufficiently precise and that you are following a procedure that minimizes systematic errors\sidedef{Systematic error}{Consistent deviation of a measurement from its true value. Contrast with random noise.}. However, you notice that the measurements are rather noisy, and quickly realize that the underlying property (temperature) is intrinsically noisy because it depends on a number of variables that fluctuate with high frequency. For these reasons, you come to the conclusion that instead of predicting a single temperature point, it is more sensible to estimate this value along with a confidence interval. 
+Suppose you need to predict the temperature at multiple geographical locations using a limited set of measurements taken periodically every week. You make sure that the measuring device is sufficiently precise and that you are following a procedure that minimizes systematic errors\sidedef{Systematic error}{Consistent deviation of a measurement from its true value. Contrast with random noise.}. However, you notice that the measurements are rather noisy, and quickly realize that the underlying property (temperature) is intrinsically noisy because it depends on a number of variables that fluctuate with high frequency. For these reasons, you come to the conclusion that instead of predicting a single temperature point, it is more sensible to estimate this value along with a confidence interval. Gaussian process regression tries to solve this problem, offering a capable regression algorithm that predicts the value along with a variance.
 
-\JGT{LINK!} Gaussian Process Regression was first introduced by Danie G. Krige in 1951\sideauthorcite{krige1951statistical} and later formalized by \yeartextcite{matheron1962traite}. It provides a non-parametric extension to linear regression and is equipped with an uncertainty estimation. Furthermore, Gaussian process regression gives the Best Linear Unbiased Predictor (BLUP)\sidenote{See \Cref{app:blup} for the mathematical proof of this statement.}\sidedef{Best Linear Unbiased Predictor}{Among a set of unbiased predictors, the one with the lowest variance.}. They have been applied to several fields - from the original application to geostatistics to disease progression\sidecite{lorenzi2019probabilistic}, predictive soil modeling\sidecite{gonzalez2007creating} or segmentation performance prediction\sidecite{Tejero_2023_CVPR}.
+Gaussian process regression was first introduced by Danie G. Krige in 1951\sideauthorcite{krige1951statistical} and later formalized by \yeartextcite{matheron1962traite}. It provides a non-parametric extension to linear regression and is equipped with an uncertainty estimation. Furthermore, Gaussian process regression gives the Best Linear Unbiased Predictor (BLUP)\sidenote{See \Cref{app:blup} for the mathematical proof of this statement.}\sidedef{Best Linear Unbiased Predictor}{Among a set of unbiased predictors, the one with the lowest variance.}, and has been applied to several fields --- from the original application to geostatistics to disease progression\sidecite{lorenzi2019probabilistic}, predictive soil modeling\sidecite{gonzalez2007creating} or segmentation performance prediction\sidecite{Tejero_2023_CVPR}.
 
-In the following sections, we will first explain multivariate Gaussian processes. This will be followed by a discussion on the advantages of Gaussian processes over traditional parametric models. Finally, we will see how Gaussian processes can be used to tackle the aforementioned example of temperature prediction.
+In the following sections, we will first explain multivariate Gaussian processes. Then, we will briefly touch on how to optimize their hyperparameters for regression tasks. Finally, we will see how Gaussian processes can be used to tackle the aforementioned example of temperature prediction.
 
 % Advantages over parametric models: They treat data as random variables within a gaussian distribution.
 % In contrast, a Gaussian Process can model the temperature as a continuous function across space, inherently incorporating the uncertainty due to sparse data. By treating the temperature at each location as a random variable within a joint Gaussian distribution, GPs provide a robust framework for making predictions and quantifying the confidence in these predictions. This approach not only accounts for the observed data but also allows for incorporating prior beliefs about the spatial correlation of temperatures, leading to more accurate and reliable estimates.
@@ -15,11 +15,11 @@ In the following sections, we will first explain multivariate Gaussian processes
 
 \subsection{Multivariate Gaussian Processes}
 
-The omnipresent univariate Gaussian distribution describes a single random variable that follows a normal distribution. It is characterized by its mean $\mu$ and variance $\sigma^2$, and its probability density function (PDF)\sidedef{Probability Density Function}{\jgt{TODO}} is given by:
+The omnipresent univariate Gaussian distribution describes a single random variable that follows a normal distribution. It is characterized by its mean $\mu$ and variance $\sigma^2$, and its probability density function (PDF)\sidedef{Probability Density Function}{Function that describes the likelihood of a continuous random variable taking on a particular value.} is given by:
 \begin{equation*}
     f(x) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left(-\frac{(x - \mu)^2}{2\sigma^2}\right).
 \end{equation*}
-This is usually denoted as $N(\mu, \sigma^2)$, thus a random variable $X$ that is normally distributed is $X\sim N(\mu, \sigma^2)$. The normal distribution is relevant and applicable in many fields due to the central limit theorem\sidedef{Central limit theorem}{\jgt{TODO}}, which states that the average of a large number of independent and identically distributed random variables is a random variable whose distribution converges to a normal distribution.
+This is usually denoted as $N(\mu, \sigma^2)$, thus a random variable $X$ that is normally distributed is $X\sim N(\mu, \sigma^2)$. The normal distribution is relevant and applicable in many fields due to the central limit theorem\sidedef{Central limit theorem}{The average of a large number of i.i.d. random variables is a random variable whose distribution converges to a normal distribution.}, which states that the average of a large number of independent and identically distributed random variables is a random variable whose distribution converges to a normal distribution.
 
 A generalization of this concept to multiple variables leads to the multivariate Gaussian distribution. Let $\vect{X} \in \real^d$ be a random variable of $d$ dimensions that follows a Gaussian distribution. Because $X$ has multiple dimensions, the distribution will be multivariate and will have a mean vector $\vect{\mu}\in\real^d$ and a covariance matrix $\vect{\Sigma}\in\real^{d\times d}$. Hence, the probability density function will be:
 \begin{equation}
@@ -30,30 +30,91 @@ To illustrate, \Cref{fig:bivariate_gaussian} shows a multivariate, two-dimension
 
 \marginfig{Figures/bivariate_distribution.pdf}{Multivariate, two-dimensional Gaussian distribution. $\vect{\mu} = (0,0)$ and $\vect{\Sigma} = \bigl( \begin{smallmatrix}1 & 0.5\\ 0.5 & 1\end{smallmatrix}\bigr)$. The discontinuous lines represent the eigenvectors of the covariance matrix.}{fig:bivariate_gaussian}
 
-Having established the basis of Gaussian distributions, the final step is to go from a single distribution to a process. A stochastic process is characterized by an additional indexing of the variables with respect to space or time. \jgt{Therefore}, the distribution of a stochastic process is the joint distribution of infinitely many random variables indexed by this quantity. Formally, if $x \in X \subset \real^n$ represents the indexing variable, a stochastic process is defined as:
+Having established the basis of Gaussian distributions, the final step is to go from a single distribution to a process. A stochastic process is characterized by an additional indexing of the variables with respect to space or time. Hence, the distribution of a stochastic process is the joint distribution of infinitely many random variables indexed by this quantity. Formally, if $x \in X \subset \real^n$ represents the indexing variable, a stochastic process is defined as:
 \begin{equation*}
     y = \{ y(x) : x\in X\}.
 \end{equation*}
-A Gaussian process (GP)\sidedef{Gaussian Process}{\jgt{TODO} collection of random variables, any finite number of which have consistent Gaussian distributions.} is a particular case of stochastic process in which every set of indices $\{x_1,...,x_n\}$ follows a multivariate Gaussian distribution:
-\begin{equation*}
+A Gaussian process (GP)\sidedef{Gaussian Process}{Collection of random variables, any finite number of which have a join Gaussian distributions.} is a particular case of stochastic process in which every set of indices $\{x_1,...,x_n\}$ follows a multivariate Gaussian distribution:
+\begin{equation}
     (y(x_1), ..., y(x_n)) \sim N_n(\vect{\mu}, \vect{\Sigma}).
-\end{equation*}
+    \label{eq:gp_prior}
+\end{equation}
 When this condition is fulfilled, we will say that the function $y$ is a Gaussian process, and denote it with:
 \begin{equation*}
     y(\cdot)\sim\mathcal{GP}(\mu, k).
 \end{equation*}
-$\mu$ and $k$ are the mean and covariance\sidenote{In GPs, the covariance function is also called kernel.} \textit{functions} of the GP, as they depend on the index, \ie~$\mu \equiv \mu(\vect{x})$, $k \equiv k(\vect{x, x'})$. The meaning of these functions is equivalent to that of $\mu$ and $\Sigma$ in \Cref{eq:gaussian_dist}. They represent the first and (mixed) second moments of the underlying distribution at every point:
+$\mu$ and $k$ are the mean and covariance\sidenote{In GPs, the covariance function is also called kernel. They will be used interchangeably in this text.} \textit{functions} of the GP, as they depend on the index, \ie~$\mu \equiv \mu(\vect{x})$, $k \equiv k(\vect{x, x'})$. The meaning of these functions is equivalent to that of $\mu$ and $\Sigma$ in \Cref{eq:gaussian_dist}. They represent the first and (mixed) second moments of the underlying distribution at every point:
 \begin{align*}
     \mu(\vect{x}) &= \mathbb{E}(y(\vect{x}))  \\
     k(\vect{x, x'}) &= \text{Cov}(y(\vect{x}), y(\vect{x'}))  \\
 \end{align*}
 
-Hence, a Gaussian process is completely defined by its mean and covariance functions, which can be chosen almost freely\sidenote{The mean function does not have any constraints, but the covariance must be positive semi-definite.} to adapt to the prior knowledge of the task. The mean function is usually set to a constant value (usually $\mu(\vect{x}) = 0$) because it is only rarely that we have prior knowledge of this quantity\sideauthorcite{bishop2006pattern}. The covariance function, on the other hand, is generally assumed to depend on the distance between the locations $|x-x'|$, and determines the hypothesis space of functions. Therefore, it can take any form depending on the problem:
+\textfig[t]{1}{Figures/gp_functions.pdf}{Functions generated with squared exponential and periodic kernels varying the length-scale $\ell$.}{fig:gp_functions}
+
+A Gaussian process is completely defined by its mean and covariance functions, which can be chosen almost freely\sidenote{The mean function does not have any constraints, but the covariance must be positive semi-definite.} to adapt to the prior knowledge of the task. The mean function is usually set to a constant value (usually $\mu(\vect{x}) = 0$) because it is only rarely that we have prior knowledge of this quantity\sideauthorcite{bishop2006pattern}. The covariance function, on the other hand, is generally assumed to depend on the distance between the locations $|x-x'|$, and determines the hypothesis space of functions. The parametrization of the covariance function is a design choice. In \Cref{chapter:fullweak}, we use the most common, the squared exponential kernel, but others have become the de facto standard due to their properties\sidenote{See \yeartextcite{rasmussen2003gaussian} for a comprehensive list of kernels.}:
 \begin{itemize}
-    \item Squared Exponential:
+    \item Squared Exponential or RBF:
+    \begin{equation*}
+        k(\vect{\theta}, x, x')=\theta_1^2\exp \left(-\dfrac{(x-x')^2}{2\theta_2^2}\right)
+    \end{equation*}
     \item Periodic: 
+    \begin{equation*}
+        k(\vect{\theta}, x,x')=\theta_1^2\exp \left(-{\dfrac{2}{\theta_2^{2}}}\sin ^{2}\left((x-x')^2/\theta_3\right)\right)
+    \end{equation*}
 \end{itemize}
+It can be observed that both kernels depend on an additional free parameter, denoted by $\vect{\theta}$. In kernels employed in common applications, such as those described above, these parameters are given specific names according to their role. For instance, the parameter defined here as $\theta_1^2$ represents the signal's variance, which is typically denoted as $\sigma^2$. Similarly, the parameter $\theta_2$ is known as the length-scale of the GP and is denoted as $\ell$. It controls the correlation between two points that are separated by a distance of $\ell$, as shown in \Cref{fig:gp_functions}, which represents both kernels with different length scales.
+
+The parameters in the covariance function are referred to as hyperparameters in the context of Gaussian processes. However, it is essential to highlight the distinction between these hyperparameters and those of neural networks defined in \cref{sec:ml}. In the previous case, hyperparameters were the parameters that the training algorithm did not optimize. In this case, they are given this name to emphasize that they are parameters of a non-parametric model\sideauthorcite{rasmussen2003gaussian}. %These parameters are optimized during the regression process, also called Kriging\sidedef{Kriging}{\jgt{TODO}}.
+
+\subsection{Regression with Gaussian Processes}
+So far, we have seen that a GP can be seen as an infinite collection of random variables that follow Gaussian distributions. How do we profit from this idea and incorporate training data into it?
+
+Let $y$ be a GP such that $y(x)\sim N_n(\vect{\mu}, \vect{\Sigma})$. If we observe its value at $\{ x_1,...,x_n\}$, then the predictive distribution results:
+\begin{equation}
+    y(x)|y(x_1),...,y(x_n) \sim N(\vect{\mu}^*, \vect{\Sigma}^*),
+    \label{eq:gp_posterior}
+\end{equation}
+which is also a GP\sidenote{See Section 6.4.2 of \yeartextcite{bishop2006pattern} for a proof of this statement.} with mean $\vect{\mu}^*$ and covariance $\vect{\Sigma}^*$ that can be obtained analytically. The distribution of a random variable prior to the observation of any samples (\Cref{eq:gp_prior}) is referred to as the \textit{prior distribution}\sidedef{Prior Distribution}{Probability distribution of a random variable before any evidence is taken into account.}. Conversely, the \textit{posterior distribution}\sidedef{Posterior Distribution}{Distribution of a random variable conditioned on the observed samples.} is defined as the distribution of a random variable conditioned on the observed samples. The posterior distribution can be used to predict new data points, \ie~$y(x_{n+1}|\vect{x}_N)$.
+
+However, one step is missing in order to use the previous equations to predict new data points. The covariance functions as defined above give rise to a parametric family of functions thanks to the hyperparameters $\vect{\theta}$. These hyperparameters are learned from the data so that the resulting function explains the data as best as possible. Similar to what is utilized to optimize the parameters in neural networks\sidenote{See \nameref{subsubsec:mle} in \Cref{sec:ml}.}, this is typically done by maximizing the logarithm of the marginal likelihood of the observed data given the hyperparameters:
+\begin{equation*}
+    \vect{\theta}^* = \argmax_\theta p(\vect{y}|\vect{X},\vect{\theta}).
+\end{equation*}
+$\vect{\theta}^*$ are the values of the hyperparameters after optimization.
 
 % Resources: 
 % https://www.microsoft.com/en-us/research/uploads/prod/2006/01/Bishop-Pattern-Recognition-and-Machine-Learning-2006.pdf
 % https://gaussianprocess.org/gpml/chapters/RW.pdf
+% https://arxiv.org/html/2009.10862v5
+
+\subsection{Back to the Initial Temperature Estimation Problem}
+% Data from https://www.metoffice.gov.uk/hadobs/hadcrut5/index.html
+We began this section with a hypothetical scenario where Gaussian processes might prove beneficial. Our aim was to predict future temperatures based on the historical temperature data from a given location, and we realized that temperatures are intrinsically noisy. We will now demonstrate the practical application of the previously discussed theoretical concepts on GPs in this context. This will highlight the advantages and limitations of GPs over other regression methods.
+% long_term_trend_kernel = 20.0**2 * RBF(length_scale=20.0)
+% noise_kernel = 0.1**2 * RBF(length_scale=0.1) + WhiteKernel(
+%     noise_level=0.1**2, noise_level_bounds=(1e-5, 1e5)
+% )
+% irregularities_kernel = 0.5**2 * RationalQuadratic(length_scale=1.0, alpha=1.0)
+% kernel = (
+%     long_term_trend_kernel + noise_kernel + irregularities_kernel
+% )
+
+\plainwidefig[t]{1}{Figures/temperature_predictions.pdf}{Gaussian process application to temperature prediction. (Left) Temperature anomaly on 1st January relative to the period from 1961 to 1990 as recorded by the Met Office Hardley Centre\cite{morice2021updated}. (Right) Gaussian process prediction trained on this data. Interpolation and extrapolation are painted in blue and green, respectively. The shaded areas represent the standard deviation.}{fig:gp_temperature}
+
+\Cref{fig:gp_temperature} (left) presents data from 1850 to the present (2024) on world temperature. Specifically, it shows the temperature anomaly on 1st January relative to the period from 1961 to 1990 as recorded by the Met Office Hardley Centre\sideauthorcite{morice2021updated}. This plot already illustrates our expectations that temperature measurements are noisy. For this reason, it is essential to accompany any prediction with a confidence interval to account for this noise. We also notice that the data can be separated into multiple trends depending on the length-scale we consider: there is an underlying upward trend --- especially in the last decades --- with a long length-scale interrupted by short-lived irregularities.
+
+Let $y(\cdot)$ be a GP that fits this data. As mentioned above, a GP is defined by its mean and covariance functions. In this case, we will set the mean function to 0, as we do not have prior knowledge about it. For the covariance function, we can leverage the two trends in the data in order to make an informed choice:
+
+\begin{itemize}
+    \item Long-term rising trend: an RBF kernel with a large length-scale parameter will ensure a smooth trend. This will be $k_\text{long}$.
+    \item Short-term irregularities: irregularities are, as the name suggests, irregular in length-scale. A combination of RBF kernels with different length-scales will capture them best while keeping the final function smooth. We use a rational quadratic kernel for it\sidenote{Rational quadratic kernel: $$k(\vect{\theta}, x, x')=\theta_1^2\left(1+\dfrac{(x-x')^2}{2\theta_2^2\theta_3}\right)^{-\theta_2}$$}. This will be $k_\text{short}$.
+\end{itemize}
+
+The GP's covariance function will be the combination of both:
+\begin{equation*}
+    k = k_\text{long} + k_\text{short}.
+\end{equation*}
+
+Regressing the temperature anomaly data with these mean and covariance functions leads to the result in \Cref{fig:gp_temperature} (right), where the blue line corresponds to interpolated values within the training data, and the green line corresponds to extrapolated values. The shaded areas in both cases represent one standard deviation. From this result, we can extract two conclusions: first, a GP is capable of capturing both the noise in the data and the general trend without making strong assumptions about the underlying function. This is opposed to most parametric models\sidenote{Most, but not all. Strictly speaking, feedforward neural networks are parametric models where this statement does not hold. However, as the number of parameters increases, they can be regarded as non-parametric. See \yeartextcite{Neal1996} for a comprehensive discussion on the subject.}, where the function form has to be set.
+
+Second, GPs are highly effective within their training range, \ie~at interpolation. However, their predictive power rapidly diminishes as we move beyond this range. This is illustrated in the green area of \Cref{fig:gp_temperature}. We can observe that the uncertainty estimate increases in the extrapolated area. This is accompanied by a reversion to the mean as the extrapolated distance approaches that of the length-scale of the covariance functions (not shown). This observation will be one of the cornerstones for \Cref{chapter:fullweak}.
