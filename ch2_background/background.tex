@@ -5,47 +5,56 @@
 
 % Sections: 
 % Introduction to Machine Learning in Vision
-%   Overview of Machine Learning (ML)
+%   Overview of Machine Learning (ML) - This is not necessary as a subsection.
 %   Deep Neural Networks (DNN) in Computer Vision
-%   Key Concepts in ML for Vision Applications - feature extraction, model architectures (bridge for the next), learning paradigms (introduce only), evaluation metrics
+%   Key Concepts in ML for Vision Applications - feature extraction, model architectures (bridge for the next), learning paradigms (introduce only), evaluation metrics, 
 
 % Attention Mechanisms and Vision Transformers
 %   Understanding Attention in Neural Networks
-%   Vision Transformers (ViT): An Emerging Paradigm
+%   Vision Transformers (ViT): An Emerging Paradigm -> say also that they are not much better than convnets for medical things
 %   Prompts for Vision Transformers - look at ECCV related work section
 
 % A bridge here
 
 % Gaussian Processes
-%   Basics of Gaussian Processes
-%   Applications of Gaussian Processes
+%   Multivariate
+%   Regression
+%   The example
 
 % Training Strategies in Machine Learning
-%   Supervised Learning: The Traditional Approach
+%   Supervised Learning: The Traditional Approach. 
+%       - Formal definition (MLE)
+%       - Usage in neural networks, different loss functions
+%       - Problems: overfitting, generalization error, data availability (short)
 %   Semi-Supervised and Unsupervised Learning: Advanced Techniques
 %   Reinforcement Learning and Other Methods - very short
 
 % Domain Adaptation in Computer Vision
-%   Definition and Importance of Domain Adaptation
-%   Techniques for Domain Adaptation
-%   Domain Adaptation in Real-World Applications
+%   Why DA is important
+%   The amount of information determines the flavor: Types of Domain Adaptation (Unsupervised, source free...)
+%   Domain Adaptation in Real-World Applications  ---> Probably not!
 
-% Machine Learning and Ophthalmology
-%   Use case - OCTs
-%   Overview of ML Applications in Ophthalmology
-%   Deep Learning for Ophthalmic Imaging
-%   Challenges and Future Directions in Ophthalmology
+% Elements of Ophthalmology
+%   Imaging the Retina --> technical stuff on how OCTs work and what we can get. Also fundus
+%   Seeing in an OCT --> diseases that can be seen, concept of biomarker
+%   Evaluating Vision: The ETDRS Grid --> Just talk about it
+%   Merging DL and Ophthalmology --> How and why you would put these two together (a lot of images, difficult to segment...)
 
 % Summary and Conclusion
 %   Connection to the rest of the thesis
 
 
-\sidechaptersummary{Summary point 1, Summary point 2}
+\sidechaptersummary{Convolutional Neural Networks, Vision Transformers, Gaussian Processes, Training, Domain Adaptation, Elements of Ophthalmology}
 
-\subsubsection{Synopsis}\lipsum[1]
+\subsubsection{Synopsis} This chapter examines the field of computer vision, with a specific focus on applications in ophthalmology. We begin with an introduction to machine learning in vision, highlighting deep neural networks and other concepts such as feature extraction or evaluation metrics. Next, we explore attention mechanisms and vision transformers, examining their efficacy compared to traditional convolutional networks, particularly in medical imaging. This opens the field to discuss novel training procedures distinct from those traditionally used for convolutional networks. 
+
+Before looking into training strategies for machine learning, we do a brief stop for a brief overview of Gaussian processes and regression. Then, we address domain adaptation in computer vision, explaining its real-world significance and different types.
+
+Finally, we turn our attention to ophthalmology, covering some technical aspects of retinal imaging using optical coherence tomography (OCT), the identification of diseases through these imaging techniques, and the concept of biological markers. The chapter concludes by discussing the integration of deep learning and ophthalmology.
 
 \input{01_ml}
 \input{02_attention}
 \input{03_gp}
 \input{04_training}
 \input{05_domain_adaptation}
+\input{06_ophthalmology}

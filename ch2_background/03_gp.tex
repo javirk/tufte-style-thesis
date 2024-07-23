@@ -1,6 +1,7 @@
 % Gaussian Processes
-%   Basics of Gaussian Processes
-%   Applications of Gaussian Processes
+%   Multivariate
+%   Regression
+%   The example
 
 \section{Estimating with Uncertainty: Gaussian Process Regression}
 Suppose you need to predict the temperature at multiple geographical locations using a limited set of measurements taken periodically every week. You make sure that the measuring device is sufficiently precise and that you are following a procedure that minimizes systematic errors\sidedef{Systematic error}{Consistent deviation of a measurement from its true value. Contrast with random noise.}. However, you notice that the measurements are rather noisy, and quickly realize that the underlying property (temperature) is intrinsically noisy because it depends on a number of variables that fluctuate with high frequency. For these reasons, you come to the conclusion that instead of predicting a single temperature point, it is more sensible to estimate this value along with a confidence interval. Gaussian process regression tries to solve this problem, offering a capable regression algorithm that predicts the value along with a variance.
@@ -107,7 +108,7 @@ Let $y(\cdot)$ be a GP that fits this data. As mentioned above, a GP is defined 
 
 \begin{itemize}
     \item Long-term rising trend: an RBF kernel with a large length-scale parameter will ensure a smooth trend. This will be $k_\text{long}$.
-    \item Short-term irregularities: irregularities are, as the name suggests, irregular in length-scale. A combination of RBF kernels with different length-scales will capture them best while keeping the final function smooth. We use a rational quadratic kernel for it\sidenote{Rational quadratic kernel: $$k(\vect{\theta}, x, x')=\theta_1^2\left(1+\dfrac{(x-x')^2}{2\theta_2^2\theta_3}\right)^{-\theta_2}$$}. This will be $k_\text{short}$.
+    \item Short-term irregularities: irregularities are, as the name suggests, irregular in length-scale. A combination of RBF kernels with different length-scales will capture them best while keeping the final function smooth. We use a rational quadratic kernel for it\sidenote{Rational quadratic kernel: $$k(\vect{\theta}, x, x')=\theta_1^2\left(1+\dfrac{(x-x')^2}{2\theta_2^2\theta_3}\right)^{-\theta_3}$$}. This will be $k_\text{short}$.
 \end{itemize}
 
 The GP's covariance function will be the combination of both:

@@ -106,6 +106,7 @@
     linkcolor=burgundy,
     citecolor=black  % This is for margin notes
 ]{hyperref}	% automatic references in pdf				% automatic references in pdf
+\setitemize{parsep=3mm, topsep=3mm}
 
 %\usepackage[colorlinks,citecolor=red,urlcolor=blue,bookmarks=false,hypertexnames=true]{hyperref} 
 

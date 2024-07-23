@@ -1,0 +1,11 @@
+% Adapt to unseen data:
+%   Large models need less adaptation
+%   Into the unsupervised
+
+\section{Adapt to Unseen Data}\label{sec:disc_adapt}
+\Cref{chapter:samda,chapter:tist} deal with the domain adaptation problem in two different ways. First, \Cref{chapter:samda} proposes a training method for large models that achieves better generalization by training only a small subset of the parameters. Then, \Cref{chapter:tist} addresses unsupervised domain adaptation by leveraging invariance to image transformations.
+
+\subsection{Large Models Need Less Adaptation}
+Training large models is a challenging engineering task. Not only do they need a lot of data, but one also has to consider the limited memory of the GPUs where they are stored. Nowadays, many large models have grown beyond a single GPU. This has sparked new research on model and data parallelism to increase the number of GPUs during training. At the same time, some efforts have been directed to mixed precision training\sideauthorcite{micikevicius2017mixed} to nearly halve the memory consumption of deep learning models during training.
+
+In parallel, the method we propose in \Cref{chapter:samda} and other PEFT techniques try to reduce the models' trainable parameters, assuming that large models already have a sufficient representation of the world that can be adapted to niche areas that need special fine-tuning. 
