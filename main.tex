@@ -3,7 +3,7 @@
 	colorful,
 	boxey,
  a4paper,
- parskip
+ %parskip
 ]{tufte-style-thesis}
 
 \input{imports}
@@ -51,25 +51,32 @@
 %\chapter{Abstract}
 %Placeholder
 %
-%
 %\chapter{Acknowledgements}
 %Placeholder
 %
-%\tableofcontents
-%\listoffigures
-%\listoftables
-%\listoflistings
+\tableofcontents
+\listoffigures
+\listoftables
+\listoflistings
 
 
 \mainmatter
 
-% \import{ch1_introduction/}{introduction}
+\part{Prologue}
+\import{ch1_introduction/}{introduction}
 % \import{ch2_background/}{background}
+% \part{Rethinking Data Labeling}
 % \import{ch3_fullweak/}{fullweak.tex}
+% \part{Adapt to Unseen Data}
 % \import{ch4_sam_da}{sam_da.tex}
 % \import{ch5_tist}{tist.tex}
+% \part{Weak Labels And Domain Knowledge for a Real-World Problem}
 % \import{ch6_oct_localization/}{oct_localization}
-\import{ch7_discussion/}{discussion}
+% \part{Discussion}
+% \import{ch7_discussion/}{discussion}
+% \part{Epilogue}
+% \import{ch8_conclusion/}{conclusion}
+% \import{ch9_futurework/}{future_work}
 
 
 \backmatter

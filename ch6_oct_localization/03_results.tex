@@ -30,7 +30,7 @@ While there are no direct existing baselines for localization of OCT biological 
     
     \item \textbf{Grad-CAM} We use Grad-CAM~\sidecite{Selvaraju2019} to build a 16×16 heatmap for each output variable and pick the maximum value of each column. This serves as a column-level measurement of the presence of SRF and IRF. We use the pre-trained EfficientNet to obtain the final ring-level predictions by applying the same post-processing mapping explained at the end of the Methods section.
 
-    \item \textbf{MS-CAM}~\sidecite{ma2020} this approach consists of two stages: first, the activations of the different features of the resolutions are combined with Grad-CAM++~\sidecite{chattopadhay2018grad} to obtain a pixel-wise segmentation. Second, these segmentations are refined using Conditional Random Fields on the en-face projection image. We reproduced the first stage and converted the resulting pixel-wise segmentation into rings. 
+    \item \textbf{MS-CAM}~\sidecite{ma2020} this approach consists of two stages: first, the activations of the different features of the resolutions are combined with Grad-CAM++~\sidecite{chattopadhay2018grad} to obtain a pixel-wise segmentation. Second, these segmentations are refined using Conditional Random Fields on the en-face projection image\sidedef{En-face Projection}{\jgt{TODO}}. We reproduced the first stage and converted the resulting pixel-wise segmentation into rings. 
 \end{itemize}
 
 All methods were implemented using PyTorch. Our method and the baselines were trained for 10 epochs.

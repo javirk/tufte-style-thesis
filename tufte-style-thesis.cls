@@ -664,33 +664,35 @@
 %	T O C  C U S T O M I Z A T I O N
 %
 \contentsmargin[1cm]{0cm}
-\titlecontents*{part}[0em]
+\titlecontents{part}[0em]
 	{\large\scshape}
 	{\scshape\thecontentslabel}
-	{\vskip 4pt\large\scshape\lowercase}
-	{}[\vskip 0pt]
+	{\vskip 4pt\small\scshape\lowercase}
+	{\dotfill\textcolor{niceBlue}\small{\contentspage}}[\vskip 0pt]
 \titlecontents{chapter}[0em]
-	{\large\vspace{12pt}}
-	{\makebox[-1em][r]{\thecontentslabel}\large\hspace{1em}}
-	{\large}
-	{~~~~\textcolor{niceBlue}{\contentspage}}[\vskip 2pt]
-\titlecontents*{section}[0em]
+	{\normalsize\vspace{12pt}}
+	{\makebox[-1em][r]{\thecontentslabel}\normalsize\hspace{1em}}
+	{\small}
+	{\dotfill\textcolor{niceBlue}{\contentspage}}[\vskip 2pt]
+\titlecontents{section}[0em]
+	{\addvspace{0.5em}\small}
+	{\thecontentslabel~~}
+	{\small}
+	{\dotfill\textcolor{niceBlue}{\contentspage}}
+	[\vskip 2pt]
+\titlecontents{subsection}[1.5em]
 	{\small}
 	{\thecontentslabel~~}
 	{\small}
-	{~~\textcolor{niceBlue}{\contentspage}}
-	[\\]
+	{\dotfill\textcolor{niceBlue}{\contentspage}}
+	[\vskip 2pt]
+
 % \titlecontents{subsection}[0em]
 % 	{\vspace{4pt}}
 % 	{\normalfont\thecontentslabel\enspace\itshape}
 % 	{\itshape}
 % 	{\qquad\contentspage}[\vskip 0pt]
-% \titlecontents*{subsection}[0em]
-% 	{\vskip 0pt\small}
-% 	{{\thecontentslabel}~~\itshape}
-% 	{\itshape}
-% 	{~~{\contentspage}}
-% 	[\qquad]
+
 % \titlecontents{subsubsection}[1em]
 % 	{\vspace{0pt}}
 % 	{\normalfont\thecontentslabel\enspace\itshape}
@@ -747,7 +749,7 @@
 	\end{quote}
 }
 %	toc depth
-\AtBeginDocument{\setcounter{tocdepth}{1}}
+\AtBeginDocument{\setcounter{tocdepth}{2}}
 
 %	B I B L I O G R A P H I C
 %	      R E F E R E N C E S  %this is black magic to me but it seems 2b working

@@ -1,8 +1,6 @@
-% I have to talk about how reinforcement learning could be used for vision models. Is this a place to talk about ideas? Ask Raphael
-
 \graphicspath{{ch7_discussion/}{Figures/}}
 
-\chapter{Discussion maybe}
+\chapter{Looking back}
 \label{chapter:discussion}
 
 % Contents: 
@@ -17,19 +15,24 @@
 % Limitations (for each section?)
 
 
-\sidechaptersummary{Thing 1, Thing 2}
+\sidechaptersummary{Summary of Contributions, Link to the Thesis Statement}
 
-\subsubsection{Synopsis} \lipsum[1]
+\subsubsection{Synopsis} Technology advancements are transforming society, yet they also bring novel challenges that must be addressed for the transition to be seamless for all society. One of the most urgent challenges lies in the unavailability of large datasets to feed the ever-growing models in fields where data access is limited. The previous four chapters have outlined four independent solutions to alleviate this pressure, each addressing a unique facet of the problem.
+
+This chapter will be the final integration into a cohesive dissertation, linking each contribution to the central thesis statement. 
 
 \sectionlinenew
 
 We began this dissertation with a rather pessimistic perspective on the impact of AI on the contemporary world. Technology is advancing at an unstoppable pace, faster than ever before, and this brings with it new problems that must be addressed. We are facing a transformation akin to the Industrial Revolution back in the 18th and 19th centuries, with similarly transformative potential consequences for society and the economy\sideauthorcite{abis2024changing}. The question is whether we will be able to replicate the growth in the standard of living that the late modern era witnessed upon the development of machines\sideauthorcite{nardinelli2008industrial}.
 
 Just as society has evolved, so too have the obstacles that progress carries. The current challenges include the environmental impact of training large models, the ethical biases inherent in the data, and the necessity for large, high-quality datasets that can feed the data-hungry models. This thesis has presented an optimistic view on the latter of these aspects, offering four solutions that span the entire machine learning pipeline. These solutions have been designed to verify the thesis statement introduced in \Cref{chapter:introduction}. As this statement serves as the foundation for the present work, I will repeat it here for the reader's convenience:
+\\
 
-\textit{The surging demand for larger datasets, promoted by ever-larger models and the advancements in computing, can be counteracted by carefully allocating the budget, making informed labeling choices, and leveraging field-specific constraints to the model's advantage.}
+\textit{\input{../thesis_statement.tex}}
+\\
 
-The following sections will present a detailed examination of how each chapter has contributed to verifying this statement. In \Cref{sec:disc_fullweak}, we will see that a strategic budget allocation can contribute to reducing data labeling costs. In \Cref{sec:disc_adapt}, we will focus on model training and see that large models are proficient at generalization. Finally, \Cref{sec:disc_oct} will highlight the importance of field-specific constraints. We will then discuss the limitations of the present work. 
+The following sections will present a detailed examination of how each chapter has contributed to verifying this statement. In \Cref{sec:disc_fullweak}, we will see that a strategic budget allocation can contribute to reducing data labeling costs. In \Cref{sec:disc_adapt}, we will focus on model training and see that large models are proficient at generalization. Finally, \Cref{sec:disc_oct} will highlight the importance of field-specific constraints to reduce the necessity of strongly annotated data. %We will then conclude with some final remarks and the limitations of the present work. 
 
 \input{01_acquisition}
 \input{02_adaptation}
+\input{03_applications}
