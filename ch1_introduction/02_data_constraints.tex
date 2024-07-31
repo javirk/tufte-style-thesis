@@ -14,19 +14,19 @@ Various strategies have emerged to address the data constraints and enhance the 
 While data augmentation cannot solve all the above-stated issues, it can mitigate some of them. Focusing our study on the field of Computer Vision, data augmentation techniques may be separated into geometric, color space, and noise injection transformations.
 
 Geometric transformations are mathematical bijective functions $\real^n \rightarrow \real^n$ that operate on points in n-dimensional space while preserving certain geometric properties, such as distances, angles, or parallelism. These transformations are typically described by functions or matrices and include operations such as translation\sidenote{
-Translation of a point by $t_x$ and $t_y$ units along the x and y-axis respectively:
+Translation of a point by $t_x$ and $t_y$ along the x and y axes:
 \begin{equation*}
     \renewcommand*{\arraystretch}{0.8}
     \begin{pmatrix} 1 & 0 & t_x \\ 0 & 1 & t_y \\ 0 & 0 & 1 \end{pmatrix}.
 \end{equation*}
 }, rotation\sidenote{
-Rotation of an angle $\theta$ about the origin:
+Rotation of $\theta$ about the origin:
 \begin{equation*}
     \renewcommand*{\arraystretch}{0.8}
     \begin{pmatrix} \cos\theta & -\sin\theta & 0 \\ \sin\theta & \cos\theta & 0 \\  0 & 0 & 1 \end{pmatrix}.
 \end{equation*}
 }, scaling\sidenote{
-Scaling of $W$ and $H$ units about the origin:
+Scaling of $W$ and $H$ units:
 \begin{equation*}
     \renewcommand*{\arraystretch}{0.8}
     \begin{pmatrix} W & 0 & 0 \\ 0 & H & 0 \\ 0 & 0 & 1 \end{pmatrix}.

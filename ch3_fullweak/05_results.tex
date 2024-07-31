@@ -11,7 +11,7 @@
 %}
 %\label{fig:main_results}
 %\end{figure*}
-\plainwidefig{1}{Figures/main_result_notshared.pdf}{Performance of our method (orange line) on OCT, PASCAL VOC, SUIM and Cityscapes datasets. Shaded region is computed from three seeds. Fixed strategies are shown in blue. Red points show the \textit{estimated-best-fixed} strategy with $B_0$. Labels expressed as percentage of the budget allocated to segmentation. Note that the first budget $B$ fulfills $B\gg B_0$ in all cases.}{fig:main_results}
+\plainwidefig[t]{1}{Figures/main_result_notshared.pdf}{Performance of our method (orange line) on OCT, PASCAL VOC, SUIM and Cityscapes datasets. Shaded region is computed from three seeds. Fixed strategies are shown in blue. Red points show the \textit{estimated-best-fixed} strategy with $B_0$. Labels expressed as percentage of the budget allocated to segmentation. Note that the first budget $B$ fulfills $B\gg B_0$ in all cases.}{fig:main_results}
 
 First, we can observe that no single fixed strategy is performing optimally across the different datasets evaluated. This is coherent with our initial claims and with the literature. Indeed, for OCT the best strategy appears to be one that samples 90\% of segmentations, while this same policy performs poorly on the SUIM dataset. This implies that blindly using a fixed policy would on average not be very effective.
 
@@ -21,13 +21,13 @@ Last, we can observe that our method is consistently able to produce good perfor
 
 At the same time, we notice that the performance of our approach on SUIM begins well and then drops after a 3'500 budget. This differs sharply from the other datasets. By observing the true budget-performance surface of SUIM and the other datasets (see \cref{fig:surfaces}), we can see that the SUIM surface does not grow logarithmically with the dataset size, while it does for Cityscapes (and the other too, see the Supplementary materials). This is relevant as our GP mean prior~\eqref{eq:gp_mean} assumes this relationship and explains why our approach fails when the true surface deviates from our GP mean form. While the use of adaptive, higher-level order priors would be beneficial to deal with such cases, we leave this as future work to be researched.
 
-\marginfig{Figures/surfaces.pdf}{Cityscapes (top) and SUIM (bottom) ground truth budget-segmentation surfaces. We note that segmentation performance grows logarithmically with training set size on Cityscapes (as well as OCT and VOC, see \Cref{fig:surfaces_fullweak_app} in the Appendix). This trend is not observed in the SUIM dataset.}{fig:surfaces}
+\marginfig{Figures/surfaces.pdf}{Cityscapes (top) and SUIM (bottom) ground truth budget segmentation surfaces. We note that segmentation performance grows logarithmically with training set size on Cityscapes (as well as OCT and VOC, see \Cref{fig:surfaces_fullweak_app} in the Appendix). This trend is not observed in the SUIM dataset.}{fig:surfaces}
 
 
-\subsection{Sensitivity to $\alpha_s$ and $T$}
-Different types of annotations or domains may have different ratios of cost. While we have fixed $\alpha_s$ in our experiments across all datasets regardless of their domain, some datasets such as OCT and VOC require different expertise and domain knowledge to annotate and thus different $\alpha_s$. In~\cref{fig:alpha_results}, we three additional values of $\alpha_s = \{5, 12, 25, 50\}$ and show the performance implication it has on our methods and the baselines. For Cityscapes, we see that the method is robust regardless of the value of $\alpha_s$, showing above average performance, especially for $\alpha_s = 25$ and $\alpha_s = 50$. This behavior is reproduced in all four datasets, as shown in \Cref{fig:surfaces_fullweak_app} in the Appendix.
+\subsection{Sensitivity to \texorpdfstring{$\alpha_s$}{as} and \texorpdfstring{$T$}{T}}
+Different types of annotations or domains may have different ratios of cost. While we have fixed $\alpha_s$ in our experiments across all datasets regardless of their domain, some datasets such as OCT and VOC require different expertise and domain knowledge to annotate and thus different $\alpha_s$. In~\Cref{fig:alpha_results}, we three additional values of $\alpha_s = \{5, 12, 25, 50\}$ and show the performance implication it has on our methods and the baselines. For Cityscapes, we see that the method is robust regardless of the value of $\alpha_s$, showing above-average performance, especially for $\alpha_s = 25$ and $\alpha_s = 50$. This behavior is reproduced in all four datasets, as shown in \Cref{fig:app_alpha_results} in the Appendix.
 
-\plainwidefig[b]{1}{Figures/alphas_notshared.pdf}{Mean of our method with $\alpha_s = \{5, 12, 25, 50\}$ on Cityscapes (orange, line). Shaded region is computed from three seeds. Fixed strategies are shown in blue. Labels expressed as percentage of the budget allocated to segmentation.}{fig:alpha_results}
+\plainwidefig[t]{1}{Figures/alphas_notshared.pdf}{Mean of our method with $\alpha_s = \{5, 12, 25, 50\}$ on Cityscapes (orange, line). Shaded region is computed from three seeds. Fixed strategies are shown in blue. Labels expressed as percentage of the budget allocated to segmentation.}{fig:alpha_results}
 
 %\begin{figure}[]
 %\centering

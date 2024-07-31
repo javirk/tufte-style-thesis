@@ -1,13 +1,13 @@
 \section{Method}
 \label{sec:fullweak_method}
 
-Training segmentation models using a combination of expensive pixel-wise annotations and other types of cheaper annotations, such as image-wise labels or single-pixel annotations is known to be beneficial, as well as using cross-task transfer learning techniques~\sidecite{Mensink}. This is motivated by empirical findings showing that, under a limited annotation budget, allocating a proportion of the budget to inexpensive image-level class labels led to superior performance compared to allocating the budget entirely to segmentation labels~\sidecite{Bearman16}. However, the optimal proportion of the budget to allocate per annotation type is a-priori unknown beforehand and data-dependent. Thus, the goal of our method is to find this data-specific optimal budget allocation in an online manner, as it is necessary for any dataset builder starting off.
+Training segmentation models using a combination of expensive pixel-wise annotations and other types of cheaper annotations, such as image-wise labels or single-pixel annotations is known to be beneficial, as well as using cross-task transfer learning techniques~\sideauthorcite{Mensink}. This is motivated by empirical findings showing that, under a limited annotation budget, allocating a proportion of the budget to inexpensive image-level class labels led to superior performance compared to allocating the budget entirely to segmentation labels~\sideauthorcite{Bearman16}. However, the optimal proportion of the budget to allocate per annotation type is a-priori unknown beforehand and data-dependent. Thus, the goal of our method is to find this data-specific optimal budget allocation in an online manner, as it is necessary for any dataset builder starting off.
 
 We describe our method in the subsequent sections. For clarity, we focus on image segmentation and assume two kinds of annotations are possible: strong annotations as segmentation labels and weak annotations as image-level classification labels. Generalizing this formulation to other tasks or settings with more than two annotations types should follow directly.
 
 \subsection{Problem formulation} 
 Let $p_\textrm{data}(\x)$ be the distribution of training images for which we have no annotations initially. Each training image~$\x$ can be annotated with a pixel-wise segmentation labeling~{$(\x,\y)\sim{}p_\textrm{data}(\x)p_\textrm{sgm}(\y\mid\x)$} or an image-wise classification annotation~{$(\x,c)\sim{}p_\textrm{data}(\x)p_\textrm{cls}(c\mid\x)$}\sidenote{Without loss of generality, we assume that image-wise labels are a discrete class label, but that other kinds of annotations are equally valid as long as they are informative in the cross-task learning process.}. 
-Sampling from the distributions $p_\textrm{cls}$ and~$p_\textrm{sgm}$ represents the task of manually annotating the image and has associated costs of~$\alpha_\textrm{c}>0$ and ~$\alpha_\textrm{s}>0$, respectively. Supported by previous work~\sidecite{Bearman16,Mensink,mahmood2022}, we will assume that $\alpha_\textrm{s}\gg\alpha_\textrm{c}$.
+Sampling from the distributions $p_\textrm{cls}$ and~$p_\textrm{sgm}$ represents the task of manually annotating the image and has associated costs of~$\alpha_\textrm{c}>0$ and ~$\alpha_\textrm{s}>0$, respectively. Supported by previous work~\sideauthorcite{Bearman16,Mensink,mahmood2022}, we will assume that $\alpha_\textrm{s}\gg\alpha_\textrm{c}$.
 
 By sampling $C$~classifications from $p_\textrm{cls}$ and $S$~segmentation from ~$p_\textrm{sgm}$, we can build an annotated training dataset $\T=(\T_c,\T_s)\sim{}(p_\textrm{cls}^C, p_\textrm{sgm}^S)$. The dataset~$\T$ then has an annotation cost,
 \begin{equation}
@@ -72,14 +72,14 @@ In our case, we use the mean function,
     \mu(C, S) = \gamma_c\log(\beta_cC+1) + \gamma_s\log(\beta_sS+1),
     \label{eq:gp_mean}
 \end{equation}
-which accounts for the fact that the segmentation performance increases logarithmically with the volume of the training data~\sidecite{sun2017} and that each annotation type has a different rate of performance growth. Similarly, the covariance~$k$ is a combination of two RBF~kernels with different scales~$\ell_c$, $\ell_s$ for each annotation type,
+which accounts for the fact that the segmentation performance increases logarithmically with the volume of the training data~\sideauthorcite{sun2017} and that each annotation type has a different rate of performance growth. Similarly, the covariance~$k$ is a combination of two RBF~kernels with different scales~$\ell_c$, $\ell_s$ for each annotation type,
 \begin{equation}
     k\left((C, S), (C', S')\right) = \sigma^2\exp\left(-\frac{(C-C')^2}{2\ell_c^2}\right) \exp\left(-\frac{(S-S')^2}{2\ell_s^2}\right).
 \end{equation}
 The values~$\gamma_c$, $\beta_c$, $\gamma_s$, $\beta_s$ from the mean, the length scales~$\ell_c$, $\ell_s$ and the amplitude~$\sigma$ from the covariance are trainable parameters of the~GP.
 
 
-The trained GP models a distribution over utility functions, $u \sim\mathcal{GP}(\mu, k)$, that are plausible under the samples~$\M$. This distribution represents not only the expected utility, but also its uncertainty in different areas of the strategy space. Sampling just a single~$u$ from the GP to solve Eq.~\eqref{eq:the_optimization} would thus be suboptimal. For this reason, we substitute the utility~$u$ in Eq.~\eqref{eq:the_optimization} by a surrogate function~$\hat{u}$ that trades-off exploitation and exploration, thus incorporating uncertainty information into the optimization problem. Following a Bayesian optimization approach~\sidecite{jones1998efficient}, we choose~$\hat{u}$ to be the expected improvement~(EI),
+The trained GP models a distribution over utility functions, $u \sim\mathcal{GP}(\mu, k)$, that are plausible under the samples~$\M$. This distribution represents not only the expected utility, but also its uncertainty in different areas of the strategy space. Sampling just a single~$u$ from the GP to solve Eq.~\eqref{eq:the_optimization} would thus be suboptimal. For this reason, we substitute the utility~$u$ in Eq.~\eqref{eq:the_optimization} by a surrogate function~$\hat{u}$ that trades-off exploitation and exploration, thus incorporating uncertainty information into the optimization problem. Following a Bayesian optimization approach~\sideauthorcite{jones1998efficient}, we choose~$\hat{u}$ to be the expected improvement~(EI),
 \begin{equation}
     \hat{u}(C, S) = \mathbb{E}_{u\sim\mathcal{GP}_t}[\max\{u(C, S) - m^*, 0\}],
     \label{eq:EI}
@@ -100,7 +100,7 @@ Training the GP requires annotated data to build the set~$\M$, which in turn rel
 \end{equation}
 where $T$~is the desired maximum number of iterations of the algorithm and~$\hat{u}_t^*$ is the maximum expected improvement that can be reached using the entire budget~$B$ for the current surrogate function~$\hat{u}_t$ according to Eq.~\eqref{eq:the_optimization}. The found delta strategy defines the new strategy~$(C_{t+1}, S_{t+1}) = (C_t + \Delta{}C, S_t + \Delta{}S)$ for the next iteration. The process is depicted in~\cref{fig:method}.
 
-\begin{algorithm}[]
+\begin{algorithm}[t]
 \caption{Proposed approach}
 \label{alg:the_algorithm}
 \begin{algorithmic}[1]

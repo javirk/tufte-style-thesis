@@ -17,6 +17,8 @@ Specifically, instead of training our method to produce different outputs depend
 
 \subsection{Model}
 
+\input{Tables/variables_table}
+
 Formally, we partition a 2D OCT slice,~$\x$, into $C$ equally spaced columns. We wish to train a model~$f:[0,1]^{H\times W} \to [0,1]^{(1+C)\times B}$ that maps $\x$ to a collection of probabilities~$\haty$, where $B$~is the number of different possible types of markers to be found. For each marker~$b\in B$, the collection~$\haty$ contains both the probability of presence of~$b$ in the entire OCT slice,~$\haty_{0,b}$, and the probability of presence of~$b$ in each column~$c\in C$, denoted~$\haty_{c, b}$. Our training data is made of tuples~$(\x, \y_0)$, with OCT slice~$\x$ and corresponding slice-level annotations~$\y_0\in\{0, 1\}^B$ with no reference whatsoever to the ring or column in which they are located.
 %\begin{figure}[t]
 %\centering
@@ -33,7 +35,7 @@ Formally, we partition a 2D OCT slice,~$\x$, into $C$ equally spaced columns. We
     \haty_c = \sigma\left(\textrm{MLP}(\d_c)\right) \quad \forall c.
 \end{equation}
 
-\input{Tables/variables_table}
+
 
 \subsection{Training}
 

@@ -1,5 +1,7 @@
-\begin{table}[t]
+\begin{table*}[t]
 \centering
+
+\caption{Quantitative comparisons in Dice score among the proposed (TI-ST) and alternative methods for DeepLabV3+~\cite{DeepLabV3} (DLV3+) and scSENet~\cite{SCSE} and the three datasets. Relative Dice computed over the Supervised baseline. \label{tab:quantitative}}
 
 % @{}lccccccc@{}
 %\begin{tabular}{lm{1.3cm}m{1.3cm}m{1.3cm}m{1.3cm}m{1.3cm}m{1.3cm}m{1.3cm}}
@@ -12,14 +14,11 @@ $\Uppi$ Model~\cite{TESSL} & 27.55 & 35.56 & 1.12 & 0.00 & 10.00 & 6.87 & -22.88
 TE~\cite{TESSL} & 33.10 & 42.32 & 42.13 & 39.86 & 63.41 & 67.25 & 11.62 \\
 Mean Teacher~\cite{UDAMIS} & 11.06 & 39.54 & 19.11 & 4.70 & 64.82 & 66.87 & -2.04 \\
 RL~\cite{Reciprocal} & 34.40 & 45.13 & 48.73 & 47.70 & 60.79 & 70.20 & 14.77 \\
-CPS~\cite{CPS} & 36.24 & 39.40 & 47.31 & 14.71 & 76.00 & 68.80 & 10.68 \\
+CPS~\cite{CPS} & 36.24 & 39.40 & 47.31 & 14.71 & \textbf{76.00} & 68.80 & 10.68 \\
 ST~\cite{st++} & 34.34 & 41.10 & 36.84 & 33.01 & 68.63 & 71.97 & 11.26 \\\midrule
 % ST++~\cite{st++} &  &  &  &  &  &  &  \\
-{\bf TI-ST} & 37.69 & 45.31 & 50.93 & 40.87 & 66.56 & 74.07 & 16.18 \\ 
-& \textcolor{gray}{\scriptsize{(+22.27)}} & \textcolor{gray}{\scriptsize{(+7.46)}} & \textcolor{gray}{\scriptsize{(+28.06)}} & \textcolor{gray}{\scriptsize{(+16.79)}} & \textcolor{gray}{\scriptsize{(+14.17)}} & \textcolor{gray}{\scriptsize{(+8.14)}}\\
+{\bf TI-ST} & \textbf{37.69} & \textbf{45.31} & \textbf{50.93} & \textbf{40.87} & 66.56 & \textbf{74.07} & \textbf{16.18} \\ 
 \bottomrule
 \end{tabular}
-\sidecaption{Quantitative comparisons in Dice score (\%) among the proposed (TI-ST) and alternative methods for DeepLabV3+~\cite{DeepLabV3} (DLV3+) and scSENet~\cite{SCSE} and the three datasets. Relative Dice computed over the Supervised baseline. \label{tab:quantitative}}
 
-
-\end{table}
+\end{table*}

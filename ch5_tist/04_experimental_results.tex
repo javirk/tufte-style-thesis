@@ -3,32 +3,14 @@
 
 \input{tables/All}
 
-\cref{tab:quantitative} lists the performance of our transformation-invariant self-training (TI-ST) approach with alternative methods across the three tasks and using two network architectures. According to the quantitative results, TI-ST, RL, ST, and CPS are the best-performing methods. Nevertheless, our proposed TI-ST achieves the highest average relative improvement in dice score compared to naive supervised learning ($16.18\%$ average improvement). Considering our main competitor (RL), we note that our proposed TI-ST method is a one-stage framework using one network. In contrast, RL is a two-stage framework (requiring a pre-training stage) and uses a teacher-student network. Hence, TI-ST is also more efficient than RL in terms of time and computation.  Furthermore, the proposed strategy demonstrates the most consistent results when evaluated on different tasks, regardless of the utilized neural network architecture. 
+\Cref{tab:quantitative} lists the performance of our transformation-invariant self-training (TI-ST) approach with alternative methods across the three tasks and using two network architectures. According to the quantitative results, TI-ST, RL, ST, and CPS are the best-performing methods. Nevertheless, our proposed TI-ST achieves the highest average relative improvement in dice score compared to naive supervised learning ($16.18\%$ average improvement). Considering our main competitor (RL), we note that our proposed TI-ST method is a one-stage framework using one network. In contrast, RL is a two-stage framework (requiring a pre-training stage) and uses a teacher-student network. Hence, TI-ST is also more efficient than RL in terms of time and computation.  Furthermore, the proposed strategy demonstrates the most consistent results when evaluated on different tasks, regardless of the utilized neural network architecture. 
 
-\textfig{1}{figures/ablationf.pdf}{Ablation studies on the pseudo-labeling threshold and size of the labeled dataset.}{fig:ablation}
+\textfig{1}{figures/tist_ablation.pdf}{Ablation studies on the pseudo-labeling threshold and size of the labeled dataset.}{fig:tist_ablation}
 
-\cref{fig:ablation}-(a-b) demonstrates the effect of the pseudo-labeling threshold on TI-ST performance compared with regular ST. We observe that filtering out unreliable pseudo-labels based on transformation variance can remarkably boost pseudo-supervision performance regardless of the threshold. \cref{fig:ablation}-(c) compares the performance of the supervised baseline, ST, and TI-ST with respect to the number of source-domain labeled training images. While ST performance converges when the number of labeled images increases, our TI-ST pushes decision boundaries toward the target domain dataset by avoiding training with transformation variant pseudo-labels. We validate the stability of TI-ST vs. ST  with different labeling thresholds (0.80 and 0.85) over four training folds in \cref{fig:ablation_stability}, where TI-ST achieves a higher average improvement relative to supervised learning for different tasks and network architectures. This analysis also shows that the performance of ST is sensitive to the pseudo-labeling threshold and generally degrades by reducing the threshold due to resulting in wrong pseudo labels. However, TI-ST can effectively ignore false predictions in lower thresholds and take advantage of a higher amount of correct pseudo labels. This superior performance is depicted qualitatively in \cref{fig:qualitative}.
-
-%\begin{figure}[b]
-%\centering
-%\includegraphics[width=1\textwidth]{figures/ablationf.pdf}
-%\sidecaption{Ablation studies on the pseudo-labeling threshold and size of the labeled dataset. 
-%}
-%\label{fig:ablation}
-%\end{figure}
+\Cref{fig:tist_ablation}-(a-b) demonstrates the effect of the pseudo-labeling threshold on TI-ST performance compared with regular ST. We observe that filtering out unreliable pseudo-labels based on transformation variance can remarkably boost pseudo-supervision performance regardless of the threshold. \Cref{fig:tist_ablation}-(c) compares the performance of the supervised baseline, ST, and TI-ST with respect to the number of source-domain labeled training images. While ST performance converges when the number of labeled images increases, our TI-ST pushes decision boundaries toward the target domain dataset by avoiding training with transformation variant pseudo-labels. We validate the stability of TI-ST vs. ST  with different labeling thresholds (0.80 and 0.85) over four training folds in \Cref{fig:ablation_stability}, where TI-ST achieves a higher average improvement relative to supervised learning for different tasks and network architectures. This analysis also shows that the performance of ST is sensitive to the pseudo-labeling threshold and generally degrades by reducing the threshold due to resulting in wrong pseudo labels. However, TI-ST can effectively ignore false predictions in lower thresholds and take advantage of a higher amount of correct pseudo labels. This superior performance is depicted qualitatively in \Cref{fig:qualitative}.
 
 
-
-
-%\begin{figure}[t]
-%\centering
-%\includegraphics[width=1\textwidth]{figures/ablation_stability10.pdf}
-%\caption{Ablation study on the performance stability of TI-ST vs. ST across the different experimental segmentation tasks.
-%}
-%\label{fig:ablation_stability}
-%\end{figure}
-
-\textfig{1}{figures/ablation_stability10.pdf}{Ablation study on the performance stability of TI-ST vs. ST across the different experimental segmentation tasks.}{fig:ablation_stability}
+\textfig{1}{figures/ablation_stability.pdf}{Ablation study on the performance stability of TI-ST vs. ST across the different experimental segmentation tasks.}{fig:ablation_stability}
 
 %\begin{figure}[t]
 %\centering

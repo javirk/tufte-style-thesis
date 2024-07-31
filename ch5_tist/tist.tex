@@ -5,12 +5,12 @@
 \chaptermark{Domain Adaptation with Transformation-Invariant Self-Training}
 \label{chapter:tist}
 
-\sidechaptersummary{Sum1, Sum2}
+\sidechaptersummary{Unsupervised Domain Adaptation Method, Transformation Invariant Predictions}
 
 \subsubsection{Synopsis}Models capable of leveraging unlabelled data are crucial in overcoming large distribution gaps between the acquired datasets across different imaging devices and configurations. In this regard, self-training techniques based on pseudo-labeling have been shown to be highly effective for unsupervised domain adaptation. However, the unreliability of pseudo labels can hinder the capability of self-training techniques to induce abstract representation from the unlabeled target dataset, especially in the case of large distribution gaps. 
 Since the neural network performance should be invariant to image transformations, we look to this fact to identify uncertain pseudo labels. Indeed, we argue that transformation invariant detections can provide more reasonable approximations of ground truth. Accordingly, we propose an unsupervised domain adaptation strategy termed transformation-invariant self-training (TI-ST) to assess pixel-wise pseudo-labels' reliability and filter out unreliable detections during self-training. We perform comprehensive evaluations for domain adaptation using three different modalities of medical images, two different network architectures, and several alternative state-of-the-art domain adaptation methods. Experimental results confirm the superiority of our proposed method in mitigating the lack of target domain annotation and boosting segmentation performance in the target domain.
 
-\subsubsection{Publication}This chapter is based on a publication\sideauthorcite{ghamsarian2023domain}, and its contents have been modified slightly to be more consistent with the rest of the thesis. 
+\subsubsection{Publication}This chapter is based on a publication\sideauthorcite{ghamsarian2023domain}, and its contents have been modified slightly to be more consistent with the rest of the thesis. In particular, the notation in \Cref{sec:tist_methodology} has been adapted to agree with the rest of the thesis, \Cref{fig:tist_method} has been modified, and \Cref{fig:tist_ablation,fig:ablation_stability} have different colors to those in the published version.
 
 \subsubsection{Author contributions}The work in this chapter was done in collaboration with the University Hospital Bern. The contributing authors were Negin Ghamsarian, Pablo Márquez Neila, Sebastian Wolf, Martin Zinkernagel, Klaus Schoeffmann, and Raphael Sznitman. My contribution consisted of helping with running the experiments and building the figures for the final version of the paper.
 

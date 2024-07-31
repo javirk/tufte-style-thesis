@@ -184,7 +184,7 @@
 \makeatletter
 \RenewDocumentCommand\sidenotetext{ o o +m }{%
     \IfNoValueOrEmptyTF{#1}{%
-        \@sidenotes@placemarginal{#2}{\setstretch{1.0}\noindent\footnotesize\RaggedRight{\thesidenote{}}~~#3}%
+        \@sidenotes@placemarginal{#2}{\setstretch{1.0}\noindent\footnotesize\RaggedRight{S\thesidenote{}}~~#3}%
         \refstepcounter{sidenote}%
     }{%
         \@sidenotes@placemarginal{#2}{\noindent\footnotesize\RaggedRight{#1}~~#3}%
@@ -661,30 +661,36 @@
 	\endgroup%
 }
 
+
 %	T O C  C U S T O M I Z A T I O N
 %
 \contentsmargin[1cm]{0cm}
 \titlecontents{part}[0em]
-	{\large\scshape}
-	{\scshape\thecontentslabel}
-	{\vskip 4pt\small\scshape\lowercase}
-	{\dotfill\textcolor{niceBlue}\small{\contentspage}}[\vskip 0pt]
+	{\hypersetup{linkcolor=niceBlue}\large\scshape}
+	{\hypersetup{linkcolor=black}\scshape\thecontentslabel}
+	{\vskip 4pt\normalsize\scshape\lowercase}
+	{\hfill\textcolor{niceBlue}{\small\contentspage[\hfill\thecontentspage]}}
+        [\vskip 0pt]
+ 
 \titlecontents{chapter}[0em]
 	{\normalsize\vspace{12pt}}
-	{\makebox[-1em][r]{\thecontentslabel}\normalsize\hspace{1em}}
+	{\hypersetup{linkcolor=black}\makebox[-1em][r]{\thecontentslabel}\normalsize\hspace{1em}}
 	{\small}
-	{\dotfill\textcolor{niceBlue}{\contentspage}}[\vskip 2pt]
+	{\hfill\textcolor{niceBlue}{\contentspage[\hfill\thecontentspage]}}
+        [\vskip 2pt]
+        
 \titlecontents{section}[0em]
-	{\addvspace{0.5em}\small}
-	{\thecontentslabel~~}
 	{\small}
-	{\dotfill\textcolor{niceBlue}{\contentspage}}
+	{\hypersetup{linkcolor=black}\thecontentslabel~~}
+	{\small}
+        {\dotfill\makebox[1.5em][r]{\contentspage[\hfill\textcolor{niceBlue}\thecontentspage]}}
 	[\vskip 2pt]
+ 
 \titlecontents{subsection}[1.5em]
 	{\small}
-	{\thecontentslabel~~}
-	{\small}
-	{\dotfill\textcolor{niceBlue}{\contentspage}}
+	{\hypersetup{linkcolor=black}\thecontentslabel~~}
+	{\small\hypersetup{linkcolor=black}}
+	{\dotfill\makebox[1.5em][r]{\contentspage[\hfill\textcolor{niceBlue}\thecontentspage]}}
 	[\vskip 2pt]
 
 % \titlecontents{subsection}[0em]
@@ -701,17 +707,20 @@
 
 % TOCLOFT (stolen from classicthesis)
 \renewcommand{\cftfigpresnum}{\scshape\MakeTextLowercase}%
-\renewcommand{\cftfigfont}{\normalfont}%
-\renewcommand{\cftfigleader}{\hspace{2.5em}}%
+\renewcommand{\cftfigfont}{\small\hypersetup{linkcolor=black}}%
+\renewcommand{\cftfigleader}{\dotfill}%\hspace{1em}}%
 \renewcommand{\cftfigafterpnum}{\cftparfillskip}%
 \renewcommand{\cftfigpresnum}{\figurename~}%Fig.~}
+\renewcommand{\cftfigpagefont}{\color{niceBlue}}
 \newlength{\figurelabelwidth}
 \settowidth{\figurelabelwidth}{\cftfigpresnum~999}
 \addtolength{\figurelabelwidth}{1em}
 \cftsetindents{figure}{0em}{\figurelabelwidth}
+\cftsetpnumwidth{3ex}%width for  single page numbers, added <<<<<<<<<<<<<<<<<<<<<<
+
 % tables
-\renewcommand{\cfttabfont}{\normalfont}%
-\renewcommand{\cfttableader}{\hspace{2.5em}}%
+\renewcommand{\cfttabfont}{\small\hypersetup{linkcolor=black}}%
+\renewcommand{\cfttableader}{\dotfill}%\hspace{1em}}%
 \renewcommand{\cfttabafterpnum}{\cftparfillskip}%
 \renewcommand{\cfttabpresnum}{\tablename~}%Tab.~}
 \newlength{\tablelabelwidth}

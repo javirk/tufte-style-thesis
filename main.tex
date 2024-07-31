@@ -54,21 +54,23 @@
 %\chapter{Acknowledgements}
 %Placeholder
 %
+
 \tableofcontents
 \listoffigures
 \listoftables
-\listoflistings
+%\listoflistings
+
 
 
 \mainmatter
 
-\part{Prologue}
-\import{ch1_introduction/}{introduction}
+% \part{Prologue}
+% \import{ch1_introduction/}{introduction}
 % \import{ch2_background/}{background}
 % \part{Rethinking Data Labeling}
 % \import{ch3_fullweak/}{fullweak.tex}
 % \part{Adapt to Unseen Data}
-% \import{ch4_sam_da}{sam_da.tex}
+\import{ch4_sam_da}{sam_da.tex}
 % \import{ch5_tist}{tist.tex}
 % \part{Weak Labels And Domain Knowledge for a Real-World Problem}
 % \import{ch6_oct_localization/}{oct_localization}
@@ -88,18 +90,26 @@
 
 %%%%%%%%% APPENDICES
 \part*{Appendix}
-% \appendix
+\appendix
 
 \setcounter{table}{0}
 \setcounter{figure}{0}
+\setcounter{section}{0}
 
 \renewcommand{\thetable}{A\arabic{table}}  %% Change this A to something that uses the chapter name
 \renewcommand{\thefigure}{A\arabic{figure}}  %% Change this A to something that uses the chapter name
+\renewcommand{\thechapter}{\Alph{chapter}}
+\renewcommand{\thesection}{\Alph{section}}
 
 % \import{appendices/introduction}{app_intro.tex}
+% \clearpage
 % \import{appendices/background}{app_background.tex}
+% \clearpage
 % \import{appendices/fullweak}{app_fullweak.tex}
-% \import{appendices/sam_da}{app_sam_da.tex}
+% \clearpage
+\import{appendices/sam_da}{app_sam_da.tex}
+% \clearpage
+% \import{appendices/oct}{app_oct.tex}
 
 \cleardoublepage
 
