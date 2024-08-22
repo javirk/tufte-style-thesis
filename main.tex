@@ -24,19 +24,13 @@
 \addbibresource{refs.bib} % for biblatex
 
 % INFO : used in the titlepage, copyright and stuff.
-\author{Sylvain Kern}
-\title{\texttt{tufte-style-thesis},\\a Tufte-styled \LaTeX{} class for theses}
-\subtitle{Actually more of a mix\\between Edward Tufte and Robert Bringhurst}
-\university{A fancy University}
-\lab{An even fancier Lab}
-\person{Supervisor}{their name}{their job}
-\person{Cosupervisor}{also their name}{also their job}
-\person{Jury members}{jury 1}{jobs}
-\person{}{jury 2}{\dots}
-\logo{example-image-a}
-\logo{example-image-b}
-\logo{example-image-c}
-\shoutouts{For my homies}
+\author{Javier Gamazo Tejero}
+\title{Data Problems in AI}
+\university{University of Bern}
+\person{Supervisor}{Prof. Dr. Raphael Sznitman}{Faculty of Medicine of the University of Bern}
+\person{Co-advisor}{also their name}{also their job}
+\shoutouts{For my family}
+\date{\today}
 
 \begin{document}
 
@@ -47,38 +41,40 @@
 %\maketitle
 
 \frontmatter
+\pagenumbering{Roman}
+\pagestyle{empty}
 
-%\chapter{Abstract}
-%Placeholder
-%
-%\chapter{Acknowledgements}
-%Placeholder
-%
+\include{frontmatter/publishing_words}
+\include{frontmatter/abstract}
+\include{frontmatter/acknowledgements}
 
 \tableofcontents
 \listoffigures
 \listoftables
 %\listoflistings
 
+\clearpage
+\pagestyle{fancy}
 
 
 \mainmatter
+\pagenumbering{arabic}
 
-% \part{Prologue}
-% \import{ch1_introduction/}{introduction}
-% \import{ch2_background/}{background}
-% \part{Rethinking Data Labeling}
-% \import{ch3_fullweak/}{fullweak.tex}
-% \part{Adapt to Unseen Data}
+\part{Prologue}
+\import{ch1_introduction/}{introduction}
+\import{ch2_background/}{background}
+\part{Rethinking Data Labeling}
+\import{ch3_fullweak/}{fullweak.tex}
+\part{Adapt to Unseen Data}
 \import{ch4_sam_da}{sam_da.tex}
-% \import{ch5_tist}{tist.tex}
-% \part{Weak Labels And Domain Knowledge for a Real-World Problem}
-% \import{ch6_oct_localization/}{oct_localization}
-% \part{Discussion}
-% \import{ch7_discussion/}{discussion}
-% \part{Epilogue}
-% \import{ch8_conclusion/}{conclusion}
-% \import{ch9_futurework/}{future_work}
+\import{ch5_tist}{tist.tex}
+\part{Weak Labels And Domain Knowledge for a Real-World Problem}
+\import{ch6_oct_localization/}{oct_localization}
+\part{Discussion}
+\import{ch7_discussion/}{discussion}
+\part{Epilogue}
+\import{ch8_conclusion/}{conclusion}
+\import{ch9_futurework/}{future_work}
 
 
 \backmatter
@@ -101,15 +97,15 @@
 \renewcommand{\thechapter}{\Alph{chapter}}
 \renewcommand{\thesection}{\Alph{section}}
 
-% \import{appendices/introduction}{app_intro.tex}
-% \clearpage
-% \import{appendices/background}{app_background.tex}
-% \clearpage
-% \import{appendices/fullweak}{app_fullweak.tex}
-% \clearpage
+\import{appendices/introduction}{app_intro.tex}
+\newpage
+\import{appendices/background}{app_background.tex}
+\newpage
+\import{appendices/fullweak}{app_fullweak.tex}
+\newpage
 \import{appendices/sam_da}{app_sam_da.tex}
-% \clearpage
-% \import{appendices/oct}{app_oct.tex}
+\newpage
+\import{appendices/oct}{app_oct.tex}
 
 \cleardoublepage
 

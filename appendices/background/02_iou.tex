@@ -2,7 +2,7 @@
 
 % Based on: https://arxiv.org/pdf/2304.04319 (only for DSC)
 
-We hereby proof that Dice loss is differentiable while IoU (Intersection over Union) loss is not. We begin by defining both loss functions and the used variables. Then, we reproduce the derivation in \yeartextcite{kervadec2023dice} for the gradients of the Dice loss and apply the same steps to IoU.
+We hereby proof that Dice loss is differentiable while IoU (Intersection over Union) loss is not. We begin by defining both loss functions and the used variables. Then, we reproduce the derivation in \yeartextcite{kervadec2023dice} for the gradients of the Dice loss and apply the same calculations to IoU.
 
 Let $y^{(\cdot,\cdot)}:(\Omega \times \K)\rightarrow\{0, 1\}$ be a one-hot encoded ground-truth segmentation in a D-dimensional image space $\Omega \subset \real^D$ with $\K$ classes, and $s^{(\cdot,\cdot)}_{\vect{\theta}}:(\Omega \times \K)\rightarrow[0, 1]$ the predicted segmentation probabilities from a model with parameters $\vect{\theta}$.
 

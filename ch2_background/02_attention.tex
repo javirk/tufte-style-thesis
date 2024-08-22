@@ -55,7 +55,7 @@ In response to the challenges outlined in the section above, we have witnessed t
 \end{equation*}
 where $B\in\real^{d\times r}$ and $A\in\real^{r\times k}$ are the adaptation matrices with rank $r \ll min(d,k)$. 
 
-This method is applied to the query, key, and value matrices within the attention layers in a transformer. Indeed, training the adaptation matrices reduces the expressiveness of the model but also increases the training efficiency due to the reduced number of parameters\sidenote{$W_0$ has $dk$ parameters, while $A$ and $B$ combined have $r(d+k)$.}.
+This method is applied to the query, key, and value matrices within the attention layers in a transformer. Indeed, training the adaptation matrices reduces the expressiveness of the model but also increases the training efficiency due to the reduced number of parameters\sidenote{$W_0$ has $d\times k$ parameters, while $A$ and $B$ combined have $r(d+k)$.}.
 
 Other works have envisioned adaptation methods that function as plugins for large models. These emerged along with large-scale models in the \autoindex{Natural Language Processing} literature~\sideauthorcite{houlsby2019parameter} with the Adapter framework and have subsequently spread to other fields of deep learning. The fundamental concept underlying these methods is to insert a module with few parameters into the base model and solely update those while maintaining the pre-trained model frozen. Initially pioneered by the Adapter framework, this approach inserts such modules sequentially after the self-attention layer in all transformer layers. Since then, various other methodologies have emerged, with adaptations in the position of the adapter.
 

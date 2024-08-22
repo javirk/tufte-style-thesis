@@ -12,7 +12,7 @@ We present the descriptive statistics of the training and testing sets in \Cref{
  & Training dataset & Testing dataset \\ \midrule
 Number of patients & 433 & 189 \\
 Number of eyes & 460 & 322 \\
-Number of slices & 22’723 & 28'322 \\
+Number of slices & 22,723 & 28,322 \\
 Present pathologies & Diabetic retinopathy with and without Diabetic Macular Edema (DME), and early, intermediate, and late AMD & DME \\
 Annotations & Slice-level annotations for IRF and SRF & Slice-level SRF and IRF presence   annotations for the ETDRS rings at 1mm, 3mm, and 6mm \\ \bottomrule
 \end{tabular}
@@ -58,7 +58,7 @@ All methods were implemented using PyTorch. Our method and the baselines were tr
 
 \subsection{Segmentation results}
 
-To further demonstrate the accuracy of our method in locating biological markers, we also compare our results to the subset of test images for which IRF and SRF ground-truth segmentations are available\sidenote{$2'646$ OCT slices}. For this purpose, a column is considered positive for a marker if it contains at least one pixel of that marker. Our method achieved AUCs over 90\% for both IRF and SRF, as shown in \Cref{tab:segmentation_results}. The low mAP for SRF can be attributed to its very low occurrence rate.
+To further demonstrate the accuracy of our method in locating biological markers, we also compare our results to the subset of test images for which IRF and SRF ground-truth segmentations are available\sidenote{$2,646$ OCT slices}. For this purpose, a column is considered positive for a marker if it contains at least one pixel of that marker. Our method achieved AUCs over 90\% for both IRF and SRF, as shown in \Cref{tab:segmentation_results}. The low mAP for SRF can be attributed to its very low occurrence rate.
 
 \begin{margintable}[]\small
 \caption{Results on the segmentation dataset}

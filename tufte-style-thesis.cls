@@ -119,15 +119,23 @@
 	% doi=false,
 	% isbn=false,
 	% url=false,
-	autocite 	= superscript,
+	% autocite 	= superscript,
 	backend 	= biber,
 	citestyle 	= numeric-comp,
-        %style       = authoryear,
+        % style       = authoryear,
 	style 		= nature,
 	% citecolor   = niceBlue,
-	sorting		= none,
+	sorting		= nyt,
 	bibencoding = utf8,
+        maxbibnames=5,
+        minnames=1,
+        minbibnames=5,
+        uniquename=false,
+        date=year,
+        % dashed=false,  % If two entries have the same author biblatex writes a dash in the bibliography
+        urldate=long
 ]{biblatex}
+
 \RequirePackage{csquotes}
 %%% TEST footmisc
 \RequirePackage[
@@ -153,7 +161,6 @@
 \RequirePackage{xifthen}
 \RequirePackage{ifoddpage}
 \RequirePackage[object=vectorian]{pgfornament} %%  http://altermundus.com/pages/tkz/ornament/index.html
-
 
 
 % INDEX
@@ -184,13 +191,15 @@
 \makeatletter
 \RenewDocumentCommand\sidenotetext{ o o +m }{%
     \IfNoValueOrEmptyTF{#1}{%
-        \@sidenotes@placemarginal{#2}{\setstretch{1.0}\noindent\footnotesize\RaggedRight{S\thesidenote{}}~~#3}%
+        \@sidenotes@placemarginal{#2}{\setstretch{1.0}\noindent\footnotesize\RaggedRight{\textsuperscript\thesidenote{}}~~#3}%
         \refstepcounter{sidenote}%
     }{%
-        \@sidenotes@placemarginal{#2}{\noindent\footnotesize\RaggedRight{#1}~~#3}%
+        \@sidenotes@placemarginal{#2}{\noindent\footnotesize\RaggedRight\textsuperscript{#1}~~#3}%
     }%
 }
 \makeatother
+
+
 
 \newcommand{\sidetext}[1]
 {\marginpar{\setstretch{1.0}\footnotesize\noindent #1 \vskip 3pt}}
@@ -245,6 +254,13 @@
   }
  }
 \ExplSyntaxOff
+\newcommand{\desctotoc}[1]{%
+  \addtocontents{toc}{%
+    \begin{minipage}[t]{250pt}%  % Ugly, but it works
+      \color{gray}\footnotesize\noindent\raggedright\detokenize{#1}\leavevmode\par\medskip%
+    \end{minipage}%
+  }%
+}
 
 %	F U L L  A R A B I C (titlepage = page1)
 %
@@ -293,7 +309,7 @@
 	{\thispagestyle{empty}\huge\raggedleft}
 	{\Large\lsstyle\MakeUppercase{\partname}~~\thepart\normalfont}
 	{0em}
-	{\vskip 12pt \setstretch{0.9}\huge\lsstyle\sffamily\uppercase}
+	{\vskip 12pt \setstretch{0.9}\huge\lsstyle\uppercase}  % \sffamily
 % \let\oldpart\part
 % \renewcommand{\part}{
 % }
@@ -534,23 +550,15 @@
 \makeatother
 
 %	COLOPHON
-%\AtEndDocument{
-%	\cleardoublepage
-%	\pagestyle{empty}
-%	\footnotesize\raggedleft
-%	\hfill
-%	\vfill
-%	\noindent This document was typeset using \LaTeX{} and the \texttt{tufte-style-thesis} class.
-%
-%	The style is heavily inspired by the works of Edward R. Tufte and Robert Bringhurst.
-%
-%	This is available on here:
-%
-%	\vskip 8pt
-%
-%	\centering \url{https://github.com/sylvain-kern/tufte-style-thesis/}.\\
-%	\raggedleft\noindent Feel free to contribute!
-%}
+% \AtEndDocument{
+% 	\cleardoublepage
+% 	\pagestyle{empty}
+% 	\hfill
+% 	\vfill
+% 	\noindent This document was typeset using \LaTeX{} and the style is heavily inspired by the works of Edward R. Tufte and Robert Bringhurst.
+%         \par
+%         This work could not have been possible without the invaluable contributions and research of thousands before me. Each margin citation, with explicit names, serves as a tribute to them. My deepest gratitude and respect to all whose names are etched into the margins of these pages, and also to the ones that made this possible.
+% }
 
 %	F I G U R E S  A N D  S T U F F
 %
@@ -665,10 +673,18 @@
 %	T O C  C U S T O M I Z A T I O N
 %
 \contentsmargin[1cm]{0cm}
+
+% \titlecontents{⟨section⟩}[⟨left⟩]
+%   {⟨above-code⟩}
+%   {⟨numbered-entry-format⟩}
+%   {⟨numberless-entry-format⟩}
+%   {⟨filler-page-format⟩}
+%   [⟨below-code⟩]
+
 \titlecontents{part}[0em]
 	{\hypersetup{linkcolor=niceBlue}\large\scshape}
 	{\hypersetup{linkcolor=black}\scshape\thecontentslabel}
-	{\vskip 4pt\normalsize\scshape\lowercase}
+	{\vskip 4pt\normalsize\scshape\lowercase{\hspace{-1.4em}}}
 	{\hfill\textcolor{niceBlue}{\small\contentspage[\hfill\thecontentspage]}}
         [\vskip 0pt]
  
@@ -683,14 +699,14 @@
 	{\small}
 	{\hypersetup{linkcolor=black}\thecontentslabel~~}
 	{\small}
-        {\dotfill\makebox[1.5em][r]{\contentspage[\hfill\textcolor{niceBlue}\thecontentspage]}}
+        {\dotfill\makebox[0.75em][r]{\contentspage[\hfill\textcolor{niceBlue}\thecontentspage]}}
 	[\vskip 2pt]
  
 \titlecontents{subsection}[1.5em]
 	{\small}
 	{\hypersetup{linkcolor=black}\thecontentslabel~~}
 	{\small\hypersetup{linkcolor=black}}
-	{\dotfill\makebox[1.5em][r]{\contentspage[\hfill\textcolor{niceBlue}\thecontentspage]}}
+	{\dotfill\makebox[0.75em][r]{\contentspage[\hfill\textcolor{niceBlue}\thecontentspage]}}
 	[\vskip 2pt]
 
 % \titlecontents{subsection}[0em]
@@ -776,20 +792,41 @@
 %}}
 
 %% With title
-\newcommand\sideauthorcite[2][]{\autocite{#2}\sidetext{\ifthenelse{\equal{#1}{}}{}{\vskip #1}%
-\@for\cle:={#2}\do{\raggedright\makebox[0pt][r]{\autocite{\cle}}\citeauthor{\cle} (\citeyear{\cle}), \citetitle{\cle}.\\\vskip 4pt}%
+% \newcommand\sideauthorcite[2][]{\autocite{#2}\sidetext{\ifthenelse{\equal{#1}{}}{}{\vskip #1}%
+% \@for\cle:={#2}\do{\raggedright\makebox[0pt][r]{\autocite{\cle}}\citeauthor{\cle} (\citeyear{\cle}), \citetitle{\cle}.\\\vskip 4pt}%
+% }}
+\newcommand\sideauthorcite[2][]{\sidenote{\ifthenelse{\equal{#1}{}}{}{\vskip #1}%
+\@for\cle:={#2}\do{\raggedright\makebox[0pt][r]{}\citeauthor{\cle} (\citeyear{\cle}), \citetitle{\cle}.\\\vskip 4pt}%
 }}
 
 %% Without the title:    
-\newcommand\sidecite[2][]{\autocite{#2}\sidetext{\ifthenelse{\equal{#1}{}}{}{\vskip #1}%
-\@for\cle:={#2}\do{\raggedright\makebox[0pt][r]{\autocite{\cle}}\citeauthor{\cle} \citeyear{\cle}.\\\vskip 3pt}%
-}}
+% \newcommand\sidecite[2][]{\sidetext{\ifthenelse{\equal{#1}{}}{}{\vskip #1}%
+% \@for\cle:={#2}\do{\raggedright\makebox[0pt][r]{\autocite{\cle}}\citeauthor{\cle} \citeyear{\cle}.\\\vskip 3pt}%
+% }}
+%\newcommand\sidecite[2][]{\sidenote{\ifthenelse{\equal{#1}{}}{}{\vskip #1}%
+%\@for\cle:={#2}\do{\raggedright\makebox[0pt][r]{}\citeauthor{\cle} (\citeyear{\cle}), }%
+%}}
+\newcommand\sidecite[2][]{%
+  \sidenote{%
+    \ifthenelse{\equal{#1}{}}{}{\vskip #1}%
+    \def\last{}%
+    \renewcommand{\do}[1]{\def\last{##1}}%
+    \docsvlist{#2}% This stores the last element in \last
+    \@for\cle:=#2\do{%
+      \raggedright\makebox[0pt][r]{}\Citeauthor*{\cle} (\citeyear{\cle})%
+      \ifthenelse{\equal{\cle}{\last}}{}{, }%
+    }%
+  }%
+}
 
-\newcommand\yeartextcite[2][]{\@for\cle:={#2}\do{\citeauthor{\cle} (\citeyear{\cle})}}
+\newcommand\yeartextcite[2][]{\@for\cle:={#2}\do{\Citeauthor*{\cle} (\citeyear{\cle})}}
 
-\newcommand\sidetextcite[2][]{\sidetext{\ifthenelse{\equal{#1}{}}{}{\vskip #1}%
-\@for\cle:={#2}\do{\makebox[0pt][r]{\autocite{\cle}}\fullcite{\cle}.\\\vskip 4pt}%
+\newcommand\sidetextcite[2][]{\sidenote{\ifthenelse{\equal{#1}{}}{}{\vskip #1}%
+\@for\cle:={#2}\do{\makebox[0pt][r]{}\fullcite{\cle}.\\\vskip 4pt}%
 }}
+% \newcommand\sidetextcite[2][]{\sidetext{\ifthenelse{\equal{#1}{}}{}{\vskip #1}%
+% \@for\cle:={#2}\do{\makebox[0pt][r]{\autocite{\cle}}\fullcite{\cle}.\\\vskip 4pt}%
+% }}
 \makeatother
 
 \DeclareCiteCommand{\fullcite}
@@ -979,3 +1016,10 @@
 \AtBeginDocument{%
 	\setstretch{1.12}
 }
+
+% BIBLIOGRAPHY STYLING
+\DeclareNameAlias{author}{first-last}
+% \DeclareNameAlias{editor}{first-last}
+\DeclareDelimFormat[bib]{nametitledelim}{\newline\bibsentence}
+\DeclareFieldFormat*{title}{\textcolor{burgundy}{#1}}
+\setlength\bibitemsep{1.5\itemsep}

@@ -6,10 +6,10 @@ To validate our approach, we evaluated it on four different datasets, while comp
 \subsection{Datasets} 
 We chose a collection of datasets with different image modalities, including a medical dataset as they often suffer from data and annotation scarcity. In this context, they represent a typical new application domain where our method could be particularly helpful. In each case, we enumerate the number of images for which classification or segmentation images can be sampled by a method\sidenote{See \Cref{tab:full_weak_datasets} for the number of training images in each dataset.}:
 \begin{description}
-    \item \textbf{Augmented PASCAL VOC 2012}\sideauthorcite{pascal-voc-2012}: 5'717~classification and 10'582~segmentation natural images with 21~classes for training. The validation sets contain 1'449 segmented images.
-    \item \textbf{SUIM}\sideauthorcite{islam2020semantic}: training set consists of 1'525 underwater images with annotations for 8 classes. For evaluation, we used a separate split of 110 additional images. The classification labels were estimated from the segmentation ground-truth as a multi-label problem by setting the class label to~1 if the segmentation map contained at least one pixel assigned to that class.
-    \item \textbf{Cityscapes}\sideauthorcite{cordts2016cityscapes}: 2'975 annotated images for both classification and segmentation are available for training. We test on the official Cityscapes validation set, which contains 500 images. 
-    \item \textbf{OCT}: 22'723 Optical Coherence Tomography~(OCT) images with classification annotations and 1,002~images with pixel-wise annotations corresponding to 4 different types of retinal fluid for segmentation. We split the data into 902~training images and 100~test images.
+    \item \textbf{Augmented PASCAL VOC 2012}\sideauthorcite{pascal-voc-2012}: 5,717~classification and 10,582~segmentation natural images with 21~classes for training. The validation sets contain 1,449 segmented images.
+    \item \textbf{SUIM}\sideauthorcite{islam2020semantic}: training set consists of 1,525 underwater images with annotations for 8 classes. For evaluation, we used a separate split of 110 additional images. The classification labels were estimated from the segmentation ground-truth as a multi-label problem by setting the class label to~1 if the segmentation map contained at least one pixel assigned to that class.
+    \item \textbf{Cityscapes}\sideauthorcite{cordts2016cityscapes}: 2,975 annotated images for both classification and segmentation are available for training. We test on the official Cityscapes validation set, which contains 500 images. 
+    \item \textbf{OCT}: 22,723 Optical Coherence Tomography~(OCT) images with classification annotations and 1,002~images with pixel-wise annotations corresponding to 4 different types of retinal fluid for segmentation. We split the data into 902~training images and 100~test images.
 \end{description}
 
 \subsection{Baseline strategies} We compared our method to ten different \textit{fixed} budget allocation strategies. Each of these randomly sample images for classification and segmentation annotations according to a specified and fixed proportion. We denote these policies by the percentage dedicated to segmentation annotations: $B_0$: $50\%, 55\%, \ldots, 95\%$ with increases in 5\%. For a fair comparison, the strategies are computed from the budget $B_0$.
@@ -42,10 +42,10 @@ We measured costs in terms of class-label equivalents setting~$\alpha_c=1$ and l
 \begin{tabular}{lcccccc}
 \toprule
 \textbf{Dataset} & $C_0 (\%)$ & $S_0 (\%)$ & $B_0$ \\ \midrule
-OCT & 4 & 8 & 1'774 \\
-VOC & 8 & 6 & 8'076 \\
-SUIM & 8 & 8 & 1'586 \\ 
-Cityscapes & 8 & 8 & 1'774  \\ \bottomrule
+OCT & 4 & 8 & 1,774 \\
+VOC & 8 & 6 & 8,076 \\
+SUIM & 8 & 8 & 1,586 \\ 
+Cityscapes & 8 & 8 & 1,774  \\ \bottomrule
 \end{tabular}
 \sidecaption{Initial conditions for our method. $B_0$ calculated with $\alpha_s = 12$ and $\alpha_c = 1$.\label{tab:configurations_gp}}
 \end{table}
@@ -62,10 +62,10 @@ The proportions~$\rho_s$ and~$\rho_c$ are relative to the total amounts of avail
 \begin{tabular}{lcc}
 \hline
 \textbf{Dataset} & \textbf{Segmentation} & \textbf{Classification} \\ \hline
-OCT & 902 & 22'723 \\
-VOC & 10'582 & 5'717 \\
-SUIM & 1'525 & 1'525 \\
-Cityscapes & 2'975 & 2'975 \\ \hline
+OCT & 902 & 22,723 \\
+VOC & 10,582 & 5,717 \\
+SUIM & 1,525 & 1,525 \\
+Cityscapes & 2,975 & 2,975 \\ \hline
 \end{tabular}
 
 \end{table}

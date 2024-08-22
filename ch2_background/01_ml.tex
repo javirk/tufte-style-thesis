@@ -51,7 +51,7 @@ We can now interpret an image as a discrete two-dimensional function of the spat
     \label{eq:convolution_2d}
 \end{equation}
 
-This is the operation performed by convolutional layers in CNNs, where $x$ represents the image and the function $w$ is called \textit{kernel}\sidenote{Or filter. They will be treated as synonyms along this text}. The output is named \textit{feature map}. Usually, the kernel will be smaller than the image, and its parameters will be learned.
+This is the operation performed by convolutional layers in CNNs, where $x$ represents the image and the function $w$ is called \textit{kernel}\sidenote{Or filter. They will be treated as synonyms along this text.}. The output is named \textit{feature map}. Usually, the kernel will be smaller than the image, and its parameters will be learned.
 
 From \Cref{eq:convolution_2d}, we notice that opposite to MLPs, convolutional layers only affect the neighbors of the pixel $(i, j)$, favoring spatial relations. Also, for this reason, the number of parameters is significantly lower. Furthermore, the convolutional setup enables the usage of variable size images. 
 

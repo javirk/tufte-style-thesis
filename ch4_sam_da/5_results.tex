@@ -1,5 +1,5 @@
 \section{Results}
-\label{sec:results}
+\label{sec:samda_results}
 %% Points:
 %% - Supervised experiments (table 1) + zero-shot (table 2)
 %% - TTDA experiments (table 3)
@@ -87,8 +87,6 @@ Encoder & $64.7{\scriptscriptstyle \pm 6.8}$ & $80.4{\scriptscriptstyle \pm 1.4}
 \subsection{Test-Time Domain Adaptation}
 Due to the low number of trainable parameters, test-time domain adaptation is the ideal setting to test how much an adapter can affect the performance of a single test sample. We show in \Cref{tab:ttda} that our adapter performs better than other baselines in most cases. For MRI, the increase in trainable parameters already in LoRA hurts the initial model and decreases its IoU score after only five iterations. Our method, however, shows strong results in all three cases, as shown in \Cref{fig:ttda_samda} in the appendix.
 
-%In Fig. \ref{fig:ttda}, we compare two runs for Retouch and MRI between our adapter and LoRA (the second best).
-
 \begin{table}[]
 \sidecaption{Test-time domain adaptation results (IoU score). Due to the challenge of zero-initializing HQ-SAM, we omit it from these experiments.\label{tab:ttda}}
 \centering
@@ -111,4 +109,3 @@ SAM-DA & \textbf{67.5} & \textbf{81.1} & \textbf{40.4} \\ \bottomrule
 %}
 %\label{fig:ttda}
 %\end{figure}
-
