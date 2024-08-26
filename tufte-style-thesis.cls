@@ -164,7 +164,7 @@
 
 
 % INDEX
-\newcommand{\autoindex}[1]{#1\index{#1}}
+\newcommand{\autoindex}[1]{#1\index{\lowercase{#1}}}
 
 %	C O L O R  D E F I N I T I O N
 %

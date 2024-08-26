@@ -2,3 +2,125 @@
 \label{app:blup}
 
 % Proof that gaussian processes produce BLUP, based on https://www2.stat.duke.edu/~pdh10/Teaching/721/Materials/ch2blue.pdf and https://gpss.cc/gpss21/slides/Wilkinson2021.pdf
+
+\begin{theorem}[Gaussian Process Regression produces BLUP]
+    Given a noisy regression model $G(X)=f(X)^T\beta + Z(X)$, with $X\in \mathbb{R}^n$, and a set of observations, Gaussian Process Regression constitutes the best linear unbiased prediction $\hat{G}(X)$,~\ie it has the following properties:
+    \begin{itemize}
+        \item It is a linear combination of the observations
+        \begin{equation}
+            \hat{G}(X)\equiv a(X)^Ty
+        \end{equation}
+        \item It is unbiased
+        \begin{equation}
+            \expect[G(X)-\hat{G}(X)] = 0
+        \end{equation}
+        \item It is the best
+        \begin{equation}
+            \hat{G}^*=\argmin_{\hat{G}(X)}\expect[\left(G(X)-\hat{G}(X)\right)^2]
+        \end{equation}
+    \end{itemize}
+\end{theorem}
+\begin{proof}
+    We can frame this as a constrained optimization problem, where the goal is to find the optimal weight vector $a(X)^*$ subject to the constraint that it is unbiased:
+    \begin{align}
+        a(X)^*=\argmin_{a(X)}\expect[\left(G(X)-a(X)^Ty\right)^2] & \nonumber \\
+        \text{s. t. } \expect[G(X)-a(X)^Ty] = 0 &
+        \label{eq:optimization_app}
+    \end{align}
+    
+    In order to prove the theorem, we will rewrite the optimization problem as a Lagrangian expression $\mathcal{L}(a(X), \lambda)$ with a multiplier $\lambda$. Then, we will find its stationary points, which are solutions for $\nabla_{a(X),\lambda}\mathcal{L}(a(X), \lambda) = 0$. The resulting system of equations will allow us to find the optimal weight vector $a(X)^*$. Finally, we will identify the expressions for the mean and variance of $\hat{G}(X)$ --- $\mu_{\hat{G}}$ and $\sigma^2_{\hat{G}}$ --- with those of a Gaussian Process and see that they are comparable.
+
+    To find the optimal weight vector, \Cref{eq:optimization_app} can be rewritten as a Lagrangian expression with a multiplier $\lambda$:
+    \begin{equation}
+        \mathcal{L}(a(X), \lambda)=\expect[\left(G(X)-a(X)^Ty\right)^2] + \lambda \expect[G(X)-a(X)^Ty]
+    \end{equation}
+    The stationary points will be given by 
+    \begin{equation}
+        \nabla_{a(X),\lambda}\mathcal{L}(a(X), \lambda) = 0 %\iff {\begin{cases}
+           % \dfrac{\partial \mathcal{L}(a(X), \lambda)}{\partial a(X)} = 0 \\
+           % \dfrac{\partial \mathcal{L}(a(X), \lambda)}{\partial \lambda} = 0 \\
+        %\end{cases}}
+        \label{eq:lagrangian_nabla}
+    \end{equation}
+
+    After some operation, the partial derivative for $a(X)$ in \Cref{eq:lagrangian_nabla} results in
+    \begin{equation*}
+        \dfrac{\partial \mathcal{L}(a(X), \lambda)}{\partial a(X)} = -2\expect[yG(X)] + 2a(X)R - \lambda\expect[y] = 0,
+    \end{equation*}
+    where we have introduced the covariance matrix between observations $R \equiv \expect[yy^T]$\sidenotetext[~]{Covariance matrix $R \equiv \expect[yy^T]$}. Upon substituting this into the partial derivative for $\lambda$, we find an expression for the optimal weights:
+    \begin{equation}
+        a(X)^*=R^{-1}\left\{\expect[yG(X)] + c^{-1}\left(\expect[G(X)] - \expect[y^T]R^{-1}\,\expect[yG(X)]\right) \expect[y]\right\},
+        \label{eq:optimal_weights}
+    \end{equation}
+    where we have introduced the variable $c\equiv\expect[y^T]R^{-1}\,\expect[y]$\sidenotetext[~]{$c\equiv\expect[y^T]\,R^{-1}\expect[y]$} to alleviate the notation. Besides, from now on, we will denote $\mu \equiv \expect[y]$\sidenote{And of course also $\mu^T \equiv \expect[y^T]$}\sidenotetext[~]{$\mu \equiv \expect[y]$}.
+
+    The mean of a prediction $\hat{G}(X)$ can be written as:
+    \begin{equation}
+        \mu_{\hat{G}(X)} = \expect [\hat{G}(X)] = \expect[a(X)^Ty],
+        \label{eq:mean_blup}
+    \end{equation}
+    while its variance takes the form:
+    \begin{equation}
+        \sigma^2_{\hat{G}(X)} = \expect [\left(G(X) - \hat{G}(X)\right)^2] = \expect [\left(G(X) - a(X)^Ty\right)^2].
+        \label{eq:var_blup}
+    \end{equation}
+    We substitute the optimal weights from \Cref{eq:optimal_weights} into \Cref{eq:mean_blup}, operate and reorder the terms to find the mean of a best linear unbiased predictor $\hat{G}(X)^*$:
+    \begin{equation}
+        \mu_{\hat{G}(X)^*} = c^{-1}\expect[G(X)]\mu^T\,R^{-1}\mu + \left(\mu^T\,R^{-1}\expect[yG(X)] - c^{-1} \mu^T\,R^{-1}\expect[yG(X)]\mu^T\,R^{-1}\mu\right)
+        \label{eq:mean_blup_long}
+    \end{equation}
+
+    The previous equation represents the mean of the BLUP. We will compare it with the equivalent expression in Gaussian Process Regression and identify their terms. We will use two colors, black for BLUP text and expressions such as \Cref{eq:mean_blup_long}, and \textcolor{niceBlue}{blue} for GP-related conversation. %This choice will prove useful later.
+
+    {\color{niceBlue}
+
+    On a parallel avenue, we recall that the mean and variance of the conditional distribution given observed data $y$ of a Gaussian Process with mean $f(X)^T\beta$\sidenote{In the context of linear regression, a GP given by $G(X)\sim \mathcal{GP}(f(X)^T\,\beta,\text{Cov}(G(X),G(X'))$ can be written as \[G(X)=f(X)^T\beta + \epsilon(X)\] with $\epsilon(X)$ is a zero-mean Gaussian process with a fully stationary covariance function.} are:
+    \begin{equation}
+        \mu_{\hat{G}}=\expect[\hat{G}(X)|y] = f(X)^T\,\beta + r(X)^T\,R^{-1}(y-F\beta),
+        \label{eq:mean_gp_app}
+    \end{equation}    
+    where $r(X)$ is the vector of cross-correlations between the observed points and the new input point, $R$ represents the covariance matrix between observations\sidenote{Just as it does in \Cref{eq:optimal_weights,eq:mean_blup_long}}, and $F$ is the regression matrix\sidenote{$F_{ij}=f_i(x_j)$.}. In practice, $\beta$ is often estimated by generalized least squares, and substituted by $\hat{\beta}$: 
+    \begin{equation*}
+        \hat{\beta}=(F^T\,R^{-1}F)^{-1}F^T\,R^{-1}y.
+    \end{equation*}
+    }
+
+    We will now show that \textcolor{niceBlue}{\Cref{eq:mean_gp_app}} can be reached from \Cref{eq:mean_blup_long} via term identification. Proving that at least the mean function given by Gaussian Process regression is the BLUP. \Cref{eq:mean_blup_long} is composed of three terms. First, there is a term that depends only on $\expect[G(X)]$, whereas the other two contain $\expect[yG(X)]$ and thus depend on the observations. We will call the first term \emph{fixed term} and the other two \emph{correction term}, and work with them separately:
+    \begin{itemize}
+        \item \textbf{Fixed Term}: BLUP representation: 
+        \begin{equation*}
+            c^{-1}\expect[G(X)]\mu^T\,R^{-1}\mu = (\mu^T\,R^{-1}\mu)^{-1}\expect[G(X)]\mu^T\,R^{-1}\mu \propto \expect[G(X)]
+        \end{equation*}
+        We can see that $\mu^T\,R^{-1}\mu$ is a scalar and thus can be simplified for this analysis.
+        {\color{niceBlue}
+        The fixed term in the GP representation is given by the linear regression model:
+        \begin{equation*}
+            f(X)^T\hat{\beta} = f(X)^T(F^TR^{-1}F)^{-1}F^TR^{-1}y
+        \end{equation*}
+        }
+        Identifying both, we can see that $\expect[G(X)]$ plays the role of {\color{niceBlue} $F^TR^{-1}y$}, and {\color{niceBlue} $f(X)$} is contained in the structure of $\mu$ for the BLUP.
+
+        \item \textbf{Correction Term}: BLUP representation:
+        \begin{equation*}
+            \mu^T\,R^{-1}\expect[yG(X)] - c^{-1}\mu^T\,R^{-1}\expect[yG(X)]\mu^T\,R^{-1}\mu
+        \end{equation*}
+        We can already identify $r(X) \equiv \expect[yG(X)]$ as the vector of cross-correlation between the observed points and the new input, {\color{niceBlue} equivalent to $r(X)$ in the GP formulation}. A reorganization and substitution of $c$ leads to:
+        \begin{equation}
+            r(X)^T\,R^{-1}\left(\mu^T - (\mu^T\,R^{-1}\mu)^{-1}\mu^T\,R^{-1}\mu\right)
+            \label{eq:blup_correction}
+        \end{equation}
+
+        {\color{niceBlue}
+        The correction term in the GP representation is given by the Gaussian Process with zero mean:
+        \begin{equation}
+            r(X)^T\,R^{-1}(y - F\,\hat{\beta})
+            \label{eq:gp_correction}
+        \end{equation}
+        }
+        We see that \Cref{eq:blup_correction,eq:gp_correction} are equivalent following a similar process to the one before.
+    \end{itemize}
+
+    The same process can be repeated for the variance, identifying \Cref{eq:var_blup} with the Gaussian Process Regression variance. This exercise is notably more cumbersome and does not introduce anything new to the proof. Therefore, it is left to the reader's goodwill to believe it or to their hands to prove it. 
+
+    The mean and variance of Gaussian Process Regression are identifiable with those of BLUPs, hence Gaussian Process Regression constitutes the best linear unbiased predictor.    
+\end{proof}
