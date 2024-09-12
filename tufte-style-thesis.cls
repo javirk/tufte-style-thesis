@@ -107,6 +107,7 @@
     citecolor=black  % This is for margin notes
 ]{hyperref}	% automatic references in pdf				% automatic references in pdf
 \setitemize{parsep=3mm, topsep=3mm}
+\setenumerate{parsep=3mm, topsep=3mm}
 
 %\usepackage[colorlinks,citecolor=red,urlcolor=blue,bookmarks=false,hypertexnames=true]{hyperref} 
 
@@ -450,8 +451,6 @@
 % 	shoutouts
 \newcommand\shoutouts[1]{\renewcommand\@shoutouts{#1}}
 \newcommand\@shoutouts{}
-
-% 	ACTUAL MAKETITLE (titlepage + "copyright" and dedication pages)
 \newcommand\@maketitlebis{%
 	\makeatletter
 	\setstretch{1.0}
@@ -691,7 +690,7 @@
 \titlecontents{chapter}[0em]
 	{\normalsize\vspace{12pt}}
 	{\hypersetup{linkcolor=black}\makebox[-1em][r]{\thecontentslabel}\normalsize\hspace{1em}}
-	{\small}
+	{\hypersetup{linkcolor=black}\makebox[-1em][r]{\thecontentslabel}\normalsize\hspace{1em}}
 	{\hfill\textcolor{niceBlue}{\contentspage[\hfill\thecontentspage]}}
         [\vskip 2pt]
         
@@ -1018,8 +1017,16 @@
 }
 
 % BIBLIOGRAPHY STYLING
-\DeclareNameAlias{author}{first-last}
+\DeclareNameAlias{author}{given-family}%{first-last}
 % \DeclareNameAlias{editor}{first-last}
 \DeclareDelimFormat[bib]{nametitledelim}{\newline\bibsentence}
 \DeclareFieldFormat*{title}{\textcolor{burgundy}{#1}}
 \setlength\bibitemsep{1.5\itemsep}
+
+
+%   CUSTOM COMMANDS
+\NewDocumentCommand{\thesistitle} { o m }{%
+ \IfValueTF{#1}{\def\shorttitle{#1}}{\def\shorttitle{#2}}%
+ \def\@title{#2}%
+ \def\ttitle{#2}%
+}

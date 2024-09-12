@@ -1,0 +1,38 @@
+\section{Summary}\label{sec:Summary}
+
+LineaMapper can be used to identify units of chaos and ridged plains in the Galileo RegMaps. 
+We feed the full RegMaps into LineaMapper and post-process the output in a semi-automated way. First, we apply an algorithm for assembling predictions, which identifies segments belonging to the same instance, and second, we manually inspect, discuss, and adjust difficult cases for the southern leading hemisphere. The resulting revised lineament map holds insights into the nature of fragmentation processes within ridged plains and chaos terrain.
+
+
+%%%% Q&A
+Overall, we find evidence that the most recently formed linear features have a higher chance to survive disruption by chaos terrain. Questions we answered with the revised lineament map from \Cref{fig:full_map}:
+\begin{enumerate}
+    % 1111
+    \item \textbf{Question:} Is there a difference in the number or area density of lineaments in the chaos vs. ridged plains region?
+    
+     \textbf{Answer:} Yes, we find a significant difference in number and area density. We count two times more lineaments in ridged plains, while the covered area is 4.3 times higher in ridged plains, which means that the average area covered by an individual lineament is higher in ridged plains. We find that 14.5~\% of chaos area and 64.5~\% of ridged plains area is covered by lineaments. We use these area densities in Question 4, because as expected, the absence of mapped lineaments is an indicator for chaos terrain. 
+    
+    % 222222
+    \item \textbf{Question:} Does the data suggest that the distribution of lineament width, length, number of fragmentations, and FPK, for each lineament category is equal within chaos and ridged plains?
+
+    \textbf{Answer:} As expected, we find a higher number of fragmentations, higher FPK, and shorter length in chaos terrain compared to ridged plains. When separated into categories, we find that bands and ridge complexes show higher differences in lineament characteristics in chaos vs. ridged plains, hinting at different fragmentation processes, as discussed in Sect. \ref{sec:discussing_revisedMap}.
+
+    \item \textbf{Question:} Do we find correlations between lineament characteristics, and do the fits vary for the chaos and ridged plains unit?
+
+    \textbf{Answer:} First, we find an uncertain and weak trend of younger lineaments being wider, and a more certain trend of wider linea being longer. This contradicts the finding by \yeartextcite{Figueredo2004} that older lineaments are wider. However, our method underestimates the width and the correlation is uncertain, therefore, there might not be an underlying real-world correlation. Our finding should ideally be verified with an improved extraction algorithm on the full RegMaps. Speculating, maybe only more recently formed lineaments can withstand formation of chaos terrain, due to their overprinting of older lineae.
+
+
+\end{enumerate}
+
+Questions we answered with the full RegMaps (Figs. \ref{fig_leading_chaos_pr_predicted} and \ref{fig_trailing_chaos_pr_predicted}):
+\begin{enumerate}
+    \item \textbf{Question:} Can LineaMapper identify different terrain types (chaos and ridged plains) by lineament density?
+    
+    \textbf{Answer:} Yes, LineaMapper v1.1 and v2.0 can successfully distinguish between chaos and ridged plains. This can prove useful in preparation for and during the Europa Clipper mission for EIS, but also for consistent mapping of borders in the RegMaps. The large chaos terrain on the leading equatorial region \sidecite{Figueredo2004, Leonard2024}, is characterised in the RegMaps lineament map by a decrease in lineament density, as seen in \Cref{fig:raw_regmaps_LM1.1,fig:raw_regmaps_LM2.0}.
+    
+    The higher performance metrics of LineaMapper v1.1 in the end also led to a higher accuracy in distinguishing between units of chaos and ridged plains.
+
+\end{enumerate}
+
+LineaMapper v1.1 and v2.0 predictions on 112x112 tiles  (\Cref{fig:maps_comparison}.gh) result in more detailed lineament maps than LineaMapper v1.0 (\Cref{fig:maps_comparison}.e), and than maps by \sidecite{Figueredo2004} (\Cref{fig:maps_comparison}.b) , and \sidecite{Sarid2004} (\Cref{fig:maps_comparison}.c). The detection of cross-cutting relationships improved further with LineaMapper v1.1 and v2.0. A refined assembly algorithm can further help to reduce the time for transforming LineaMapper's output into a geologic map. We do not find an increase in performance with the usage of photometrically corrected images.
+

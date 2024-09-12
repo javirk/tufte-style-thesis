@@ -1,0 +1,39 @@
+\section{Conclusion \& Outlook}\label{sec:regio_conclusion}
+We present a novel approach to classifying units of chaos and ridged plains, with a fully-automated extraction algorithm based on predictions by the deep-learning tool LineaMapper. The classification based on lineament area density works well, compared with pre-existing geologic maps.
+
+% manually revised map
+% We provide the community with a detailed, manually revised lineament map that reveals numerous fine and previously unmapped lineaments. 
+A comparison of the presented manually revised map of the southern leading hemisphere RegMap to previous geologic maps reveals numerous fine lineaments in the regions mapped earlier as ridged plains. This revised and near-complete lineament map provides the basis for a thorough analysis of lineaments in ridged plains versus lineaments in chaos terrain, which provides puzzle pieces to their formation and evolution. The finding that wider lineaments are longer, especially for double ridges and undifferentiated lineae, could be linked to deeper penetrating fracturing of the ice shell. The negative correlation of width with relative age (younger lineaments are wider) hints either at different evolution or development of lineae out of initial cracks.  
+% unit classification
+On the one hand, the features with the highest count of fragmentations are observed in ridged plains, because long lineaments are preserved. On the other hand, the features with the highest FPK are found in chaos terrain. This finding could be used to improve automated chaos vs. ridged plains unit classification. 
+
+% their formation, and the interplay with other linear features, including bands, double ridges, and ridge complexes, helping to understand their geological history and formation mechanisms. 
+
+The identification of the youngest lineaments, which is possible by filtering LineaMapper's revised output, reveals the state of Europa’s most recent or current conditions. Since troughs are stratigraphically the youngest of the discussed linear features\sidecite{Leonard2024} and therefore indicate Europa's most recent, visible cracking history, with LineaMapper's ability to identify troughs, we can perform a global trough analysis to constrain the current stress field. This could also be accomplished with a dedicated fifth category of `troughs' for a future version of LineaMapper.
+
+We provide two fundamentally different deep learning models trained for lineament detection in the RegMaps, as this helps identify any bias from the model architecture (for example, detection of cross-cutting relationships is finer with v2.0). The two predicted lineament maps of the RegMaps could be combined, either before or after the stitching happens, into one more robust map.
+
+% WE DID NOT SPECIFY BAND SUBTYPE. ridged bands could be fundamentally different from smooth bands.
+
+To further improve LineaMapper's performance, we suggest that wide bands and ridge complexes should be trained with their own model, to allow the network to look at different scales for different features. It might turn out that the model for wide features is a pixel-segmentation model with all defined Europan geological units.
+% , because depending on the width of the band, bands are units, not linear features\sidecite{Leonard2024}. 
+% This might contribute to bands being the least perform
+%Even though the metrics show that the performance for bands and ridge complexes increased with v1.1 and v2.0 for the revised map, 
+Furthermore, lineaments in higher resolution images (50 - 100~m/px) should be used for training a high-res version of LineaMapper for the EIS global dataset.
+
+% perhaps chaos terrain does not have to have a very low lineament density. microchaos. Can be made a parameter
+It would be interesting to add chaos features, such as microchaos or chaos blocks\sidecite{Dunn2023}, to our maps, because in parts of the revised maps, we observe microchaos features inside the ridged plains unit. We did not map smooth chaos disruptions, such as pits or domes, as disruptions. Incorporating microchaos as disruptions in the revised map could, however, refine the analysis of correlations with relative age. Furthermore, adding microchaos, for example directly from the catalogue by\sidecite{Noviello2019}, as a category to LineaMapper could help the automated classification of chaos and ridged plains terrain.
+
+
+
+% full REgMaps
+The revised map can further be used for extracting lineament characteristics from different data sources, such as digital elevation models or maps at various wavelengths. 
+The raw output of LineaMapper v2.0 on the regional maps can be used in different ways. As we show in our companion paper, the study of the spatio-temporal azimuth distribution benefits a complete lineament map for inferring the influence of tidal stress for lineament formation. 
+The automatically generated regional maps can be post-processed with an algorithm tailored to a specific need, for example for the detection of cross-cutting relationships for the study of micro-plate tectonics\sidecite{Patterson2006, Collins2022}, strike-slip analyses\sidecite{Hoppa1999, Prockter2000, Kattenhorn2004, Sarid2002}, clutter characterisation for radar investigations, e.g. with REASON on Europa Clipper\sidecite{Roberts2023, TurtleSSR}, or age sequencing\sidecite{Sarid2004, Sarid2005, Sarid2006}. Clutter characterisation is covered by the EIS wide-angle camera planned stereo observations, and so existing digital terrain models (DTMs) can inform a detailed lineament map to create an artificial DEM where stereo coverage is low. Age sequencing would allow to test hypotheses for the formation time of different features and how long they stay activated, if assumptions about the surface age are made. % A next extension of LineaMapper could be age sequencing. 
+Last, the paucity of lineament detections can be used to cross-validate borders of chaos terrain.
+
+With this framework, correlations with latitude and longitude could be detected and eventually point to variations in surface ice and ice shell properties. While longitudinal and trailing/leading correlations can be retrieved already with the Galileo RegMaps, full longitudinal dependencies can only be analysed with the global dataset awaited by EIS. Nevertheless, preliminary correlations could influence observation planning.
+
+Finally, we propose a semi-supervised training strategy to prevent LineaMapper v2.0 from overfitting and for improving LineaMapper further. For example, we could take the Mask R-CNN output of the full RegMaps as ground truth for SAM, mixed with the revised map training set. This would result in a training set approximately 5 times larger than today.
+
+

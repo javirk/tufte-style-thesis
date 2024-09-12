@@ -1,0 +1,26 @@
+\graphicspath{{appendices/}{regional_mosaics/}{Figures/}}
+% \graphicspath{{Figures/}}
+
+\chapter[LineaMapper on Galileo RegMaps]{Length, width, and relative age analysis of lineaments in the Galileo regional maps with LineaMapper}
+\label{chapter:regional_mosaics}
+
+\sidechaptersummary{Adapter for large segmentation models, supervised segmentation performance improvement, applications to domain generalization}
+% \desctotoc{Test1 --- Test 2}
+
+\subsubsection{Synopsis}The Solid-State Imaging (SSI) system on board the Galileo spacecraft returned two north-south image mosaics covering swaths of the trailing and leading hemispheres of Europa at a regional scale (\qty{215}{\m~\px^{-1}}). These regional mosaics (``RegMaps'') are of great value as they show Europa’s extensive regional-scale tectonic features almost from pole to pole and were acquired under similar illumination conditions. A complete lineament map of the RegMaps has not yet been accomplished, although a lineament study could constrain resurfacing events and formation mechanisms.
+
+We aim to gain statistical insights into lineament distributions and characteristics of length, width, and relative age, which we assess by the number of fragmentations per kilometre, in different geological terrains contained within the RegMaps. We find evidence that only the latest formed linear features remain discernible following the disruption by chaos terrain. Because mapping of lineaments is time-intense and subjective, especially in noisy images of densely ridged regions on Europa, we employ the deep-learning tool LineaMapper to make mapping faster and more consistent over large areas. Guided by LineaMapper, we produce a validated lineament map of the southern leading hemisphere part of the RegMaps. % Furthermore, a new version of LineaMapper makes mapping faster and more consistent over large areas, 
+The manually revised map is utilised as additional training data of 2140 lineaments, with which we train LineaMapper v1.1 and v2.0, using two different deep learning models. 
+Based on this map, we find a lineament density of 15\% in chaos and 65\% in ridged plains, which we use to fully-automatically classify units of chaos and ridged plains in the full RegMaps. We find good agreement with a global geologic map.
+
+We conclude that LineaMapper can be employed for an objective assessment of Europa's previously unresolved regions with the Europa Imaging System on Europa Clipper. Finally, we make the full output of LineaMapper available and offer an interactive tool for testing LineaMapper v2.0, which utilises the Segment Anything model by Meta.
+
+\subsubsection{Publication}Summary section has been left out.
+
+\subsubsection{Author contributions}My contrib.
+
+\input{1_introduction}
+\input{2_method}
+\input{3_results}
+% \input{4_summary}
+\input{5_conclusion}
