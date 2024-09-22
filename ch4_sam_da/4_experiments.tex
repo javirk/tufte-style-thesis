@@ -14,7 +14,7 @@ We validate our approach on one natural image dataset and three medical cross-de
     
     % Retinal OCT volumes acquired with three different devices: Cirrus HD-OCT (Zeiss, Meditec), Spectralis (Heidelberg Engineering), and T-1000/T2000 (Topcon). The volumes contain segmentation masks for three retinal biological markers: IRF, SRF, and PED. For TTDA, we use ``Spectralis'' dataset as the source and ``Cirrus'' dataset as the target domain.
     
-    \item{\textbf{MRI}\sideauthorcite{liu2020saml,mri_dataset}}: Prostate MRI scans from various sites with different devices showing prostate capsule segmentation at various cancer stages. We extract subsets from Boston Medical Center (BMC) and University College London (UCL). ``BMC'' serves as the source domain, while ``UCL'' is the target.
+    \item{\textbf{MRI}\sideauthorcite{liu2020saml,liu2020ms}}: Prostate MRI scans from various sites with different devices showing prostate capsule segmentation at various cancer stages. We extract subsets from Boston Medical Center (BMC) and University College London (UCL). ``BMC'' serves as the source domain, while ``UCL'' is the target.
     
     %Prostate T2-weighted MRI acquired at multiple sites with different devices. Each MRI contains a segmentation of the prostate capsule at different stages of cancer. We extract two subsets from different sites: Boston Medical Center (BMC) and University College London (UCL). For TTDA, we sample volumes from ``BMC'' and ``UCL'' as the source and target domain, respectively. 
     
@@ -27,25 +27,25 @@ We validate our approach on one natural image dataset and three medical cross-de
 \end{itemize}
 In all cases, we use the source domain as the only domain for the fully supervised experiments. Since HQSeg-44K contains natural images with no clear domain shift, we do not report results for generalization and domain adaptation on this dataset. We report all the results on separate test sets, following hyperparameter fine-tuning on a validation set and repeating each experiment four times. \Cref{tab:dataset_details_samda} describes the size of the training, validation, and test splits for each dataset and domain. 
 
-\begin{table*}[]
+\begin{table}[]
 \centering
-\caption{Number of images for each dataset per split. HQSeg-44K is a combination of datasets~\cite{ke2024segment} and it uses the same set for validation and testing.}
-\label{tab:dataset_details_samda}
-\begin{tabular}{@{}p{2.5cm}lP{2.2cm}P{2.2cm}P{2.2cm}@{}}
+\sidecaption{Number of images for each dataset per split. HQSeg-44K is a combination of datasets~\parencite{ke2024segment} and it uses the same set for validation and testing.\label{tab:dataset_details_samda}}
+
+\begin{tabular}{@{}p{2.5cm}lP{2cm}P{1.8cm}P{1.8cm}@{}}
 \toprule
-\multicolumn{1}{l}{\textbf{Dataset}} & \textbf{Domains} & \textbf{Training} & \textbf{Validation} & \textbf{Test} \\ \midrule
-\multirow{2}{*}{Retouch~\cite{retouch}} & Spectralis & 1,773 & 591 & 480 \\
+\multicolumn{1}{l}{{Dataset}} & {Domains} & {Training} & {Validation} & {Test} \\ \midrule
+\multirow{2}{*}{Retouch} & Spectralis & 1,773 & 591 & 480 \\
  & Cirrus & 3,765 & 1,255 & 1,252 \\ \midrule
-\multirow{2}{*}{MRI~\cite{liu2020saml,mri_dataset}} & BMC & 177 & 92 & 93 \\
+\multirow{2}{*}{MRI} & BMC & 177 & 92 & 93 \\
  & UCL & 82 & 41 & 41 \\ \midrule
-\multirow{2}{*}{WMH~\cite{wmh}} & Utrecht & 4,260 & 1,065 & 1,255 \\
+\multirow{2}{*}{WMH} & Utrecht & 4,260 & 1,065 & 1,255 \\
  & Singapore & 3,560 & 890 & 1,105 \\ \midrule
-HQSeg-44k~\cite{ke2024segment} & - & 44,320 & \multicolumn{2}{c}{1,537} \\
+HQSeg-44k & - & 44,320 & \multicolumn{2}{c}{1,537} \\
  
  \bottomrule
 \end{tabular}
 
-\end{table*}
+\end{table}
 
 \subsection{Baselines}
 We compare our adapter against four alternative techniques. Among these, three are prominent examples of contemporary state-of-the-art approaches: LoRA\sidecite{hu2022lora}, Med-SA\sidecite{wu2023medical} and HQ-SAM\sidecite{ke2024segment}. The remaining methods involve completely fine-tuning the model and solely fine-tuning the decoder while keeping the encoder frozen. It is important to acknowledge that certain methods alter the image embedding as they are integrated within the encoder. To ensure equitable comparisons, we train both the adapter and the mask decoder in these cases. We use the ViT-B/16\sidecite{dosovitskiy2021an} variant of the Vision Transformer pre-trained with MedSAM\sidecite{MedSAM} weights for all our experiments on medical datasets and the official SAM pre-training weights for HQSeg-44K.
@@ -56,4 +56,10 @@ Here, we evaluate SAM Decoder Adapter through fully supervised semantic segmenta
 We use AdamW\sidecite{loshchilov2017decoupled} optimizer in all cases with a loss that combines a \emph{mask prediction loss} and a \emph{IoU prediction loss}. The mask prediction loss is a linear combination of Dice loss\sidecite{milletari2016dice} and Cross Entropy loss in a 0.8:0.2 ratio. The IoU prediction loss is used to train the IoU prediction head of SAM. It is computed as the MSE between the IoU prediction of SAM and the IoU of the predicted mask with the ground truth mask. As reported in~\yeartextcite{sam}, using this IoU prediction loss with a weight of 1.0 increases performance slightly. Other hyperparameters are fine-tuned with the validation set. Our adapter uses $N=2$~tokens and dimension~$D=512$. The dimensions of the attention module are~$D_v=D_k=256$.
 
 \subsection{Test-Time Domain Adaptation Experiments}
+Test-time domain adaptation (TTDA) refers to a scenario in which a model receives unlabeled data during inference from a dataset with a data distribution that differs from that on which it was trained. Accordingly, the model must adapt on a sample-by-sample basis, attempting to extract the maximum amount of information from each data point. In these experiments, we assume that the domain shift between the source and target distributions is due solely to differences in the acquisition device and, therefore, that the class semantics and number of classes remain unchanged. This scenario is not hypothetical in clinical practice: a model trained to detect biological markers with a specific configuration of the image acquisition device can be required to adapt to a new configuration, but the underlying detection scheme (number and semantics of classes) will remain the same.
+
+\input{tables/learnable_params}
+
 We adopt a conventional training approach centered on entropy minimization per sample, leveraging the most confident samples\sidecite{wang2021tent}. Then, we enforce proximity between the output and initial predictions through a regularization term incorporating focal loss\sidecite{lin2017focal} and dice loss, following \yeartextcite{zhang2023improving}. Finally, for Retouch we introduce a contrastive term within the volume. Negative slices are sampled distantly from the anchor, while positive slices are nearby. We optimize the contribution of each term to the final loss for every method and dataset on the validation set, as well as the number of iterations. We zero-initialize the adapter of the Med-SA baseline, ensuring that it does not affect the model predictions before adaptation. Due to the challenge of zero-initializing HQ-SAM, we omit it from these experiments.
+
+Note that the adapter we propose in this paper is agnostic to the test-time domain adaptation algorithm. For this reason, we opt to use a simple training approach that will not shade the adapter's capabilities. Furthermore, comparisons are only carried out against other adapters and PEFT methods. Comparing against different test-time domain adaptation techniques would be out of the scope of the present work.

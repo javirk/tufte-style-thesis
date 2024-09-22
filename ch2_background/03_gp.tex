@@ -4,7 +4,7 @@
 %   The example
 
 \section{Estimating with Uncertainty: Gaussian Process Regression}\label{sec:gaussian_process_background}
-Suppose you need to predict the temperature at multiple geographical locations using a limited set of measurements taken periodically every week. You make sure that the measuring device is sufficiently precise and that you are following a procedure that minimizes systematic errors\sidedef{Systematic error}{Consistent deviation of a measurement from its true value. Contrast with random noise.}. However, you notice that the measurements are rather noisy, and quickly realize that the underlying property (temperature) is intrinsically noisy because it depends on a number of variables that fluctuate with high frequency. For these reasons, you come to the conclusion that instead of predicting a single temperature point, it is more sensible to estimate this value along with a confidence interval. Gaussian process regression tries to solve this problem, offering a capable regression algorithm that predicts the value along with a variance.
+Suppose you need to predict the temperature at multiple geographical locations using a limited set of measurements taken periodically every week. You make sure that the measuring device is sufficiently precise and that you are following a procedure that minimizes systematic errors\sidedef{Systematic error}{Consistent deviation of a measurement from its true value. Contrast with random noise.}. However, you notice that the measurements are rather noisy and quickly realize that the underlying property ---temperature--- is intrinsically noisy because it depends on a number of variables that fluctuate with high frequency. For these reasons, you come to the conclusion that instead of predicting a single temperature point, it is more sensible to estimate this value along with a confidence interval. Gaussian process regression tries to solve this problem, offering a capable regression algorithm that predicts the value along with a variance.
 
 Gaussian process regression was first introduced by Danie G. Krige in 1951\sideauthorcite{krige1951statistical} and later formalized by \yeartextcite{matheron1962traite}. It provides a non-parametric extension to linear regression and is equipped with an uncertainty estimation. Furthermore, Gaussian process regression gives the Best Linear Unbiased Predictor\sidedef{Best Linear Unbiased Predictor}{Among a set of unbiased predictors, the one with the lowest variance.} (BLUP)\sidenote{See \Cref{app:blup} for the mathematical proof of this statement.}, and has been applied to several fields --- from the original application to geostatistics to disease progression\sidecite{lorenzi2019probabilistic}, predictive soil modeling\sidecite{gonzalez2007creating} or segmentation performance prediction\sidecite{Tejero_2023_CVPR}.
 
@@ -31,20 +31,20 @@ To illustrate, \Cref{fig:bivariate_gaussian} shows a multivariate, two-dimension
 
 \marginfig{Figures/bivariate_distribution.pdf}{Multivariate, two-dimensional Gaussian distribution. $\vect{\mu} = (0,0)$ and $\vect{\Sigma} = \bigl( \begin{smallmatrix}1 & 0.5\\ 0.5 & 1\end{smallmatrix}\bigr)$. The discontinuous lines represent the eigenvectors of the covariance matrix.}{fig:bivariate_gaussian}
 
-Having established the basis of Gaussian distributions, the final step is to go from a single distribution to a process. A stochastic process is characterized by an additional indexing of the variables with respect to space or time. Hence, the distribution of a stochastic process is the joint distribution of infinitely many random variables indexed by this quantity. Formally, if $x \in X \subset \real^n$ represents the indexing variable, a stochastic process is defined as:
+Having established the fundamental principles of Gaussian distributions, the final step is to apply this knowledge to understand how these distributions can be used to describe a process. A stochastic process is characterized by an additional indexing of the variables with respect to space or time. Hence, the distribution of a stochastic process is the joint distribution of infinitely many random variables indexed by this quantity. Formally, if $x \in X \subset \real^n$ represents the indexing variable, a stochastic process is defined as:
 \begin{equation*}
     y = \{ y(x) : x\in X\}.
 \end{equation*}
-A Gaussian process (GP)\sidedef{Gaussian Process}{Collection of random variables, any finite number of which have a join Gaussian distributions.} is a particular case of stochastic process in which every set of indices $\{x_1,...,x_n\}$ follows a multivariate Gaussian distribution:
+A Gaussian Process (GP)\sidedef{Gaussian Process}{Collection of random variables, any finite number of which have a joint Gaussian distributions.} is a particular case of stochastic process in which every set of indices $\{x_1,...,x_n\}$ follows a multivariate Gaussian distribution:
 \begin{equation}
     (y(x_1), ..., y(x_n)) \sim N_n(\vect{\mu}, \vect{\Sigma}).
     \label{eq:gp_prior}
 \end{equation}
-When this condition is fulfilled, we will say that the function $y$ is a Gaussian process, and denote it with:
+When this condition is fulfilled, we will say that the function $y$ follows a Gaussian process, and denote it with:
 \begin{equation*}
-    y(\cdot)\sim\mathcal{GP}(\mu, k).
+    y(\cdot)\sim\mathcal{GP}(\mu, k),
 \end{equation*}
-$\mu$ and $k$ are the mean and covariance\sidenote{In GPs, the covariance function is also called kernel. They will be used interchangeably in this text.} \textit{functions} of the GP, as they depend on the index, \ie~$\mu \equiv \mu(\vect{x})$, $k \equiv k(\vect{x, x'})$. The meaning of these functions is equivalent to that of $\mu$ and $\Sigma$ in \Cref{eq:gaussian_dist}. They represent the first and (mixed) second moments of the underlying distribution at every point:
+where $\mu$ denote $k$ are the mean and covariance\sidenote{In GPs, the covariance function is also called kernel. They will be used interchangeably in this text.} \textit{functions} of the GP, as they depend on the index, \ie~$\mu \equiv \mu(\vect{x})$, $k \equiv k(\vect{x, x'})$. The meaning of these functions is equivalent to that of $\mu$ and $\Sigma$ in \Cref{eq:gaussian_dist}. They represent the first and (mixed) second moments of the underlying distribution at every point $\vect{x}$ with respect to another point $\vect{x'}$:
 \begin{align*}
     \mu(\vect{x}) &= \mathbb{E}(y(\vect{x}))  \\
     k(\vect{x, x'}) &= \text{Cov}(y(\vect{x}), y(\vect{x'}))  \\
@@ -100,11 +100,11 @@ We began this section with a hypothetical scenario where Gaussian processes migh
 %     long_term_trend_kernel + noise_kernel + irregularities_kernel
 % )
 
-\plainwidefig[t]{1}{Figures/temperature_predictions.pdf}{Gaussian process application to temperature prediction. (Left) Temperature anomaly on 1st January relative to the period from 1961 to 1990 as recorded by the Met Office Hardley Centre\cite{morice2021updated}. (Right) Gaussian process prediction trained on this data. Interpolation and extrapolation are painted in blue and green, respectively. The shaded areas represent the standard deviation.}{fig:gp_temperature}
+\plainwidefig[t]{1}{Figures/temperature_predictions.pdf}{Gaussian process application to temperature prediction. (Left) Temperature anomaly on 1st January relative to the period from 1961 to 1990 as recorded by the Met Office Hardley Centre~\parencite{morice2021updated}. (Right) Gaussian process prediction trained on this data. Interpolation and extrapolation are painted in blue and green, respectively. The shaded areas represent the standard deviation.}{fig:gp_temperature}
 
-\Cref{fig:gp_temperature} (left) presents data from 1850 to the present (2024) on world temperature. Specifically, it shows the temperature anomaly on 1st January relative to the period from 1961 to 1990 as recorded by the Met Office Hardley Centre\sideauthorcite{morice2021updated}. This plot already illustrates our expectations that temperature measurements are noisy. For this reason, it is essential to accompany any prediction with a confidence interval to account for this noise. We also notice that the data can be separated into multiple trends depending on the length-scale we consider: there is an underlying upward trend --- especially in the last decades --- with a long length-scale interrupted by short-lived irregularities.
+\Cref{fig:gp_temperature} (left) presents data from 1850 to the present (2024) on world temperature. Specifically, it shows the temperature anomaly on 1st January relative to the period from 1961 to 1990 as recorded by the Met Office Hardley Centre\sideauthorcite{morice2021updated}. This plot already illustrates our expectations that temperature measurements are noisy. For this reason, it is essential to accompany any prediction with a confidence interval to account for this noise. Furthermore, we also notice that the data can be separated into multiple trends depending on the length scale we consider: there is an underlying upward trend---especially in the last decades---with a long length scale interrupted by short-lived irregularities.
 
-Let $y(\cdot)$ be a GP that fits this data. As mentioned above, a GP is defined by its mean and covariance functions. In this case, we will set the mean function to 0, as we do not have prior knowledge about it. For the covariance function, we can leverage the two trends in the data in order to make an informed choice:
+Let $y(\cdot)$ be a GP that fits this data. As mentioned above, a GP is defined by its mean and covariance functions. In this case, we will set the mean function to $0$, as we do not have prior knowledge about it. For the covariance function, we can leverage the two trends in the data in order to make an informed choice:
 
 \begin{itemize}
     \item Long-term rising trend: an RBF kernel with a large length-scale parameter will ensure a smooth trend. This will be $k_\text{long}$.

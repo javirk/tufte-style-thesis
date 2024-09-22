@@ -1,6 +1,6 @@
 \section{Results}
 \label{sec:oct_results}
-We present the descriptive statistics of the training and testing sets in \Cref{tab:dataset}. The OCT data comes from the Dept. of Ophthalmology, Bern University Hospital (Switzerland) and was acquired using the Heidelberg Spectralis system. The resolution of all slices is 496×512 pixels. The training and testing sets are similar in terms of pathologies, with the main difference being  the granularity of the annotations: the training dataset only contains slice-level annotations for two biological markers, while the testing dataset includes additional ETDRS rings information at 1mm, 3mm and 6mm per slice. In addition, a subset of the testing dataset has been manually segmented. Therefore, pixel-wise annotations for IRF and SRF are also available in 54 volumes (2’646 OCT slices). None of the patients in this test data are present in the training data. The distribution of IRF and SRF occurrences in the testing dataset is given in \Cref{tab:results}.
+We present the descriptive statistics of the training and testing sets in \Cref{tab:dataset}. The OCT data comes from the Dept. of Ophthalmology, Bern University Hospital (Switzerland) and was acquired using the Heidelberg Spectralis system. The resolution of all slices is 496×512 pixels. The training and testing sets are similar in terms of pathologies, with the main difference being  the granularity of the annotations: the training dataset only contains slice-level annotations for two biological markers, while the testing dataset includes additional ETDRS rings information at 1mm, 3mm and 6mm per slice. In addition, a subset of the testing dataset has been manually segmented. Therefore, pixel-wise annotations for IRF and SRF are also available in 54 volumes (2,646 OCT slices). None of the patients in this test data are present in the training data. The distribution of IRF and SRF occurrences in the testing dataset is given in \Cref{tab:results}.
 
 \noindent
 \begin{table*}[t]
@@ -16,21 +16,20 @@ Number of slices & 22,723 & 28,322 \\
 Present pathologies & Diabetic retinopathy with and without Diabetic Macular Edema (DME), and early, intermediate, and late AMD & DME \\
 Annotations & Slice-level annotations for IRF and SRF & Slice-level SRF and IRF presence   annotations for the ETDRS rings at 1mm, 3mm, and 6mm \\ \bottomrule
 \end{tabular}
-
 \end{table*}
 
 \subsection{Implementation and baselines}
-The backbone model of our method is an EfficientNet-b4~\sideauthorcite{Tan2019} with ImageNet-initialized weights. As a preliminary step, we train the network alone in the task of IRF and SRF multilabel classification to produce slice-level predictions, and then fine-tune the entire model as described in the Methods section with the loss function of Eq. 5. We use a batch size of 32 slices\sidenote{A batch size of 32 means that we are using 32 slices and their flipped version for $\ell_3$.}, SGD with momentum of 0.9 and a base learning rate of $5\cdot10^{-3}$ which is scaled by 0.99 after every epoch. The feature map z of EfficientNet-b4 is sized 1792×16×16. We perform maximum and average pooling per column to produce C=16 descriptor vectors $d_c$ of dimension $2D_z=3584$, which are subsequently processed by the MLP to get 16 column-level predictions. The MLP itself consists of a single linear layer with 2 outputs for SRF and IRF, followed by a sigmoid activation. The column-level predictions are then mapped to ring-level predictions as explained at the end of the Methods section.
+The backbone model of our method is an EfficientNet-b4\sideauthorcite{Tan2019} with ImageNet-initialized weights. As a preliminary step, we train the network alone in the task of IRF and SRF multilabel classification to produce slice-level predictions, and then fine-tune the entire model as described in the Methods section with the loss function of Eq. 5. We use a batch size of 32 slices\sidenote{A batch size of 32 means that we are using 32 slices and their flipped version for $\ell_3$.}, SGD with momentum of 0.9 and a base learning rate of $5\cdot10^{-3}$ which is scaled by $0.99$ after every epoch. The feature map z of EfficientNet-b4 is sized $1792\times 16\times 16$. We perform maximum and average pooling per column to produce C=16 descriptor vectors $d_c$ of dimension $2D_z=3,584$, which are subsequently processed by the MLP to get 16 column-level predictions. The MLP itself consists of a single linear layer with 2 outputs for SRF and IRF, followed by a sigmoid activation. The column-level predictions are then mapped to ring-level predictions as explained at the end of the Methods section.
 
 While there are no direct existing baselines for localization of OCT biological markers with weak annotations, we compare our method to the following alternative baselines:
 \begin{itemize}
-    \item \textbf{Masking} At test time, we mask the slice regions to only reveal relevant ETDRS rings and feed this to an EfficientNet trained on the slice-level detection task (as above). This masking has been done by replacing all pixels in the region to 0.
+    \item \textbf{Masking} At test time, we mask the slice regions to only reveal relevant ETDRS rings and feed this to an EfficientNet trained on the slice-level detection task (as above). This masking has been done by replacing all pixels in the region to $0$.
     
-    \item \textbf{Masking with partial convolutions (PartConvs)} As in the \textbf{Masking} baseline but replacing all convolutional layers by partial convolutions~\sideauthorcite{Liuc}, except for those in the squeeze and excitation blocks~\sideauthorcite{Hu2019}, so to ignore masked regions.
+    \item \textbf{Masking with partial convolutions (PartConvs)} As in the \textbf{Masking} baseline but replacing all convolutional layers by partial convolutions\sideauthorcite{Liuc}, except for those in the squeeze and excitation blocks~\sideauthorcite{Hu2019}, so to ignore masked regions.
     
-    \item \textbf{Grad-CAM} We use Grad-CAM~\sideauthorcite{Selvaraju2019} to build a 16×16 heatmap for each output variable and pick the maximum value of each column. This serves as a column-level measurement of the presence of SRF and IRF. We use the pre-trained EfficientNet to obtain the final ring-level predictions by applying the same post-processing mapping explained at the end of the Methods section.
+    \item \textbf{Grad-CAM} We use Grad-CAM\sideauthorcite{Selvaraju2019} to build a 16×16 heatmap for each output variable and pick the maximum value of each column. This serves as a column-level measurement of the presence of SRF and IRF. We use the pre-trained EfficientNet to obtain the final ring-level predictions by applying the same post-processing mapping explained at the end of the Methods section.
 
-    \item \textbf{MS-CAM}~\sideauthorcite{ma2020} this approach consists of two stages: first, the activations of the different features of the resolutions are combined with Grad-CAM++~\sideauthorcite{chattopadhay2018grad} to obtain a pixel-wise segmentation. Second, these segmentations are refined using Conditional Random Fields on the \textit{en face} projection image\sidedef{\textit{En face} Projection}{Projection of the OCT metrics into the fundus, creating a top-down view.}. We reproduced the first stage and converted the resulting pixel-wise segmentation into rings. 
+    \item \textbf{MS-CAM}\sideauthorcite{ma2020} this approach consists of two stages: first, the activations of the different features of the resolutions are combined with Grad-CAM++\sideauthorcite{chattopadhay2018grad} to obtain a pixel-wise segmentation. Second, these segmentations are refined using Conditional Random Fields on the \textit{en face} projection image\sidedef{\textit{En face} Projection}{Projection of the OCT metrics into the fundus, creating a top-down view.}. We reproduced the first stage and converted the resulting pixel-wise segmentation into rings. 
 \end{itemize}
 
 All methods were implemented using PyTorch. Our method and the baselines were trained for 10 epochs.
@@ -38,7 +37,7 @@ All methods were implemented using PyTorch. Our method and the baselines were tr
 \subsection{Localization results}
 \marginfig{Figures/example_columns.pdf}{Outputs of our method and baselines. We show the slice number (bottom right) and in which ring the marker can be found (top row). Incorrect detections are highlighted in red.}{fig:examples}
 
-\Cref{tab:results} reports the performance of all methods in terms of AUC ROC and Average Precision (AP). Our method achieves the highest ROC-AUC and AP for every marker and ETDRS ring. The improvement is particularly notable for 6mm SRF, where our method doubles the performance of other baselines in AP. \Cref{fig:results_curves} compares our method's ROC and Precision-Recall curves and the PartConvs baseline throughout the three ETDRS rings. \Cref{tab:results} also shows the occurrence of both biological markers in each one of the rings. IRF is present in 51.5\% of the images in the testing set, while SRF is scarcer and present in only 2.8\%. This imbalance is further exacerbated in the ring annotations: as depicted in Figure 1, where the 6mm ring is present in all the B-Scans. However, 38.4\% have IRF in the 6mm ring, but only 0.4\% have SRF. This is explained by the fact that SRF is unlikely to be found in the outer rings, leading to a lower number of occurrences in the test set than IRF. 
+\Cref{tab:results} reports the performance of all methods in terms of AUC ROC and Average Precision (AP). Our method achieves the highest ROC-AUC and AP for every marker and ETDRS ring. The improvement is particularly notable for 6mm SRF, where our method doubles the performance of other baselines in AP. \Cref{fig:results_curves} compares our method's ROC and Precision-Recall curves and the PartConvs baseline throughout the three ETDRS rings. \Cref{tab:results} also shows the occurrence of both biological markers in each one of the rings. IRF is present in $51.5\%$ of the images in the testing set, while SRF is scarcer and present in only $2.8\%$. This imbalance is further exacerbated in the ring annotations: as depicted in Figure 1, where the 6mm ring is present in all the B-Scans. However, 38.4\% have IRF in the 6mm ring, but only $0.4\%$ have SRF. This is explained by the fact that SRF is unlikely to be found in the outer rings, leading to a lower number of occurrences in the test set than IRF. 
 
 \noindent
 \input{Tables/results_table}
@@ -46,26 +45,19 @@ All methods were implemented using PyTorch. Our method and the baselines were tr
 \textfig[t]{1}{Figures/all_plots.pdf}{ROC and Precision-Recall curves for both markers and rings with our proposed method on the testing dataset (solid lines). Results are compared to Partial Convolutions (dashed lines) on the same dataset.
 }{fig:results_curves}
 
-\Cref{fig:examples} illustrates the performance of the different methods in several cases. We provide additional cases in \Cref{fig:app_oct_examples} in the Appendix.
-
-%\begin{figure}[t]
-%\centering
-%\includegraphics[width=.95\textwidth]{Figures/examples.png}
-%\caption{Outputs of our method and baselines on four examples. In each OCT image, we show the slice number (bottom right) and in which ring the marker can be found (top row). We highlight incorrect detections in red.}
-%\label{fig:examples}
-%\end{figure}
+\Cref{fig:examples} illustrates the qualitative performance of the different methods in several cases. We provide additional cases in \Cref{fig:app_oct_examples} in the Appendix.
 
 
 \subsection{Segmentation results}
 
-To further demonstrate the accuracy of our method in locating biological markers, we also compare our results to the subset of test images for which IRF and SRF ground-truth segmentations are available\sidenote{$2,646$ OCT slices}. For this purpose, a column is considered positive for a marker if it contains at least one pixel of that marker. Our method achieved AUCs over 90\% for both IRF and SRF, as shown in \Cref{tab:segmentation_results}. The low mAP for SRF can be attributed to its very low occurrence rate.
+To further demonstrate the accuracy of our method in locating biological markers, we also compare our results to the subset of test images for which IRF and SRF ground-truth segmentations are available\sidenote{$2,646$ OCT slices}. For this purpose, a column is considered positive for a marker if it contains at least one pixel of that marker. Our method achieved AUCs over $90\%$ for both IRF and SRF, as shown in \Cref{tab:segmentation_results}. The low mAP for SRF can be attributed to its very low occurrence rate.
 
 \begin{margintable}[]\small
 \caption{Results on the segmentation dataset}
 \label{tab:segmentation_results}
-\begin{tabular}{@{}rll@{}}
+\begin{tabular}{@{}rp{0.75cm}p{0.75cm}@{}}
 \toprule
- & \textbf{IRF} & \textbf{SRF} \\ \midrule
+ & {IRF} & {SRF} \\ \midrule
 ROC AUC & 91.1 & 93.7 \\
 mAP & 81.2 & 64.8 \\ \bottomrule
 \end{tabular}
@@ -75,17 +67,17 @@ mAP & 81.2 & 64.8 \\ \bottomrule
 
 Before the post-processing step that converts columns to rings, our method produces a coarse 1D segmentation per B-Scan. The projection of this output and further concatenation of all the B-Scans that compose a C-Scan results in the \textit{en face} projection.
 
-In \Cref{tab:en_face}, we compared the coarse \textit{en face} projections that our method produces to the 54 manually segmented volumes and computed the mean area of IRF and SRF. We used a resolution of $11.72 \si{\micro\meter\per px}$ and $120 \si{\micro\meter\per slice}$ in the lateral and sagittal axes respectively. The row “Expert” refers to pixelwise segmentations, and ``16 column Expert" has been calculated by converting the pixelwise segmentation into columns, with the same methodology as in the previous section. We believe ``16 column Expert" version is a fairer comparison because it provides the same amount of information as our predictions. For IRF, we obtain a mean area of $5.73 \si{\milli\meter^2}$, being $6.29 \si{\milli\meter^2}$ the ground truth with 16 columns. For SRF, this number is less representative since only 25 of the 54 volumes contain this type of fluid.
+In \Cref{tab:en_face}, we compared the coarse \textit{en face} projections that our method produces to the 54 manually segmented volumes and computed the mean area of IRF and SRF. We used a resolution of \qty{11.72}{\micro\meter\per px} and \qty{120}{\micro\meter\per slice} in the lateral and sagittal axes respectively. The row “Expert” refers to pixelwise segmentations, and ``16 column Expert" has been calculated by converting the pixelwise segmentation into columns, with the same methodology as in the previous section. We believe ``16 column Expert'' version is a fairer comparison because it provides the same amount of information as our predictions. For IRF, we obtain a mean area of \qty{5.73}{\milli\meter^2}, being \qty{6.29}{\milli\meter^2} the ground truth with 16 columns. For SRF, this number is less representative since only 25 of the 54 volumes contain this type of fluid.
 
 \begin{table}[]
 \centering
-\begin{tabular}{@{}lll@{}}
+\begin{tabular}{@{}lcc@{}}
 \toprule
- & \textbf{IRF (\si{\milli\meter^2})} & \textbf{SRF (\si{\milli\meter^2})} \\ \midrule
-Expert & $3.15\pm2.97$ & $0.21\pm0.63$ \\
-16 column Expert & $6.29\pm4.93$ & $0.35\pm0.89$ \\
-Predicted & $5.73\pm5.71$ & $0.12\pm0.30$ \\
-MSE: Predicted vs 16 column Expert & $3.89\pm8.90$ & $0.46\pm2.11$ \\ \bottomrule
+ & {IRF (\si{\milli\meter^2})} & {SRF (\si{\milli\meter^2})} \\ \midrule
+Expert & $3.15{\scriptstyle\pm2.97}$ & $0.21{\scriptstyle\pm0.63}$ \\
+16 column Expert & $6.29{\scriptstyle\pm4.93}$ & $0.35{\scriptstyle\pm0.89}$ \\
+Predicted & $5.73{\scriptstyle\pm5.71}$ & $0.12{\scriptstyle\pm0.30}$ \\
+MSE: Predicted vs 16 column Expert & $3.89{\scriptstyle\pm8.90}$ & $0.46{\scriptstyle\pm2.11}$ \\ \bottomrule
 \end{tabular}
 \sidecaption{En-face projection results. \label{tab:en_face}}
 \end{table}
@@ -94,38 +86,17 @@ MSE: Predicted vs 16 column Expert & $3.89\pm8.90$ & $0.46\pm2.11$ \\ \bottomrul
 
 \textfig{1}{Figures/area_columns.pdf}{Expert (red) and predicted (blue) area for IRF and SRF in each one of the 54 volumes. Blue (red) vertical lines refer to overestimations (underestimations) of our model with respect to the Expert segmentation. Volumes are sorted in decreasing order of SRF area discrepancy, and that sorting is kept for IRF.}{fig:areas}
 
-%\begin{figure}[htbp]
-%\centering
-%\includegraphics[width=.7\textwidth]{Figures/en_face.png}
-%\caption{En-face projection results for the specified markers. (a) B-Scan at the location in green. (b) Prediction with our method. Different colors represent the uncertainty of the model. Lighter means more certain. (c) Expert pixelwise segmentation. (d) Expert segmentation converted into columns. Figure best seen in color.}
-%\label{fig:en_face_qualitative}
-%\end{figure}
-
 \textfig{1}{Figures/en_face.png}{En-face projection results for the specified markers. (a) B-Scan at the location in green. (b) Prediction with our method. Different colors represent the uncertainty of the model. Lighter means more certain. (c) Expert pixelwise segmentation. (d) Expert segmentation converted into columns. Figure best seen in color.}{fig:en_face_qualitative}
 
 To assess the clinical relevance of our method, understood as the agreement between our approach and an expert-based segmentation, we built Bland-Altman plots for SRF and IRF segmentations. In \Cref{fig:bland_altman}, we compared our prediction for the coarse \textit{en face} segmentation to the 16-column Expert in each volume. We see that four volumes fall outside one standard deviation for IRF, while only two in the case of SRF.
 
-%\begin{figure}[htbp]
-%\centering
-%\includegraphics[width=.95\textwidth]{Figures/bland_altman.pdf}
-%\caption{Bland-Altman plots for IRF and SRF}
-%\label{fig:bland_altman}
-%\end{figure}
-
 \textfig[t]{1}{Figures/bland_altman.pdf}{Bland-Altman plots for IRF and SRF}{fig:bland_altman}
-
-%\begin{figure}[htbp]
-%\centering
-%\includegraphics[width=.95\textwidth]{Figures/correlation.pdf}
-%\caption{Correlation plots for IRF and SRF}
-%\label{fig:correlation}
-%\end{figure}
 
 \textfig{1}{Figures/correlation.pdf}{Correlation plots for IRF and SRF}{fig:correlation}
 
-\Cref{fig:correlation} shows correlation plots for both biomarkers. For IRF, the linear regression returns $R^2=0.895$ and a slope close to identity (1.09). On the contrary, for SRF our method achieves $R^2=0.760$ and a slope of 0.30.
+\Cref{fig:correlation} shows correlation plots for both biomarkers. For IRF, the linear regression returns $R^2=0.895$ and a slope close to identity (1.09). On the contrary, for SRF our method achieves $R^2=0.760$ and a slope of $0.30$.
 
 \subsection{Ablation results}
-We conduct an ablation study to quantify how the different loss terms in Equation 5 affect the method's performance. \Cref{tab:ablation_loc} shows the AUC ROC and AP of all predicted outputs as a function of what loss terms are included when training. The first and fourth rows, labeled with $l_1$, correspond to using the traditional Cross Entropy loss, which does not make use of any column constraint. $l_2$ and $l_3$ do impose these constraints as described in Method. On average, there is an improvement of 5.4\% ROC AUC (18.0\% AP) after the addition of column constraints, which is further increased to 7.6 and 19.1\%, respectively, with horizontal symmetry.
+We conduct an ablation study to quantify how the different loss terms in Equation 5 affect the method's performance. \Cref{tab:ablation_loc} shows the AUC ROC and AP of all predicted outputs as a function of what loss terms are included when training. The first and fourth rows, labeled with $l_1$, correspond to using the traditional Cross Entropy loss, which does not make use of any column constraint. $l_2$ and $l_3$ do impose these constraints as described in Method. On average, there is an improvement of $5.4\%$ ROC AUC ($18.0\%$ AP) after the addition of column constraints, which is further increased to $7.6$ and $19.1\%$, respectively, with horizontal symmetry.
 
 \input{Tables/ablation_results}

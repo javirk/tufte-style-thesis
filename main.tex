@@ -26,19 +26,18 @@
 \university{University of Bern}
 \person{Supervisor}{Prof. Dr. Raphael Sznitman}{Faculty of Medicine of the University of Bern}
 \person{Co-advisor}{Clarisa Sánchez}{University of Amsterdam}
-\shoutouts{Sábete, Sancho, que no es un hombre más que otro, si no hace más que otro. Todas estas borrascas que nos suceden son señales de que presto ha de serenar el tiempo}
 \date{September 24, 2024}
 
 \begin{document}
 
-% \ifdebug
-%     \layout
-% \fi
+\ifdebug
+    \layout
+\fi
 
 % \maketitle
 
 \frontmatter
-\includepdf[pages={1}]{frontmatter/FrontPage_Thesis.pdf}
+\includepdf[pages={1}]{frontmatter/FrontPage_Thesis_JavierGamazo.pdf}
 \cleardoublepage
 \pagenumbering{Roman}
 \pagestyle{empty}
@@ -46,10 +45,9 @@
 \include{frontmatter/titlepage}
 \end{wide}
 
-
-
 \include{frontmatter/publishing_words}
 \include{frontmatter/abstract}
+\include{frontmatter/epigraph}
 \include{frontmatter/acknowledgements}
 
 \tableofcontents
@@ -64,24 +62,24 @@
 \mainmatter
 \pagenumbering{arabic}
 
-% \part{Prologue}
-% \import{ch1_introduction/}{introduction}
-% \import{ch2_background/}{background}
-% \part{Rethinking Data Labeling}
-% \import{ch3_fullweak/}{fullweak.tex}
-% \part{Adapt to Unseen Data}
-% \import{ch4_sam_da}{sam_da.tex}
-% \import{ch5_tist}{tist.tex}
-% \part{Weak Labels And Domain Knowledge for a Real-World Problem}
-% \import{ch6_oct_localization/}{oct_localization}
-% \part{Discussion}
-% \import{ch7_discussion/}{discussion}
-% \part{Epilogue}
-% \import{ch8_conclusion/}{conclusion}
-% \import{ch9_futurework/}{future_work}
+\part{Prologue}
+\import{ch1_introduction/}{introduction}
+\import{ch2_background/}{background}
+\part{Rethinking Data Labeling}
+\import{ch3_fullweak/}{fullweak.tex}
+\part{Adapt to Unseen Data}
+\import{ch4_sam_da}{sam_da.tex}
+\import{ch5_tist}{tist.tex}
+\part{Weak Labels And Domain Knowledge for a Real-World Problem}
+\import{ch6_oct_localization/}{oct_localization}
+\part{Discussion}
+\import{ch7_discussion/}{discussion}
+\part{Epilogue}
+\import{ch8_conclusion/}{conclusion}
+\import{ch9_futurework/}{future_work}
 
 
-\backmatter
+% \backmatter
 
 \setstretch{1}
 \thispagestyle{empty}
@@ -95,18 +93,19 @@
 \setcounter{table}{0}
 \setcounter{figure}{0}
 \setcounter{section}{0}
+\setcounter{chapter}{0}
 
 \renewcommand{\thetable}{A\arabic{table}}  %% Change this A to something that uses the chapter name
 \renewcommand{\thefigure}{A\arabic{figure}}  %% Change this A to something that uses the chapter name
-\renewcommand{\thechapter}{\Alph{chapter}}
-\renewcommand{\thesection}{\Alph{section}}
+% \renewcommand{\thechapter}{\Alph{chapter}}
+% \renewcommand{\thesection}{\Alph{chapter}.\Alph{section}}
 
 \import{appendices/regional_mosaics}{app_regional_mosaics.tex}
 \import{appendices/introduction}{app_intro.tex}
-% \import{appendices/background}{app_background.tex}
-% \import{appendices/fullweak}{app_fullweak.tex}
-% \import{appendices/sam_da}{app_sam_da.tex}
-% \import{appendices/oct}{app_oct.tex}
+\import{appendices/background}{app_background.tex}
+\import{appendices/fullweak}{app_fullweak.tex}
+\import{appendices/sam_da}{app_sam_da.tex}
+\import{appendices/oct}{app_oct.tex}
 
 \cleardoublepage
 
@@ -115,7 +114,7 @@
 \thispagestyle{empty}
 \import{backmatter}{originality}
 %\end{wide}
-
-
+\cleardoublepage
+\includepdf[pages=-]{backmatter/cv_thesis.pdf}
 
 \end{document}

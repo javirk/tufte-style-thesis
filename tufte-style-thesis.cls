@@ -123,8 +123,8 @@
 	% autocite 	= superscript,
 	backend 	= biber,
 	citestyle 	= numeric-comp,
-        % style       = authoryear,
-	style 		= nature,
+        style       = authoryear,
+	% style 		= nature,
 	% citecolor   = niceBlue,
 	sorting		= nyt,
 	bibencoding = utf8,
@@ -134,7 +134,8 @@
         uniquename=false,
         date=year,
         % dashed=false,  % If two entries have the same author biblatex writes a dash in the bibliography
-        urldate=long
+        urldate=long,
+        useprefix=true
 ]{biblatex}
 
 \RequirePackage{csquotes}
@@ -451,6 +452,16 @@
 % 	shoutouts
 \newcommand\shoutouts[1]{\renewcommand\@shoutouts{#1}}
 \newcommand\@shoutouts{}
+\newcommand{\dedication}{
+    \cleardoublepage
+    \thispagestyle{empty}
+    ~\vskip .3\textheight
+    \begin{flushright}
+    \large\itshape\@shoutouts
+    \end{flushright}
+    
+    \setstretch{1.12}
+}
 \newcommand\@maketitlebis{%
 	\makeatletter
 	\setstretch{1.0}
@@ -532,20 +543,14 @@
 
 
 	% dedication
-	\cleardoublepage
-	\thispagestyle{empty}
-	~\vskip .3\textheight
-	\begin{flushright}
-	\large\itshape\@shoutouts
-	\end{flushright}
-
-	\setstretch{1.12}
+        \dedication
 	\makeatother
 }
 \renewcommand\maketitle{
 	\@maketitlebis
 	\thispagestyle{empty}
 }
+
 \makeatother
 
 %	COLOPHON

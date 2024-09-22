@@ -1,0 +1,14 @@
+\begin{table}
+\sidecaption{Test-time domain adaptation results (IoU score). Due to the challenge of zero-initializing HQ-SAM, we omit it from these experiments.\label{tab:ttda}}
+\centering
+\begin{tabular}{@{}p{3cm}P{2.4cm}P{2cm}P{2.6cm}@{}}
+\toprule
+ & Retouch - Cirrus & MRI - UCL & WMH - Singapore \\ \midrule
+Fine-Tuning & $61.2$ & $80.2$ & $39.6$ \\
+Decoder FT & $66.9$ & $80.8$ & $40.4$ \\
+LoRA~{\footnotesize\parencite{hu2022lora}} & $67.0$ & $80.7$ & $40.3$ \\
+Med-SA~{\footnotesize\parencite{wu2023medical}} & $63.3$ & $80.7$ & $40.4$ \\ \midrule
+%HQ-SAM~\parencite{ke2024segment} & - & - & - \\ \midrule
+SAM-DA & $\mathbf{67.5}$ & $\mathbf{81.1}$ & $\mathbf{40.4}$ \\ \bottomrule
+\end{tabular}
+\end{table}

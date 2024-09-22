@@ -7,18 +7,18 @@
 %% - Initialization of the adapter
 %% - Why we use it in the decoder: less parameters. The encoder should give a good representation already
 %% - Image showing everything
-We propose a simple, lightweight adapter for the Segment Anything Model (SAM)\sidecite{sam} that draws inspiration from adaptation techniques in the NLP literature. 
+We propose a simple, lightweight adapter for the Segment Anything Model (SAM)\sideauthorcite{sam} that draws inspiration from adaptation techniques in the NLP literature. 
 
-\plainwidefig[t]{1}{Figures/method.pdf}{Illustration of the proposed adaption for SAM Decoder in layer~$\ell$. In each layer, the adaption embeddings are fed along with the dense embeddings to the trainable zero-initialized attention module. Then, the resulting tokens are combined with the decoder embeddings with a trainable gating parameter and a linear MLP.}{fig:method_samda}
+\plainwidefig[t]{1}{Figures/method.pdf}{Illustration of the proposed adaptation for SAM Decoder in layer~$\ell$. In each layer, the adaptation embeddings $A_\ell$ are fed along with the dense embeddings $T_\ell$ to the trainable zero-initialized attention module, where the dense embeddings $T_\ell$ act as queries and the adaption $A_\ell$, as keys and values. Then, the resulting tokens $S_\ell$ are projected back to the model dimension with a linear layer (omitted in the figure) and finally combined with the decoder embeddings via a trainable gating parameter $g_\ell$ and a linear MLP, resulting in $T'_\ell$, which substitutes the previous dense embeddings. A detailed neural circuit diagram~\parencite{abbott2024neural} can be found in the supplementary material.}{fig:method_samda}
 
 \subsection{Segment Anything Model.}
 \label{sec:sam}
-SAM consists of three primary components: an image encoder, a prompt encoder, and a mask decoder. The image encoder is a standard MAE pre-trained Vision Transformer (ViT)\sidecite{dosovitskiy2021an} that transforms the input image into an embedding space. The prompt encoder takes either sparse (points, boxes) or dense (masks) annotation formats and produces encoded prompts. Both the image embedding and the encoded prompts are fed to the mask decoder, which consists of a transformer block with a mask prediction head. The transformer block applies two layers of two-way cross-attention operations acting on the image and the prompt embeddings. The result of the transformer is upsampled with an MLP and then fed to a linear classifier, which predicts the final segmentation mask.
+SAM consists of three primary components: an image encoder, a prompt encoder, and a mask decoder. The image encoder is a standard MAE pre-trained Vision Transformer (ViT)\sideauthorcite{dosovitskiy2021an} that transforms the input image into an embedding space. The prompt encoder takes either sparse (points, boxes) or dense (masks) annotation formats and produces encoded prompts. Both the image embedding and the encoded prompts are fed to the mask decoder, which consists of a transformer block with a mask prediction head. The transformer block applies two layers of two-way cross-attention operations acting on the image and the prompt embeddings. The result of the transformer is upsampled with an MLP and then fed to a linear classifier, which predicts the final segmentation mask.
 
 \subsection{SAM Decoder Adapter.}
 \label{sec:adapter}
 
-The LLaMA-Adapter\sidecite{llama_adapter} is an adaption method originally introduced to fine-tune pre-trained LLMs such as LLaMA\sidecite{llama}. In the context of language generation, this adapter introduces a set of learnable adaption prompts at the higher layers of the LLaMA transformer, and prepends them to the word tokens before the attention operations. 
+The LLaMA-Adapter\sideauthorcite{llama_adapter} is an adaption method originally introduced to fine-tune pre-trained LLMs such as LLaMA\sideauthorcite{llama}. In the context of language generation, this adapter introduces a set of learnable adaption prompts at the higher layers of the LLaMA transformer, and prepends them to the word tokens before the attention operations. 
 
 Our approach brings the idea of prompt-based adaptation from NLP to SAM. We introduce a new learnable adaption prompt~$A_\ell\in\real^{N\times{}D}$ at each layer~$\ell$ of the mask decoder's transformer. The adaptation prompts are used to compute correction factors that modify the embeddings of the transformer without retraining its parameters. Formally, let~$T_\ell\in\real^{M\times D}$ be the embeddings obtained as the output of the cross-attention operation at layer~$\ell$.
 
@@ -36,7 +36,7 @@ and projected back to the model dimension~$D$ with a linear layer, $S'_\ell=\lin
 \begin{equation}
     T'_\ell = \linear^t_\ell(T_\ell + g_\ell \cdot S'_\ell),
 \end{equation}
-where the learnable gating factor~$g_\ell\in\real$ is initialized to~0 to ensure no disruption during the early stages of adaptation learning. The entire procedure is summarized in \cref{fig:method_samda,fig:neural_diagram}.
+where the learnable gating factor~$g_\ell\in\real$ is initialized to~0 to ensure no disruption during the early stages of adaptation learning. Therefore, $T'_\ell$ substitutes the previous dense embeddings $T_\ell$ as the input for the two-way attention block in the next layer $\ell + 1$. The entire procedure is summarized in \cref{fig:method_samda,fig:neural_diagram}.
 
 \input{Figures/neural_diagram}
 

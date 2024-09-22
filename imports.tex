@@ -103,6 +103,7 @@
 \usepackage{amsthm}
 \usepackage{authoraftertitle}
 \usepackage{pdfpages}
+\usepackage{epigraph}
 
 \usepackage[noabbrev,capitalize]{cleveref}
 %\crefname{section}{Sec.}{Secs.}
@@ -129,3 +130,8 @@
       \expandafter\@firstoftwo#2}}%
 \creflabelformat{section}{#2\S\nameref*{\@lastusedlabel}#3}
 \makeatother
+
+\setlength\epigraphwidth{0.9\textwidth}
+\setlength\epigraphrule{0pt}
+\renewcommand{\textflush}{flushright}
+% \renewcommand{\epigraphsize}{\large}

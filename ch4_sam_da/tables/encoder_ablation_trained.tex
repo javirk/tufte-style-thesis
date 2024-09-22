@@ -1,0 +1,10 @@
+\begin{table}[]
+\sidecaption{Ablation study evaluating two adapter locations. IoU scores for full supervision. Variances are obtained over four trained models on the validation set.\label{tab:encoder_ablation_trained}}
+\centering
+\begin{tabular}{@{}lP{2.1cm}P{2cm}P{2.1cm}P{2cm}@{}}
+\toprule
+ & Retouch - Spectralis & MRI - BMC & WMH - Utrecht & HQSeg-44K  \\ \midrule
+Decoder & $75.4{\scriptstyle \pm 0.6}$ & $\mathbf{86.2}{\scriptstyle \pm 1.5}$ & $\mathbf{44.2}{\scriptstyle \pm 0.3}$ & $79.6{\scriptstyle \pm 0.4}$ \\
+Encoder & $\mathbf{75.8}{\scriptstyle \pm 1.0}$ & $84.6{\scriptstyle \pm 2.2}$ & $40.7{\scriptstyle \pm 0.3}$ & $\mathbf{80.8}{\scriptstyle \pm 0.3}$ \\ \bottomrule 
+\end{tabular}
+\end{table}

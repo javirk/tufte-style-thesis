@@ -3,22 +3,20 @@
 \caption{Comparison of the proposed method to evaluated baselines in terms of AUC ROC and AP on the {\bf Location dataset} for all markers on the entire slice and in the different ETDRS rings. The first row indicates the occurrences of each marker in this dataset.\label{tab:results}}
 \begin{tabular}{@{}TrSSSSSS|SS@{}}
 \cmidrule(l){3-10}
-\multicolumn{1}{l}{}          & \multicolumn{1}{l}{}           & \multicolumn{2}{c}{\textbf{1mm}} & \multicolumn{2}{c}{\textbf{3mm}} & \multicolumn{2}{c}{\textbf{6mm}}                   & \multicolumn{2}{c}{\textbf{Present}} \\ \cmidrule(l){3-10} 
-\multicolumn{1}{l}{}          & \multicolumn{1}{l}{}           & \textbf{IRF}    & \textbf{SRF}   & \textbf{IRF}    & \textbf{SRF}   & \textbf{IRF}  & \multicolumn{1}{c|}{\textbf{SRF}}  & \textbf{IRF}      & \textbf{SRF}     \\ \midrule
+\multicolumn{1}{l}{}          & \multicolumn{1}{l}{}           & \multicolumn{2}{c}{\textbf{1mm}} & \multicolumn{2}{c}{{3mm}} & \multicolumn{2}{c}{{6mm}}                   & \multicolumn{2}{c}{{Present}} \\ \cmidrule(l){3-10} 
+\multicolumn{1}{l}{}          & \multicolumn{1}{l}{}           & {IRF}    & {SRF}   & {IRF}    & {SRF}   & {IRF}  & \multicolumn{1}{c|}{{SRF}}  & {IRF}      & {SRF}     \\ \midrule
 \multicolumn{1}{l}{}          & \multicolumn{1}{r|}{Occ. (\%)} & 13.0            & 2.1            & 31.9            & 1.2            & 38.4          & \multicolumn{1}{c|}{0.4}           & 51.5              & 2.8              \\ \midrule
 \multirow{4}{*}{\textbf{AUC}} & \multicolumn{1}{r|}{Masking}   & 92.6            & 91.7           & 89.6            & 81.6           & 92.7          & \multicolumn{1}{c|}{66.7}          & 96.5              & 96.2             \\
 & \multicolumn{1}{r|}{PartConvs}    & \textbf{93.2}   & 94.1           & 90.2            & 89.8           & 91.7          & \multicolumn{1}{c|}{74.9}          & 94.2              & 89.7             \\
 & \multicolumn{1}{r|}{Grad-CAM}  & 85.2            & 87.3           & 89.2            & 76.0           & 89.4          & \multicolumn{1}{c|}{64.6}          & 96.5              & 96.2             \\
-& \multicolumn{1}{r|}{MS-CAM~\cite{ma2020}}  & 55.7            & 70.4           & 57.5            & 64.1           & 55.0          & \multicolumn{1}{c|}{56.0}           & 56.0              & 53.7            \\
-& \multicolumn{1}{r|}{\bf{Ours}}  & 90.6            & \textbf{97.5}  & \textbf{92.7}   & \textbf{93.8}  & \textbf{94.1} & \multicolumn{1}{c|}{\textbf{95.1}} & \textbf{97.2}     & \textbf{97.7}    \\ \midrule
+& \multicolumn{1}{r|}{MS-CAM~{\footnotesize\parencite{ma2020}}}  & 55.7            & 70.4           & 57.5            & 64.1           & 55.0          & \multicolumn{1}{c|}{56.0}           & 56.0              & 53.7            \\
+& \multicolumn{1}{r|}{{Ours}}  & 90.6            & \textbf{97.5}  & \textbf{92.7}   & \textbf{93.8}  & \textbf{94.1} & \multicolumn{1}{c|}{\textbf{95.1}} & \textbf{97.2}     & \textbf{97.7}    \\ \midrule
 \multirow{4}{*}{\textbf{AP}}  & \multicolumn{1}{r|}{Masking}   & 76.9            & 48.3           & 84.2            & 17.2           & \textbf{88.5} & \multicolumn{1}{c|}{5.6}           & 96.1              & 72.3             \\
 & \multicolumn{1}{r|}{PartConvs}    & 81.8            & 60.5           & 85.2            & 21.4           & 88.1          & \multicolumn{1}{c|}{8.2}           & 94.2              & 38.5             \\
 & \multicolumn{1}{r|}{Grad-CAM}  & 88.2            & 68.4           & 86.9            & 25.4           & 78.7          & \multicolumn{1}{c|}{7.4}           & 96.1              & 72.3             \\
 
-& \multicolumn{1}{r|}{MS-CAM~\cite{ma2020}}  & 70.3            & 38.5           & 64.1            & 14.4           & 54.3          & \multicolumn{1}{c|}{1.6}           & 55.6              & 3.1             \\
+& \multicolumn{1}{r|}{MS-CAM~{\footnotesize\parencite{ma2020}}}  & 70.3            & 38.5           & 64.1            & 14.4           & 54.3          & \multicolumn{1}{c|}{1.6}           & 55.6              & 3.1             \\
 
 & \multicolumn{1}{r|}{\bf Ours}  & \textbf{92.1}   & \textbf{86.6}  & \textbf{93.7}   & \textbf{52.7}  & 88.3          & \multicolumn{1}{c|}{\textbf{19.1}} & \textbf{96.8}     & \textbf{77.9}    \\ \bottomrule
 \end{tabular}
-%\caption{Comparison of the proposed method to evaluated baselines in terms of AUC ROC and AP on the {\bf Location dataset} for all markers on the entire slice and in the different ETDRS rings. The first row indicates the occurrences of each marker in this dataset.
-%\label{tab:results}
 \end{table*}
