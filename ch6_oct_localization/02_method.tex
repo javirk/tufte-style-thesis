@@ -27,7 +27,7 @@ Formally, we partition a 2D OCT slice,~$\x$, into $C$ equally spaced columns. We
 %\label{fig:architecture}
 %\end{figure}
 
-\widefig[t]{1}{Figures/architecture.pdf}{Proposed network architecture: usage of partial pooling to extract information from the feature map to infer location outputs with a set of shared-weight MLPs.}{fig:architecture}
+\plainwidefig[t]{1}{Figures/architecture.pdf}{Proposed network architecture: usage of partial pooling to extract information from the feature map to infer location outputs with a set of shared-weight MLPs.}{fig:architecture}
 
 \Cref{fig:architecture} depicts our model architecture. The input OCT slice is processed by a CNN which produces a feature map~$\z \in \real^{D_z\times H_z\times W_z}$ with width equal to the number of columns~$C = W_z$. We then apply a number of pooling operations over the feature map~$\z$ to describe the entire OCT slice as well as every column~$c$. In particular, to identify markers that may appear as large or small in a given image, we set the descriptor of the entire OCT slice to be a $2D_z$-dimensional vector~$\d_0=[\avgpool(\z), \maxpool(\z)]$ obtained as the concatenation of average pooling and maximum pooling over the spatial dimensions of~$\z$. Likewise, the descriptor of every column~$c$ is another $2D_z$-dimensional vector~$\d_c=[\avgpool(\z_{\cdot,\cdot,c}), \maxpool(\z_{\cdot,\cdot,c})]$ obtained as the concatenation of the two pooling operators acting on the corresponding column of~$\z$. The descriptor vectors are then processed by a multi-layer perceptron (MLP) followed by an element-wise sigmoid activation to produce the final probabilities,
 \begin{equation}

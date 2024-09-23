@@ -164,18 +164,18 @@ The metrics that we have introduced so far are focused on image classification\s
 
 The \textit{\autoindex{Intersection Over Union}} (IoU), or Jaccard Index\sideauthorcite{jaccard1902lois}, has been widely adopted as a metric for image segmentation. It quantifies the percentage of overlap between the ground truth mask\sidedef{(segmentation) mask}{Multi-channel image where each pixel indicates the category to which it belongs. Also called \textit{label map}.} and the prediction output. As its name suggests, it is equal to the ratio of the common pixels (intersection) between both masks and the total number of pixels (union):
 \begin{equation*}
-    \text{IoU}(A,B) = \dfrac{A\cap B}{A \cup B},
+    \text{IoU}(A,B) = \dfrac{A\cap B}{A \cup B}
 \end{equation*}
 which for binary segmentation takes the form:
 \begin{equation}
-    \text{IoU} = \dfrac{TP}{TP + FP + FN}.
+    \text{IoU} = \dfrac{TP}{TP + FP + FN}
     \label{eq:iou}
 \end{equation}
 The analysis of \Cref{eq:iou} can help us understand the main drawback of IoU, namely that it over-penalizes small objects. Indeed, when the number of positive pixels in the ground truth mask is low, a minor increase in the false predictions of the model can result in a significant decline in IoU.
  
 Closely related to IoU, the \textit{\autoindex{Dice} coefficient}\sideauthorcite{dice1945measures}\sidenote{Also called Dice score, or simply Dice.} quantifies a similar metric but tries to avoid the pitfalls of IoU. The Dice score is obtained by taking the harmonic mean of precision and recall, and it is therefore equivalent to the F1 score in classification. For binary segmentation, this is:
 \begin{equation*}
-    \text{Dice Score} = \dfrac{2TP}{2TP + FP + FN},
+    \text{Dice Score} = \dfrac{2TP}{2TP + FP + FN}
     \label{eq:dice}
 \end{equation*}
 which corresponds to dividing twice the area of intersection and the total area, as opposed to the union.

@@ -15,7 +15,7 @@
 
 First, we can observe that no single fixed strategy is performing optimally across the different datasets evaluated. This is coherent with our initial claims and with the literature. Indeed, for OCT the best strategy appears to be one that samples 90\% of segmentations, while this same policy performs poorly on the SUIM dataset. This implies that blindly using a fixed policy would on average not be very effective.
 
-Second, the estimated best-fixed strategy (in red) appears to do well initially and progressively loses competitiveness as the budget increases. This behaviour is expected as the estimated fixed strategy is that with $B_0$ (the lowest budget), and becomes increasingly irrelevant as $B$ grows. This is particularly clear on VOC where the best low-budget strategy allocates 95\% of the budget to segmentation and still achieves superior performance up to $B=12,000$. However, that strategy drops below average performance with budgets greater than $B=25,000$. In the case of SUIM, the best-fixed strategy corresponds to 50\% of the budget allocated to segmentation. Since the dataset contains only $1,525$ segmentation samples, this strategy is not attainable with $B > 4'000$.
+Second, the estimated best-fixed strategy (in red) appears to do well initially and progressively loses competitiveness as the budget increases. This behaviour is expected as the estimated fixed strategy is that with $B_0$ (the lowest budget), and becomes increasingly irrelevant as $B$ grows. This is particularly clear on VOC where the best low-budget strategy allocates 95\% of the budget to segmentation and still achieves superior performance up to $B=12,000$. However, that strategy drops below average performance with budgets greater than $B=25,000$. In the case of SUIM, the best-fixed strategy corresponds to 50\% of the budget allocated to segmentation. Since the dataset contains only $1,525$ segmentation samples, this strategy is not attainable with $B > 4,000$.
 
 Last, we can observe that our method is consistently able to produce good performances, across both different budget quantities and datasets. We can also clearly see that our strategy is not guaranteed to be the top performing strategy, but that on average it performs well in different cases. 
 
@@ -28,14 +28,6 @@ At the same time, we notice that the performance of our approach on SUIM begins 
 Different types of annotations or domains may have different ratios of cost. While we have fixed $\alpha_s$ in our experiments across all datasets regardless of their domain, some datasets such as OCT and VOC require different expertise and domain knowledge to annotate and thus different $\alpha_s$. In~\Cref{fig:alpha_results}, we three additional values of $\alpha_s = \{5, 12, 25, 50\}$ and show the performance implication it has on our methods and the baselines. For Cityscapes, we see that the method is robust regardless of the value of $\alpha_s$, showing above-average performance, especially for $\alpha_s = 25$ and $\alpha_s = 50$. This behavior is reproduced in all four datasets, as shown in \Cref{fig:app_alpha_results} in the Appendix.
 
 \plainwidefig[t]{1}{Figures/alphas_notshared.pdf}{Mean of our method with $\alpha_s = \{5, 12, 25, 50\}$ on Cityscapes (orange, line). Shaded region is computed from three seeds. Fixed strategies are shown in blue. Labels expressed as percentage of the budget allocated to segmentation.}{fig:alpha_results}
-
-%\begin{figure}[]
-%\centering
-%\includegraphics[width=0.8\linewidth]{Figures/steps_notshared_square.pdf}
-%\caption{Mean of our method when using different numbers of iteration steps $\{3, 5, 8, 10\}$. Results shown with three seeds.
-%}
-%\label{fig:steps_results}
-%\end{figure}
 
 Similarly, the number of steps $T$ given to reach the final budget is a hyperparameter of our approach. While low $T$ values could lead to poor solutions due to the unreliability of the GP far from the sampled region, higher $T$ values\sidenote{And therefore smaller steps.} may exacerbate the intrinsic greedy nature of our method. We thus seek a trade-off between reliability and greediness. To study the sensitivity of the algorithm with respect to this variable, we show the behaviour of our method with different number of steps in~\cref{fig:steps_results}. We see that lower $T$ values greatly affect the reliability of the found strategy, especially for OCT and SUIM (blue line). However, as the number of steps increases, the variance of the strategy reduces sharply. We can therefore conclude that the method is robust to this hyperparameter as long as it is kept within reasonable ranges.
 
